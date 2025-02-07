@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct TMDBCatalog {
+struct Catalog {
     let page: Int
     let totalPages: Int
     let catalog: [Movie]
