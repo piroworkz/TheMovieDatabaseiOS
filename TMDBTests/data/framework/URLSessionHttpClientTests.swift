@@ -28,7 +28,7 @@ final class URLSessionHttpClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
 
-    func test_GIVEN_sut_WHEN_getIsCalled_THEN_shouldFailRequestWithError() {
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnsError_THEN_shouldFailRequestWithError() {
         let url = anyURL()
         let error = anyNSError()
         let sut = buildSut()
@@ -47,5 +47,25 @@ final class URLSessionHttpClientTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1.0)
     }
+    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllNilValues_THEN_shouldFailRequest() {
+        let sut = buildSut()
+        let expectation = expectation(description: expectationDescription())
+        
+        URLProtocolStub.stub(data: nil, response: nil, error: nil)
+        sut.get(from: anyURL()) { result in
+            switch result {
+            case .failure:
+                break
+            default:
+                XCTFail("Expected failure, but got \(result) instead")
+            }
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
 }
 

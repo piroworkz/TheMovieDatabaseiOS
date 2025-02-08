@@ -14,10 +14,14 @@ public class URLSessionHttpClient {
         self.session = session
     }
     
+    struct IllegalStateError: Error {}
+    
     public func get(from url: URL, completion: @escaping (HttpClientResult) -> Void) {
         session.dataTask(with: url) { _, _, error in
             if let error = error {
                 completion(.failure(error))
+            } else {
+                completion(.failure(IllegalStateError()))
             }
         }.resume()
     }
