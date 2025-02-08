@@ -22,12 +22,14 @@ class RemoteCatalogLoader {
     }
     
     func load(completion: @escaping (Error) -> Void) {
-        client.get(from: baseURL) { error, response in
-            if response != nil {
-                completion(.invalidData)
-            } else {
-                completion(.connectivity)
-            }
+        client.get(from: baseURL) { result in
+            result.fold(
+                onSuccess: {_ in
+                    completion(.invalidData)
+                },
+                onFailure: { _ in
+                    completion(.connectivity)
+                })
         }
     }
 }
