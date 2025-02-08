@@ -13,15 +13,16 @@ final class RemoteCatalogLoaderTests: XCTestCase {
     func test_GIVEN_sut_WHEN_initialized_THEN_shouldNotRequestDataFromAPI() {
         let (_, spy) = buildSut()
         
-        XCTAssertNil(spy.requestedURL)
+        XCTAssertTrue(spy.requestedUrls.isEmpty)
     }
     
     func test_GIVEN_sutIsInitialized_WHEN_loadIsCalled_THEN_shouldMakeRequestToProvidedUrl() {
+        let expected = [URL(string: "https://example.com")!]
         let (sut, spy) = buildSut()
         
         sut.load()
         
-        XCTAssertNotNil(spy.requestedURL)
+        XCTAssertEqual(spy.requestedUrls, expected)
     }
     
     func test_GIVEN_sutAndExpectedURLsArray_WHEN_loadIsCalledTwice_THEN_shouldMakeRequestToProvidedUrlTwice() {
@@ -32,19 +33,17 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         sut.load()
         sut.load()
         
-        XCTAssertEqual(spy.requuestedUrls, expected)
+        XCTAssertEqual(spy.requestedUrls, expected)
     }
 }
 
 extension RemoteCatalogLoaderTests {
     
     class HttpClientSpy: HttpClient {
-        var requestedURL: URL?
-        var requuestedUrls: [URL] = []
+        var requestedUrls: [URL] = []
 
         func get(from url: URL) {
-            requestedURL = url
-            requuestedUrls.append(url)
+            requestedUrls.append(url)
         }
     }
     
