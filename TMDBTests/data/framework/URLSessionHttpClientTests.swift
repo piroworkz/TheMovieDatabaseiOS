@@ -27,43 +27,49 @@ final class URLSessionHttpClientTests: XCTestCase {
         
         wait(for: [expectation], timeout: 1.0)
     }
-
+    
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnsError_THEN_shouldFailRequestWithError() {
-        let url = anyURL()
         let error = anyNSError()
-        let sut = buildSut()
-        let expectation = expectation(description: expectationDescription())
-        
-        URLProtocolStub.stub(data: nil, response: nil, error: error)
-        sut.get(from: url) { result in
-            switch result {
-            case .failure(let receivedError as NSError):
-                XCTAssertEqual(receivedError.code, error.code)
-            default:
-                XCTFail("Expected failure with error \(error) but got \(result) instead")
-            }
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 1.0)
+        assertThatResultCaseFor(data: nil, response: nil, error: error)
+            .isEqual(to: .failure(error))
     }
     
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllNilValues_THEN_shouldFailRequest() {
-        let sut = buildSut()
-        let expectation = expectation(description: expectationDescription())
+        assertThatResultCaseFor(data: nil, response: nil, error: nil)
+            .isNotNil()
+    }
+    
+    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllRepresentationValues_THEN_shouldFailRequest() {
+        assertThatResultCaseFor(data: nil, response: nil, error: anyNSError())
+            .isNotNil()
         
-        URLProtocolStub.stub(data: nil, response: nil, error: nil)
-        sut.get(from: anyURL()) { result in
-            switch result {
-            case .failure:
-                break
-            default:
-                XCTFail("Expected failure, but got \(result) instead")
-            }
-            expectation.fulfill()
-        }
+        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: nil)
+            .isNotNil()
         
-        wait(for: [expectation], timeout: 1.0)
+        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: nil)
+            .isNotNil()
+        
+        assertThatResultCaseFor(data: anyData(), response: nil, error: nil)
+            .isNotNil()
+        
+        assertThatResultCaseFor(data: anyData(), response: nil, error: anyNSError())
+            .isNotNil()
+        
+        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: anyNSError())
+            .isNotNil()
+        
+        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: anyNSError())
+            .isNotNil()
+        
+        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: anyNSError())
+            .isNotNil()
+        
+        assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: anyNSError())
+            .isNotNil()
+        
+        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: nil)
+            .isNotNil()
     }
     
     

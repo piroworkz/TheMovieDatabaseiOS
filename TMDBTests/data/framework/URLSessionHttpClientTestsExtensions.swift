@@ -10,14 +10,21 @@ import TMDB
 
 extension URLSessionHttpClientTests {
     
+    struct Stub {
+        let data: Data?
+        let response: URLResponse?
+        let error: Error?
+        
+        init(data: Data?, response: URLResponse?, error: Error?) {
+            self.data = data
+            self.response = response
+            self.error = error
+        }
+    }
+    
     class URLProtocolStub: URLProtocol {
         private static var stub: Stub?
         private static var requestObserver: ((URLRequest) -> Void)?
-        private struct Stub {
-            let data: Data?
-            let response: URLResponse?
-            let error: Error?
-        }
         
         static func stub(data: Data?, response: URLResponse?, error: Error?) {
             stub = Stub(data: data, response: response, error: error)
@@ -70,6 +77,23 @@ extension URLSessionHttpClientTests {
         let sut = URLSessionHttpClient()
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
+    }
+    
+    func assertThatResultCaseFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HttpClientResult? {
+        let sut = buildSut(file: file, line: line)
+        let expectation = expectation(description: expectationDescription())
+        
+        URLProtocolStub.stub(data: data, response: response, error: error)
+        
+        var result: HttpClientResult?
+        sut.get(from: anyURL()) { receivedResult in
+            result = receivedResult
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        return result
     }
     
     override func setUp() {

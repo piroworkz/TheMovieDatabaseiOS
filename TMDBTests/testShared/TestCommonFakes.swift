@@ -17,8 +17,16 @@ extension XCTestCase {
         return NSError(domain: "", code: 0, userInfo: nil)
     }
     
+    func anyHttpUrlResponse() -> HTTPURLResponse {
+        return HTTPURLResponse(url: anyURL(), statusCode: 200, httpVersion: nil, headerFields: nil)!
+    }
+    
+    func anyUrlResponse() -> URLResponse {
+        return URLResponse(url: anyURL(), mimeType: nil, expectedContentLength: 0, textEncodingName: nil)
+    }
+    
     func anyData() -> Data {
-        return Data()
+        return Data("".utf8)
     }
     
     func expectationDescription(_ description: String = "Wait for request to complete") -> String {
