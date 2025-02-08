@@ -89,7 +89,22 @@ final class RemoteCatalogLoaderTests: XCTestCase {
             whenever: {spy.complete(withCode: 200, data: successResult)})
         .isEqual(to: decode(successResult))
     }
+    
+    func test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotDeliverResult() {
+        let client = HttpClientSpy()
+        var sut: RemoteCatalogLoader? = RemoteCatalogLoader(baseURL: URL(string: "https://example.com")!, client: client)
+        let emptyListJsonData = jsonResult(size: 0)
+        
+        var results = [RemoteCatalogLoader.Result]()
+        sut?.load { results.append($0) }
+        
+        sut = nil
+        client.complete(withCode: 200, data: emptyListJsonData)
+        
+        XCTAssertTrue(results.isEmpty)
+    }
 }
+
 extension RemoteCatalogLoaderTests {
     
     class HttpClientSpy: HttpClient {

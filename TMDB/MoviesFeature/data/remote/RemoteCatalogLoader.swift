@@ -27,7 +27,9 @@ class RemoteCatalogLoader {
     }
     
     func load(completion: @escaping (Result) -> Void) {
-        client.get(from: baseURL) { result in
+        client.get(from: baseURL) { [weak self] result in
+            guard self != nil else { return }
+            
             result.fold(
                 onSuccess: {data, response in
                     completion(RemoteResultsMapper.map(data, response.statusCode))
