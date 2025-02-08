@@ -12,18 +12,18 @@ protocol HttpClient {
 }
 
 enum HttpClientResult {
-    case success(HTTPURLResponse)
+    case success(Data, HTTPURLResponse)
     case failure(Error)
 }
 
 extension HttpClientResult {
     func fold<T>(
-        onSuccess: (HTTPURLResponse) -> T,
+        onSuccess: (Data, HTTPURLResponse) -> T,
         onFailure: (Error) -> T
     ) -> T {
         switch self {
-        case .success(let response):
-            return onSuccess(response)
+        case .success(let data, let response):
+            return onSuccess(data, response)
         case .failure(let error):
             return onFailure(error)
         }

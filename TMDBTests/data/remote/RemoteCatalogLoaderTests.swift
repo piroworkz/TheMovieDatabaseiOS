@@ -13,7 +13,9 @@ final class RemoteCatalogLoaderTests: XCTestCase {
     func test_GIVEN_sut_WHEN_initialized_THEN_shouldNotRequestDataFromAPI() {
         let (_, spy) = buildSut()
         
-        XCTAssertTrue(spy.requestedUrls.isEmpty)
+        let actual = spy.requestedUrls
+        
+        XCTAssertTrue(actual.isEmpty)
     }
     
     func test_GIVEN_sutIsInitialized_WHEN_loadIsCalled_THEN_shouldMakeRequestToProvidedUrl() {
@@ -21,43 +23,51 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         let (sut, spy) = buildSut()
         
         sut.load() { _ in }
+        let actual = spy.requestedUrls
         
-        XCTAssertEqual(spy.requestedUrls, expected)
+        XCTAssertEqual(actual, expected)
     }
     
     func test_GIVEN_sutAndExpectedURLsArray_WHEN_loadIsCalledTwice_THEN_shouldMakeRequestToProvidedUrlTwice() {
+        let (sut, spy) = buildSut()
         let url = URL(string: "https://example.com")!
         let expected = [url, url]
-        let (sut, spy) = buildSut()
         
         sut.load() { _ in }
         sut.load() { _ in }
+        let actual = spy.requestedUrls
         
-        XCTAssertEqual(spy.requestedUrls, expected)
+        XCTAssertEqual(actual, expected)
     }
     
     func test_GIVEN_sutAndExpectedError_WHEN_loadFails_THEN_shouldReturnError() {
-        let expected = NSError(domain: "", code: 0, userInfo: nil)
-        let (sut, client) = buildSut()
+        let (sut, spy) = buildSut()
         
-        var actual = [RemoteCatalogLoader.Error]()
-        sut.load { actual.append($0) }
-        client.complete(with: expected)
-        
-        XCTAssertEqual(actual, [.connectivity])
+        assertThat(
+            given: sut,
+            whenever: { spy.complete(with: NSError(domain: "", code: 0))})
+        .isEqual(to: .connectivity)
     }
     
     func test_GIVEN_sutAndExpectedError_WHEN_loadCompletesWithStatusCodeOtherThan200_THEN_shouldReturnInvalidDataError() {
         let testParams = [199, 201, 400, 404, 500]
-        let (sut, client) = buildSut()
+        let (sut, spy) = buildSut()
         
-        testParams.enumerated().forEach {index, expected in
-            var actual = [RemoteCatalogLoader.Error]()
-            sut.load { actual.append($0) }
-            client.complete(withStatusCode: expected, at: index)
-            
-            XCTAssertEqual(actual, [.invalidData])
+        testParams.enumerated().forEach {index, code in
+            assertThat(
+                given: sut,
+                whenever: { spy.complete(withCode: code, at: index) })
+            .isEqual(to: .invalidData)
         }
+    }
+    
+    func test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndInvalidJsonBody_THEN_loadShouldRespondWithInvalidDataError() {
+        let (sut, spy) = buildSut()
+        
+        assertThat(
+            given: sut,
+            whenever: { spy.complete(withCode: 200, data: Data("Invalid JSON".utf8)) })
+        .isEqual(to: .invalidData)
     }
 }
 
@@ -76,9 +86,9 @@ extension RemoteCatalogLoaderTests {
             messages[index].completion(.failure(error))
         }
         
-        func complete(withStatusCode code: Int, at index: Int = 0) {
+        func complete(withCode code: Int, data: Data = Data(), at index: Int = 0) {
             let response = HTTPURLResponse(url: requestedUrls[index], statusCode: code, httpVersion: nil, headerFields: nil)!
-            messages[index].completion(.success(response))
+            messages[index].completion(.success(data, response))
         }
     }
     
@@ -87,5 +97,23 @@ extension RemoteCatalogLoaderTests {
         let sut = RemoteCatalogLoader(baseURL: baseURL, client: client)
         
         return (sut, client)
+    }
+    
+    private func assertThat(
+        given sut: RemoteCatalogLoader,
+        whenever action: () -> Void
+    ) -> RemoteCatalogLoader.Error? {
+        
+        var actual: RemoteCatalogLoader.Error?
+        sut.load { actual = $0 }
+        action()
+        
+        return actual
+    }
+}
+
+extension RemoteCatalogLoader.Error? {
+    func isEqual(to other: RemoteCatalogLoader.Error?, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(self, other, file: file, line: line)
     }
 }

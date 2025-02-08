@@ -24,7 +24,7 @@ class RemoteCatalogLoader {
     func load(completion: @escaping (Error) -> Void) {
         client.get(from: baseURL) { result in
             result.fold(
-                onSuccess: {_ in
+                onSuccess: {_, _ in
                     completion(.invalidData)
                 },
                 onFailure: { _ in
