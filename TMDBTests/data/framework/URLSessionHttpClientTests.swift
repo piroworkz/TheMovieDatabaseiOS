@@ -12,10 +12,10 @@ final class URLSessionHttpClientTests: XCTestCase {
     
     func test_GIVEN_sutAndURL_WHEN_getIsCalled_THEN_shouldMakeRequestWithprovidedURL() {
         
-        let url = URL(string: "https://example.com")!
+        let url = anyURL()
         let sut = buildSut()
         
-        let expectation = expectation(description: "Wait for request to complete")
+        let expectation = expectation(description: expectationDescription())
         
         sut.get(from: url) { _ in }
         
@@ -29,10 +29,10 @@ final class URLSessionHttpClientTests: XCTestCase {
     }
 
     func test_GIVEN_sut_WHEN_getIsCalled_THEN_shouldFailRequestWithError() {
-        let url = URL(string: "https://example.com")!
-        let error = NSError(domain: "", code: 0)
+        let url = anyURL()
+        let error = anyNSError()
         let sut = buildSut()
-        let expectation = expectation(description: "Wait for request to complete")
+        let expectation = expectation(description: expectationDescription())
         
         URLProtocolStub.stub(data: nil, response: nil, error: error)
         sut.get(from: url) { result in

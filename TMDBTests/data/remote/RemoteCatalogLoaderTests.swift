@@ -19,7 +19,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
     }
     
     func test_GIVEN_sutIsInitialized_WHEN_loadIsCalled_THEN_shouldMakeRequestToProvidedUrl() {
-        let expected = [URL(string: "https://example.com")!]
+        let expected = [anyURL()]
         let (sut, spy) = buildSut()
         
         sut.load() { _ in }
@@ -30,8 +30,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
     
     func test_GIVEN_sutAndExpectedURLsArray_WHEN_loadIsCalledTwice_THEN_shouldMakeRequestToProvidedUrlTwice() {
         let (sut, spy) = buildSut()
-        let url = URL(string: "https://example.com")!
-        let expected = [url, url]
+        let expected = [anyURL(), anyURL()]
         
         sut.load() { _ in }
         sut.load() { _ in }
@@ -45,7 +44,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         
         assertThat(
             given: sut,
-            whenever: { spy.complete(with: NSError(domain: "", code: 0))})
+            whenever: { spy.complete(with: anyNSError())})
         .isEqual(to: .failure(RemoteCatalogLoader.Error.connectivity))
     }
     
@@ -92,7 +91,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
     
     func test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotDeliverResult() {
         let client = HttpClientSpy()
-        var sut: RemoteCatalogLoader? = RemoteCatalogLoader(baseURL: URL(string: "https://example.com")!, client: client)
+        var sut: RemoteCatalogLoader? = RemoteCatalogLoader(baseURL: anyURL(), client: client)
         let emptyListJsonData = jsonResult(size: 0)
         
         var results = [RemoteCatalogLoader.Result]()

@@ -41,7 +41,7 @@ extension RemoteCatalogLoaderTests {
         given sut: RemoteCatalogLoader,
         whenever action: () -> Void
     ) -> RemoteCatalogLoader.Result? {
-        let expectation = expectation(description: "Wait for completion result")
+        let expectation = expectation(description: expectationDescription())
         
         var result: RemoteCatalogLoader.Result?
         sut.load {
