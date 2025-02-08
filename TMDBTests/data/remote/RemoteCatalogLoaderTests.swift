@@ -40,22 +40,24 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         let expected = NSError(domain: "", code: 0, userInfo: nil)
         let (sut, client) = buildSut()
         
-        var capturedErrors = [RemoteCatalogLoader.Error]()
-        sut.load { capturedErrors.append($0) }
+        var actual = [RemoteCatalogLoader.Error]()
+        sut.load { actual.append($0) }
         client.complete(with: expected)
         
-        XCTAssertEqual(capturedErrors, [.connectivity])
+        XCTAssertEqual(actual, [.connectivity])
     }
     
     func test_GIVEN_sutAndExpectedError_WHEN_loadCompletesWithStatusCodeOtherThan200_THEN_shouldReturnInvalidDataError() {
-        let expected = 400
+        let testParams = [199, 201, 400, 404, 500]
         let (sut, client) = buildSut()
         
-        var capturedErrors = [RemoteCatalogLoader.Error]()
-        sut.load { capturedErrors.append($0) }
-        client.complete(withStatusCode: expected)
-        
-        XCTAssertEqual(capturedErrors, [.invalidData])
+        testParams.enumerated().forEach {index, expected in
+            var actual = [RemoteCatalogLoader.Error]()
+            sut.load { actual.append($0) }
+            client.complete(withStatusCode: expected, at: index)
+            
+            XCTAssertEqual(actual, [.invalidData])
+        }
     }
 }
 
