@@ -41,12 +41,10 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         let (sut, client) = buildSut()
         
         client.error = expected
-        var capturedError: RemoteCatalogLoader.Error?
-        sut.load { error in
-            capturedError = error
-        }
+        var capturedErrors = [RemoteCatalogLoader.Error]()
+        sut.load { capturedErrors.append($0) }
         
-        XCTAssertEqual(capturedError, .connectivity)
+        XCTAssertEqual(capturedErrors, [.connectivity])
     }
 }
 
