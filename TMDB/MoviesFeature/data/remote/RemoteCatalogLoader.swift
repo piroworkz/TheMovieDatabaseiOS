@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RemoteCatalogLoader {
+class RemoteCatalogLoader: CatalogLoader {
     private let baseURL: URL
     private let client: HttpClient
     
@@ -16,10 +16,7 @@ class RemoteCatalogLoader {
         self.client = client
     }
     
-    enum Result: Equatable {
-        case success(Catalog)
-        case failure(Error)
-    }
+    public typealias Result = CatalogResult<Error>
     
     enum Error: Swift.Error {
         case connectivity
