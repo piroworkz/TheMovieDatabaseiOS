@@ -10,7 +10,7 @@ import TMDB
 
 final class URLSessionHttpClientTests: XCTestCase {
     
-    func test_GIVEN_sutAndURL_WHEN_getIsCalled_THEN_shouldMakeRequestWithprovidedURL() {
+    func test_GIVEN_sutAndURL_WHEN_getIsCalled_THEN_shouldMakeRequestWithProvidedURL() {
         
         let url = anyURL()
         let sut = buildSut()
@@ -43,7 +43,6 @@ final class URLSessionHttpClientTests: XCTestCase {
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllRepresentationValues_THEN_shouldFailRequest() {
         assertThatResultCaseFor(data: nil, response: nil, error: anyNSError()).isNotNil()
         assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: nil).isNotNil()
-        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: nil).isNotNil()
         assertThatResultCaseFor(data: anyData(), response: nil, error: nil).isNotNil()
         assertThatResultCaseFor(data: anyData(), response: nil, error: anyNSError()).isNotNil()
         assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: anyNSError()).isNotNil()
@@ -56,5 +55,11 @@ final class URLSessionHttpClientTests: XCTestCase {
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccess_THEN_shouldReturnData() {
         assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: nil)
             .isEqual(to: .success(anyData(), anyHttpUrlResponse()))
+    }
+    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccessAndEmptyData_THEN_shouldReturnEmptyData() {
+        let emptyData: Data = Data()
+        assertThatResultCaseFor(data: emptyData, response: anyHttpUrlResponse(), error: nil)
+            .isEqual(to: .success(emptyData, anyHttpUrlResponse()))
     }
 }
