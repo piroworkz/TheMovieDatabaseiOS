@@ -40,9 +40,9 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         let expected = NSError(domain: "", code: 0, userInfo: nil)
         let (sut, client) = buildSut()
         
-        client.error = expected
         var capturedErrors = [RemoteCatalogLoader.Error]()
         sut.load { capturedErrors.append($0) }
+        client.completions[0](expected)
         
         XCTAssertEqual(capturedErrors, [.connectivity])
     }
@@ -52,12 +52,10 @@ extension RemoteCatalogLoaderTests {
     
     class HttpClientSpy: HttpClient {
         var requestedUrls: [URL] = []
-        var error: Error?
+        var completions = [(Error) -> Void]()
         
         func get(from url: URL, completion: @escaping (Error) -> Void) {
-            if let error = error {
-                completion(error)
-            }
+            completions.append(completion)
             requestedUrls.append(url)
         }
     }
