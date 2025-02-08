@@ -26,14 +26,6 @@ protocol HttpClient {
     func get(from url: URL)
 }
 
-class HttpClientSpy: HttpClient {
-    var requestedURL: URL?
-    
-    func get(from url: URL) {
-        requestedURL = url
-    }
-}
-
 final class RemoteCatalogLoaderTests: XCTestCase {
     
     func test_GIVEN_sut_WHEN_initialized_THEN_shouldNotRequestDataFromAPI() {
@@ -52,6 +44,15 @@ final class RemoteCatalogLoaderTests: XCTestCase {
 }
 
 extension RemoteCatalogLoaderTests {
+    
+    class HttpClientSpy: HttpClient {
+        var requestedURL: URL?
+        
+        func get(from url: URL) {
+            requestedURL = url
+        }
+    }
+    
     func buildSut(baseURL: URL = URL(string: "https://example.com")!) -> (sut: RemoteCatalogLoader, client: HttpClientSpy) {
         let client = HttpClientSpy()
         let sut = RemoteCatalogLoader(baseURL: baseURL, client: client)
