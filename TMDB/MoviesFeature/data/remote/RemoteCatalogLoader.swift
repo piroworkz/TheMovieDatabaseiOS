@@ -16,19 +16,24 @@ class RemoteCatalogLoader {
         self.client = client
     }
     
+    enum Result: Equatable {
+        case success(Catalog)
+        case failure(Error)
+    }
+    
     enum Error: Swift.Error {
         case connectivity
         case invalidData
     }
     
-    func load(completion: @escaping (Error) -> Void) {
+    func load(completion: @escaping (Result) -> Void) {
         client.get(from: baseURL) { result in
             result.fold(
                 onSuccess: {_, _ in
-                    completion(.invalidData)
+                    completion(.failure(.invalidData))
                 },
                 onFailure: { _ in
-                    completion(.connectivity)
+                    completion(.failure(.connectivity))
                 })
         }
     }

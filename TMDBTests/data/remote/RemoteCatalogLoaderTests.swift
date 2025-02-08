@@ -40,16 +40,16 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         XCTAssertEqual(actual, expected)
     }
     
-    func test_GIVEN_sutAndExpectedError_WHEN_loadFails_THEN_shouldReturnError() {
+    func test_GIVEN_sut_WHEN_clientCompletesWithError_THEN_loadShouldReturnConnectivityError() {
         let (sut, spy) = buildSut()
         
         assertThat(
             given: sut,
             whenever: { spy.complete(with: NSError(domain: "", code: 0))})
-        .isEqual(to: .connectivity)
+        .isEqual(to: .failure(.connectivity))
     }
     
-    func test_GIVEN_sutAndExpectedError_WHEN_loadCompletesWithStatusCodeOtherThan200_THEN_shouldReturnInvalidDataError() {
+    func test_GIVEN_sutAndTestParams_WHEN_clientCompletesWithStatusCodeOtherThan200_THEN_loadShouldReturnInvalidDataError() {
         let testParams = [199, 201, 400, 404, 500]
         let (sut, spy) = buildSut()
         
@@ -57,7 +57,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
             assertThat(
                 given: sut,
                 whenever: { spy.complete(withCode: code, at: index) })
-            .isEqual(to: .invalidData)
+            .isEqual(to: .failure(.invalidData))
         }
     }
     
@@ -67,7 +67,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         assertThat(
             given: sut,
             whenever: { spy.complete(withCode: 200, data: Data("Invalid JSON".utf8)) })
-        .isEqual(to: .invalidData)
+        .isEqual(to: .failure(.invalidData))
     }
 }
 
@@ -102,18 +102,18 @@ extension RemoteCatalogLoaderTests {
     private func assertThat(
         given sut: RemoteCatalogLoader,
         whenever action: () -> Void
-    ) -> RemoteCatalogLoader.Error? {
+    ) -> RemoteCatalogLoader.Result? {
         
-        var actual: RemoteCatalogLoader.Error?
-        sut.load { actual = $0 }
+        var result: RemoteCatalogLoader.Result?
+        sut.load { result = $0 }
         action()
         
-        return actual
+        return result
     }
 }
 
-extension RemoteCatalogLoader.Error? {
-    func isEqual(to other: RemoteCatalogLoader.Error?, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(self, other, file: file, line: line)
+extension RemoteCatalogLoader.Result? {
+    func isEqual(to expected: RemoteCatalogLoader.Result?, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(self, expected, file: file, line: line)
     }
 }
