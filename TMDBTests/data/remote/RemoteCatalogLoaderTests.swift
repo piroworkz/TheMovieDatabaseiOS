@@ -172,7 +172,14 @@ extension RemoteCatalogLoaderTests {
 
 extension RemoteCatalogLoader.Result? {
     func isEqual(to expected: RemoteCatalogLoader.Result?, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(self, expected, file: file, line: line)
+        switch (self, expected) {
+        case let (.success(actualResult), .success(expectedResult)):
+            XCTAssertEqual(actualResult, expectedResult, file: file, line: line)
+        case let (.failure(actualResult), .failure(expectedResult)):
+            XCTAssertEqual(actualResult, expectedResult, file: file, line: line)
+        default :
+            XCTFail("Expected result \(String(describing: expected)) but got \(String(describing: self)) instead", file: file, line: line)
+        }
     }
 }
 

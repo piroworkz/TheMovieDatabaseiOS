@@ -12,8 +12,6 @@ enum CatalogResult<Error: Swift.Error> {
     case failure(Error)
 }
 
-extension CatalogResult: Equatable where Error: Equatable {}
-
 protocol CatalogLoader {
     associatedtype Error: Swift.Error
     func load(completion: @escaping (CatalogResult<Error>) -> Void)
