@@ -12,7 +12,7 @@ class RemoteResultsMapper {
     
     public static func map(_ data: Data, _ statusCode: Int) -> RemoteCatalogLoader.Result {
         guard statusCode == successCode, let root = try? JSONDecoder().decode(Root.self, from: data) else {
-            return .failure(.invalidData)
+            return .failure(RemoteCatalogLoader.Error.invalidData)
         }
         return .success(root.response)
     }

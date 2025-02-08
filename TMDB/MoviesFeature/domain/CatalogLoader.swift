@@ -7,12 +7,11 @@
 
 import Foundation
 
-enum CatalogResult<Error: Swift.Error> {
+enum CatalogResult {
     case success(Catalog)
     case failure(Error)
 }
 
 protocol CatalogLoader {
-    associatedtype Error: Swift.Error
-    func load(completion: @escaping (CatalogResult<Error>) -> Void)
+    func load(completion: @escaping (CatalogResult) -> Void)
 }

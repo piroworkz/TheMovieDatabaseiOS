@@ -16,7 +16,7 @@ class RemoteCatalogLoader: CatalogLoader {
         self.client = client
     }
     
-    public typealias Result = CatalogResult<Error>
+    public typealias Result = CatalogResult
     
     enum Error: Swift.Error {
         case connectivity
@@ -32,7 +32,7 @@ class RemoteCatalogLoader: CatalogLoader {
                     completion(RemoteResultsMapper.map(data, response.statusCode))
                 },
                 onFailure: { _ in
-                    completion(.failure(.connectivity))
+                    completion(.failure(Error.connectivity))
                 })
         }
     }

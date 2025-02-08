@@ -46,7 +46,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         assertThat(
             given: sut,
             whenever: { spy.complete(with: NSError(domain: "", code: 0))})
-        .isEqual(to: .failure(.connectivity))
+        .isEqual(to: .failure(RemoteCatalogLoader.Error.connectivity))
     }
     
     func test_GIVEN_sutAndTestParams_WHEN_clientCompletesWithStatusCodeOtherThan200_THEN_loadShouldReturnInvalidDataError() {
@@ -57,7 +57,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
             assertThat(
                 given: sut,
                 whenever: { spy.complete(withCode: code, data: jsonResult(size: 0), at: index) })
-            .isEqual(to: .failure(.invalidData))
+            .isEqual(to: .failure(RemoteCatalogLoader.Error.invalidData))
         }
     }
     
@@ -67,7 +67,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         assertThat(
             given: sut,
             whenever: { spy.complete(withCode: 200, data: Data("Invalid JSON".utf8)) })
-        .isEqual(to: .failure(.invalidData))
+        .isEqual(to: .failure(RemoteCatalogLoader.Error.invalidData))
     }
     
     func test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndEmptyJsonBody_THEN_loadShouldRespondWithSuccessEmptyResult() {
@@ -180,7 +180,7 @@ extension RemoteCatalogLoader.Result? {
         switch (self, expected) {
         case let (.success(actualResult), .success(expectedResult)):
             XCTAssertEqual(actualResult, expectedResult, file: file, line: line)
-        case let (.failure(actualResult), .failure(expectedResult)):
+        case let (.failure(actualResult as RemoteCatalogLoader.Error), .failure(expectedResult as RemoteCatalogLoader.Error)):
             XCTAssertEqual(actualResult, expectedResult, file: file, line: line)
         default :
             XCTFail("Expected result \(String(describing: expected)) but got \(String(describing: self)) instead", file: file, line: line)
