@@ -1,15 +1,10 @@
 //
-//  HttpClient.swift
+//  HttpClientResult.swift
 //  TMDB
 //
-//  Created by David Luna on 07/02/25.
+//  Created by David Luna on 08/02/25.
 //
 
-import Foundation
-
-public protocol HttpClient {
-    func get(from url: URL, completion: @escaping (HttpClientResult) -> Void)
-}
 
 public enum HttpClientResult {
     case success(Data, HTTPURLResponse)

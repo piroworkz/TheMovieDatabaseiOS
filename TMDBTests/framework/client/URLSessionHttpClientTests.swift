@@ -10,17 +10,20 @@ import TMDB
 
 final class URLSessionHttpClientTests: XCTestCase {
     
-    func test_GIVEN_sutAndURL_WHEN_getIsCalled_THEN_shouldMakeRequestWithProvidedURL() {
+    func test_GIVEN_sut_WHEN_getIsCalled_THEN_shouldMakeRequestWithProvidedURL() {
         
-        let url = anyURL()
         let sut = buildSut()
         
         let expectation = expectation(description: expectationDescription())
         
-        sut.get(from: url) { _ in }
+        sut.get(from: anyEndpoint()) { _ in }
         
         URLProtocolStub.observeRequests { request in
-            XCTAssertEqual(request.url, url)
+            guard let stringUrl = request.url?.absoluteString else {
+                XCTFail("Request URL does not contain expected endpoint")
+                return
+            }
+            XCTAssertTrue(stringUrl.contains(anyEndpoint()))
             XCTAssertEqual(request.httpMethod, "GET")
             expectation.fulfill()
         }

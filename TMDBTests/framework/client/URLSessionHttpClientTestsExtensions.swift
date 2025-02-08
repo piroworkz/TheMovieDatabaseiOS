@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import TMDB
+@testable import TMDB
 
 extension URLSessionHttpClientTests {
     
@@ -74,7 +74,8 @@ extension URLSessionHttpClientTests {
     }
     
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> URLSessionHttpClient {
-        let sut = URLSessionHttpClient()
+        let urlRequestBuilder = URLRequestBuilder(baseURL: "https://example.com", apiKey: "my fake api key")
+        let sut = URLSessionHttpClient(requestBuilder: urlRequestBuilder)
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
     }
@@ -86,7 +87,7 @@ extension URLSessionHttpClientTests {
         URLProtocolStub.stub(data: data, response: response, error: error)
         
         var result: HttpClientResult?
-        sut.get(from: anyURL()) { receivedResult in
+        sut.get(from: anyEndpoint()) { receivedResult in
             result = receivedResult
             expectation.fulfill()
         }

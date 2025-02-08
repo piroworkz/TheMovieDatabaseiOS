@@ -12,11 +12,11 @@ extension RemoteCatalogLoaderTests {
     
     class HttpClientSpy: HttpClient {
         
-        var requestedUrls: [URL] { return messages.map { $0.url } }
-        private var messages = [(url: URL, completion: (HttpClientResult) -> Void)]()
+        var requestedUrls: [String] { return messages.map { $0.url } }
+        private var messages = [(url: String, completion: (HttpClientResult) -> Void)]()
         
-        func get(from url: URL, completion: @escaping (HttpClientResult) -> Void) {
-            messages.append((url, completion))
+        func get(from endpoint: String, completion: @escaping (HttpClientResult) -> Void) {
+            messages.append((endpoint, completion))
         }
         
         func complete(with error: Error, at index: Int = 0) {
@@ -24,14 +24,14 @@ extension RemoteCatalogLoaderTests {
         }
         
         func complete(withCode code: Int, data: Data, at index: Int = 0) {
-            let response = HTTPURLResponse(url: requestedUrls[index], statusCode: code, httpVersion: nil, headerFields: nil)!
+            let response = HTTPURLResponse(url: anyURL(), statusCode: code, httpVersion: nil, headerFields: nil)!
             messages[index].completion(.success(data, response))
         }
     }
     
-    func buildSut(baseURL: URL = URL(string: "https://example.com")!) -> (sut: RemoteCatalogLoader, client: HttpClientSpy) {
+    func buildSut() -> (sut: RemoteCatalogLoader, client: HttpClientSpy) {
         let client = HttpClientSpy()
-        let sut = RemoteCatalogLoader(baseURL: baseURL, client: client)
+        let sut = RemoteCatalogLoader(client: client)
         trackMemoryLeaks(instanceOf: client)
         trackMemoryLeaks(instanceOf: sut)
         return (sut, client)
@@ -44,7 +44,7 @@ extension RemoteCatalogLoaderTests {
         let expectation = expectation(description: expectationDescription())
         
         var result: RemoteCatalogLoader.Result?
-        sut.load {
+        sut.load (from: anyEndpoint()) {
             result = $0
             expectation.fulfill()
         }

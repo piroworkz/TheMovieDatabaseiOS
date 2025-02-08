@@ -8,11 +8,9 @@
 import Foundation
 
 public class RemoteCatalogLoader: CatalogLoader {
-    private let baseURL: URL
     private let client: HttpClient
     
-    public init(baseURL: URL, client: HttpClient) {
-        self.baseURL = baseURL
+    public init(client: HttpClient) {
         self.client = client
     }
     
@@ -23,8 +21,8 @@ public class RemoteCatalogLoader: CatalogLoader {
         case invalidData
     }
     
-    public func load(completion: @escaping (Result) -> Void) {
-        client.get(from: baseURL) { [weak self] result in
+    public func load(from endpoint: String, completion: @escaping (Result) -> Void) {
+        client.get(from: endpoint) { [weak self] result in
             guard self != nil else { return }
             
             result.fold(

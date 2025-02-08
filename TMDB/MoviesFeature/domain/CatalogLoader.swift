@@ -13,5 +13,5 @@ public enum CatalogResult {
 }
 
 public protocol CatalogLoader {
-    func load(completion: @escaping (CatalogResult) -> Void)
+    func load(from endpoint: String, completion: @escaping (CatalogResult) -> Void)
 }
