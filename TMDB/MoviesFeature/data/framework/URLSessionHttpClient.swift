@@ -17,9 +17,11 @@ public class URLSessionHttpClient {
     struct IllegalStateError: Error {}
     
     public func get(from url: URL, completion: @escaping (HttpClientResult) -> Void) {
-        session.dataTask(with: url) { _, _, error in
+        session.dataTask(with: url) { data, response, error in
             if let error = error {
                 completion(.failure(error))
+            } else if let data = data, data.count > 0, let response = response as? HTTPURLResponse {
+                completion(.success(data, response))
             } else {
                 completion(.failure(IllegalStateError()))
             }

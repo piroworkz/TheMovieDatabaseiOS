@@ -14,7 +14,9 @@ extension HttpClientResult? {
         switch (self, expected) {
         case let (.success(actualData, actualHTTPURLResponse), .success(expectedData, expectedHTTPURLResponse)):
             XCTAssertEqual(actualData, expectedData, file: file, line: line)
-            XCTAssertEqual(actualHTTPURLResponse, expectedHTTPURLResponse, file: file, line: line)
+            XCTAssertEqual(actualHTTPURLResponse.statusCode, expectedHTTPURLResponse.statusCode, file: file, line: line)
+            XCTAssertEqual(actualHTTPURLResponse.url, expectedHTTPURLResponse.url, file: file, line: line)
+            
         case let (.failure(actualError as NSError), .failure(expectedError as NSError)):
             XCTAssertEqual(actualError.domain, expectedError.domain, file: file, line: line)
             XCTAssertEqual(actualError.code, expectedError.code, file: file, line: line)
@@ -24,6 +26,10 @@ extension HttpClientResult? {
     }
     
     func isNotNil(file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertNotNil(self, file: file, line: line)
+        if case .failure(let error) = self {
+            XCTAssertNotNil(error, file: file, line: line)
+        } else {
+            XCTFail("Expected failure but got \(String(describing: self))", file: file, line: line)
+        }
     }
 }

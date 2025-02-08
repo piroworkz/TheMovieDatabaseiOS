@@ -26,7 +26,7 @@ extension XCTestCase {
     }
     
     func anyData() -> Data {
-        return Data("".utf8)
+        return Data("any data".utf8)
     }
     
     func expectationDescription(_ description: String = "Wait for request to complete") -> String {

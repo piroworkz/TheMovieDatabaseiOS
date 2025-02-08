@@ -41,37 +41,20 @@ final class URLSessionHttpClientTests: XCTestCase {
     
     
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllRepresentationValues_THEN_shouldFailRequest() {
-        assertThatResultCaseFor(data: nil, response: nil, error: anyNSError())
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: nil)
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: nil)
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: anyData(), response: nil, error: nil)
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: anyData(), response: nil, error: anyNSError())
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: anyNSError())
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: anyNSError())
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: anyNSError())
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: anyNSError())
-            .isNotNil()
-        
-        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: nil)
-            .isNotNil()
+        assertThatResultCaseFor(data: nil, response: nil, error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: nil).isNotNil()
+        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: nil).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: nil, error: nil).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: nil, error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: nil).isNotNil()
     }
     
-    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccess_THEN_shouldReturnData() {
+        assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: nil)
+            .isEqual(to: .success(anyData(), anyHttpUrlResponse()))
+    }
 }
-
