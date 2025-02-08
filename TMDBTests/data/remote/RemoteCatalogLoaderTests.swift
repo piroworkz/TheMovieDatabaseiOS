@@ -9,14 +9,16 @@ import XCTest
 @testable import TMDB
 
 class RemoteCatalogLoader {
+    private let baseURL: URL
     private let client: HttpClient
     
-    init(client: HttpClient) {
+    init(baseURL: URL, client: HttpClient) {
+        self.baseURL = baseURL
         self.client = client
     }
     
     func load() {
-        client.get(from: URL(string: "https://api.themoviedb.org/3/movie/popular")!)
+        client.get(from: baseURL)
     }
 }
 
@@ -35,19 +37,25 @@ class HttpClientSpy: HttpClient {
 final class RemoteCatalogLoaderTests: XCTestCase {
     
     func test_GIVEN_sut_WHEN_initialized_THEN_shouldNotRequestDataFromAPI() {
-        let client = HttpClientSpy()
-        let _ = RemoteCatalogLoader(client: client)
+        let (_, client) = buildSut()
         
         XCTAssertNil(client.requestedURL)
     }
     
     func test_GIVEN_sutIsInitialized_WHEN_loadIsCalled_THEN_shouldMakeRequestToProvidedUrl() {
-        let client = HttpClientSpy()
-        let sut = RemoteCatalogLoader(client: client)
+        let (sut, client) = buildSut()
         
         sut.load()
         
         XCTAssertNotNil(client.requestedURL)
     }
-    
+}
+
+extension RemoteCatalogLoaderTests {
+    func buildSut(baseURL: URL = URL(string: "https://example.com")!) -> (sut: RemoteCatalogLoader, client: HttpClientSpy) {
+        let client = HttpClientSpy()
+        let sut = RemoteCatalogLoader(baseURL: baseURL, client: client)
+        
+        return (sut, client)
+    }
 }
