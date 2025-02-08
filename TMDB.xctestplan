@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "06C41FD1-EBCD-4692-B998-78DE5885E284",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testExecutionOrdering" : "random"
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TMDB.xcodeproj",
+        "identifier" : "183944E32D56D31600C4001D",
+        "name" : "TMDBTests"
+      }
+    }
+  ],
+  "version" : 1
+}

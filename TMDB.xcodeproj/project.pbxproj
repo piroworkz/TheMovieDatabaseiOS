@@ -23,6 +23,7 @@
 /* Begin PBXFileReference section */
 		183944DA2D56D31600C4001D /* TMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		183944E42D56D31600C4001D /* TMDBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TMDBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		188492AE2D57EEAB00E4F1F0 /* TMDB.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TMDB.xctestplan; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -73,6 +74,7 @@
 		183944D02D56D31600C4001D = {
 			isa = PBXGroup;
 			children = (
+				188492AE2D57EEAB00E4F1F0 /* TMDB.xctestplan */,
 				183944DC2D56D31600C4001D /* TMDB */,
 				183944E82D56D31600C4001D /* TMDBTests */,
 				183944DB2D56D31600C4001D /* Products */,
