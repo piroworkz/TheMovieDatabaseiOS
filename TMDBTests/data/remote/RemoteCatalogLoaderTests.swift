@@ -69,6 +69,15 @@ final class RemoteCatalogLoaderTests: XCTestCase {
             whenever: { spy.complete(withCode: 200, data: Data("Invalid JSON".utf8)) })
         .isEqual(to: .failure(.invalidData))
     }
+    
+    func test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndEmptyJsonBody_THEN_loadShouldRespondWithEmptyList() {
+        let (sut, spy) = buildSut()
+        let emptyListJsonData = Data("{\"page\":0,\"total_pages\":0,\"results\":[]}".utf8)
+        
+        assertThat(given: sut, whenever: {spy.complete(withCode: 200, data: emptyListJsonData)})
+            .isEqual(to: .success(Catalog(page: 0, totalPages: 0, catalog: [])))
+    }
+    
 }
 
 extension RemoteCatalogLoaderTests {

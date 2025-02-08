@@ -29,8 +29,12 @@ class RemoteCatalogLoader {
     func load(completion: @escaping (Result) -> Void) {
         client.get(from: baseURL) { result in
             result.fold(
-                onSuccess: {_, _ in
-                    completion(.failure(.invalidData))
+                onSuccess: {data, _ in
+                    if let _ = try? JSONSerialization.jsonObject(with: data) {
+                        completion(.success(Catalog(page: 0, totalPages: 0, catalog: [])))
+                    } else {
+                        completion(.failure(.invalidData))
+                    }
                 },
                 onFailure: { _ in
                     completion(.failure(.connectivity))

@@ -12,6 +12,12 @@ struct Catalog: Equatable {
     let page: Int
     let totalPages: Int
     let catalog: [Movie]
+    
+    init(page: Int, totalPages: Int, catalog: [Movie]) {
+        self.page = page
+        self.totalPages = totalPages
+        self.catalog = catalog
+    }
 }
 
 struct Movie: Equatable {
