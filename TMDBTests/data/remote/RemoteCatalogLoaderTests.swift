@@ -70,12 +70,14 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         .isEqual(to: .failure(.invalidData))
     }
     
-    func test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndEmptyJsonBody_THEN_loadShouldRespondWithEmptyList() {
+    func test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndEmptyJsonBody_THEN_loadShouldRespondWithSuccessEmptyResult() {
         let (sut, spy) = buildSut()
-        let emptyListJsonData = Data("{\"page\":0,\"total_pages\":0,\"results\":[]}".utf8)
+        let emptyListJsonData = jsonResult(size: 0)
         
-        assertThat(given: sut, whenever: {spy.complete(withCode: 200, data: emptyListJsonData)})
-            .isEqual(to: .success(Catalog(page: 0, totalPages: 0, catalog: [])))
+        assertThat(
+            given: sut,
+            whenever: {spy.complete(withCode: 200, data: emptyListJsonData)})
+        .isEqual(to: .success(decode(emptyListJsonData)))
     }
     
 }
@@ -118,6 +120,29 @@ extension RemoteCatalogLoaderTests {
         action()
         
         return result
+    }
+    
+    private func jsonResult(size count: Int = 3) -> Data {
+        let movies: [[String: Any]] = count > 0 ? (0..<count).map { mapMovie($0) } : []
+        let jsonBody: [String: Any] = [
+            "page": count / 3,
+            "total_pages": count / 3,
+            "results": movies
+        ]
+        
+        return try! JSONSerialization.data(withJSONObject: jsonBody)
+    }
+    
+    private func mapMovie(_ index: Int) -> [String : Any] {
+        return [
+            "id": index,
+            "title": "title \(index)",
+            "poster_path": "posterPath \(index)"
+        ]
+    }
+    
+    private func decode(_ data: Data) -> Catalog {
+        return try! JSONDecoder().decode(Catalog.self, from: data)
     }
 }
 

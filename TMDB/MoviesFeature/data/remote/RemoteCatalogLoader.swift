@@ -30,8 +30,8 @@ class RemoteCatalogLoader {
         client.get(from: baseURL) { result in
             result.fold(
                 onSuccess: {data, _ in
-                    if let _ = try? JSONSerialization.jsonObject(with: data) {
-                        completion(.success(Catalog(page: 0, totalPages: 0, catalog: [])))
+                    if let root = try? JSONDecoder().decode(Root.self, from: data) {
+                        completion(.success(RemoteCatalogLoader.map(root)))
                     } else {
                         completion(.failure(.invalidData))
                     }
@@ -41,4 +41,18 @@ class RemoteCatalogLoader {
                 })
         }
     }
+    private static func map(_ root: Root) -> Catalog {
+        return Catalog(
+            page: root.page,
+            totalPages: root.total_pages,
+            catalog: root.results
+        )
+    }
+    
+}
+
+private struct Root: Decodable {
+    let results: [Movie]
+    let page: Int
+    let total_pages: Int
 }
