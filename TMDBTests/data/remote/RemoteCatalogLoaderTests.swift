@@ -77,11 +77,19 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         assertThat(
             given: sut,
             whenever: {spy.complete(withCode: 200, data: emptyListJsonData)})
-        .isEqual(to: .success(decode(emptyListJsonData)))
+        .isEqual(to: decode(emptyListJsonData))
     }
     
+    func test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndValidJsonBody_THEN_loadShouldRespondWithSuccessResult() {
+        let (sut, spy) = buildSut()
+        let successResult = jsonResult()
+        
+        assertThat(
+            given: sut,
+            whenever: {spy.complete(withCode: 200, data: successResult)})
+        .isEqual(to: decode(successResult))
+    }
 }
-
 extension RemoteCatalogLoaderTests {
     
     class HttpClientSpy: HttpClient {
@@ -106,7 +114,8 @@ extension RemoteCatalogLoaderTests {
     func buildSut(baseURL: URL = URL(string: "https://example.com")!) -> (sut: RemoteCatalogLoader, client: HttpClientSpy) {
         let client = HttpClientSpy()
         let sut = RemoteCatalogLoader(baseURL: baseURL, client: client)
-        
+        trackMemoryLeaks(instanceOf: client)
+        trackMemoryLeaks(instanceOf: sut)
         return (sut, client)
     }
     
@@ -141,13 +150,21 @@ extension RemoteCatalogLoaderTests {
         ]
     }
     
-    private func decode(_ data: Data) -> Catalog {
-        return try! RemoteResultsMapper.map(data, 200)
+    private func decode(_ data: Data) -> RemoteCatalogLoader.Result {
+        return RemoteResultsMapper.map(data, 200)
     }
 }
 
 extension RemoteCatalogLoader.Result? {
     func isEqual(to expected: RemoteCatalogLoader.Result?, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(self, expected, file: file, line: line)
+    }
+}
+
+extension XCTestCase {
+    func trackMemoryLeaks(instanceOf object: AnyObject, file: StaticString = #filePath, line: UInt = #line) {
+        addTeardownBlock { [weak object] in
+            XCTAssertNil(object, "Instance should be nil after tear down, Potential memory leak", file: file, line: line)
+        }
     }
 }
