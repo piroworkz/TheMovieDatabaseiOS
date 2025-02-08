@@ -7,23 +7,23 @@
 
 import Foundation
 
-class RemoteCatalogLoader: CatalogLoader {
+public class RemoteCatalogLoader: CatalogLoader {
     private let baseURL: URL
     private let client: HttpClient
     
-    init(baseURL: URL, client: HttpClient) {
+    public init(baseURL: URL, client: HttpClient) {
         self.baseURL = baseURL
         self.client = client
     }
     
     public typealias Result = CatalogResult
     
-    enum Error: Swift.Error {
+    public enum Error: Swift.Error {
         case connectivity
         case invalidData
     }
     
-    func load(completion: @escaping (Result) -> Void) {
+    public func load(completion: @escaping (Result) -> Void) {
         client.get(from: baseURL) { [weak self] result in
             guard self != nil else { return }
             

@@ -7,11 +7,11 @@
 
 import Foundation
 
-enum CatalogResult {
+public enum CatalogResult {
     case success(Catalog)
     case failure(Error)
 }
 
-protocol CatalogLoader {
+public protocol CatalogLoader {
     func load(completion: @escaping (CatalogResult) -> Void)
 }

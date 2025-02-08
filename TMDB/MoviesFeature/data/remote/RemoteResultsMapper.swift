@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RemoteResultsMapper {
+public final class RemoteResultsMapper {
     private static var successCode: Int { return 200 }
     
     public static func map(_ data: Data, _ statusCode: Int) -> RemoteCatalogLoader.Result {
