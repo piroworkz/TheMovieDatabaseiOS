@@ -20,7 +20,7 @@ class RemoteCatalogLoader {
         case connectivity
     }
     
-    func load(completion: @escaping (Error) -> Void = { _ in }) {
+    func load(completion: @escaping (Error) -> Void) {
         client.get(from: baseURL) { error in
             completion(.connectivity)
         }

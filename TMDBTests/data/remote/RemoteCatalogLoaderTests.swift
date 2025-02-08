@@ -20,7 +20,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         let expected = [URL(string: "https://example.com")!]
         let (sut, spy) = buildSut()
         
-        sut.load()
+        sut.load() { _ in }
         
         XCTAssertEqual(spy.requestedUrls, expected)
     }
@@ -30,8 +30,8 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         let expected = [url, url]
         let (sut, spy) = buildSut()
         
-        sut.load()
-        sut.load()
+        sut.load() { _ in }
+        sut.load() { _ in }
         
         XCTAssertEqual(spy.requestedUrls, expected)
     }
