@@ -30,8 +30,8 @@ class RemoteCatalogLoader {
         client.get(from: baseURL) { result in
             result.fold(
                 onSuccess: {data, response in
-                    if response.statusCode == 200, let root = try? JSONDecoder().decode(Root.self, from: data) {
-                        completion(.success(RemoteCatalogLoader.map(root)))
+                    if let result = try? RemoteResultsMapper.map(data, response.statusCode) {
+                        completion(.success(result))
                     } else {
                         completion(.failure(.invalidData))
                     }
@@ -41,18 +41,34 @@ class RemoteCatalogLoader {
                 })
         }
     }
-    private static func map(_ root: Root) -> Catalog {
-        return Catalog(
-            page: root.page,
-            totalPages: root.total_pages,
-            catalog: root.results
-        )
-    }
-    
 }
 
-private struct Root: Decodable {
-    let results: [Movie]
-    let page: Int
-    let total_pages: Int
+class RemoteResultsMapper {
+    public static func map(_ data: Data, _ statusCode: Int) throws -> Catalog {
+        guard statusCode == 200 else {
+            throw RemoteCatalogLoader.Error.invalidData
+        }
+        
+        return try JSONDecoder().decode(Root.self, from: data).response
+    }
+    
+    struct Root: Decodable {
+        let results: [Result]
+        let page: Int
+        let total_pages: Int
+        
+        var response: Catalog {
+            return Catalog(page: page, totalPages: total_pages, catalog: results.map { $0.movie })
+        }
+        
+        struct Result: Decodable {
+            let id: Int
+            let title: String
+            let poster_path: String
+            
+            var movie: Movie {
+                return Movie(id: id, title: title, posterPath: poster_path)
+            }
+        }
+    }
 }

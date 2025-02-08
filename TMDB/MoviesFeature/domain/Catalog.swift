@@ -25,19 +25,3 @@ struct Movie: Equatable {
     let title: String
     let posterPath: String
 }
-
-extension Catalog: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case page
-        case totalPages = "total_pages"
-        case catalog = "results"
-    }
-}
-
-extension Movie: Decodable {
-    enum CodingKeys: String, CodingKey {
-        case id
-        case title
-        case posterPath = "poster_path"
-    }
-}

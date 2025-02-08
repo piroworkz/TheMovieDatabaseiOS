@@ -142,7 +142,7 @@ extension RemoteCatalogLoaderTests {
     }
     
     private func decode(_ data: Data) -> Catalog {
-        return try! JSONDecoder().decode(Catalog.self, from: data)
+        return try! RemoteResultsMapper.map(data, 200)
     }
 }
 
