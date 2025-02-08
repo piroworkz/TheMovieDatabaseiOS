@@ -66,6 +66,12 @@ extension URLSessionHttpClientTests {
         override func stopLoading() { }
     }
     
+    func buildSut(file: StaticString = #filePath, line: UInt = #line) -> URLSessionHttpClient {
+        let sut = URLSessionHttpClient()
+        trackMemoryLeaks(instanceOf: sut, file: file, line: line)
+        return sut
+    }
+    
     override func setUp() {
         super.setUp()
         URLProtocolStub.startInterceptingRequests()
