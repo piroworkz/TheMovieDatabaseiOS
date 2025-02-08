@@ -18,11 +18,16 @@ class RemoteCatalogLoader {
     
     enum Error: Swift.Error {
         case connectivity
+        case invalidData
     }
     
     func load(completion: @escaping (Error) -> Void) {
-        client.get(from: baseURL) { error in
-            completion(.connectivity)
+        client.get(from: baseURL) { error, response in
+            if response != nil {
+                completion(.invalidData)
+            } else {
+                completion(.connectivity)
+            }
         }
     }
 }
