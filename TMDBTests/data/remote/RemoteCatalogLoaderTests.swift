@@ -56,7 +56,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         testParams.enumerated().forEach {index, code in
             assertThat(
                 given: sut,
-                whenever: { spy.complete(withCode: code, at: index) })
+                whenever: { spy.complete(withCode: code, data: jsonResult(size: 0), at: index) })
             .isEqual(to: .failure(.invalidData))
         }
     }
@@ -97,7 +97,7 @@ extension RemoteCatalogLoaderTests {
             messages[index].completion(.failure(error))
         }
         
-        func complete(withCode code: Int, data: Data = Data(), at index: Int = 0) {
+        func complete(withCode code: Int, data: Data, at index: Int = 0) {
             let response = HTTPURLResponse(url: requestedUrls[index], statusCode: code, httpVersion: nil, headerFields: nil)!
             messages[index].completion(.success(data, response))
         }

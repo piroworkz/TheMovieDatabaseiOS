@@ -29,8 +29,8 @@ class RemoteCatalogLoader {
     func load(completion: @escaping (Result) -> Void) {
         client.get(from: baseURL) { result in
             result.fold(
-                onSuccess: {data, _ in
-                    if let root = try? JSONDecoder().decode(Root.self, from: data) {
+                onSuccess: {data, response in
+                    if response.statusCode == 200, let root = try? JSONDecoder().decode(Root.self, from: data) {
                         completion(.success(RemoteCatalogLoader.map(root)))
                     } else {
                         completion(.failure(.invalidData))
