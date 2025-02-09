@@ -11,8 +11,20 @@ func anyURL() -> URL {
     return URL(string: "https://example.com")!
 }
 
+func anyBaseUrl() -> String {
+    return "https://api.themoviedb.org/3"
+}
+
+func anyApiKey() -> String {
+    return "anyApiKey"
+}
+
 func anyEndpoint() -> String {
     return "popular"
+}
+
+func getMethod() -> String {
+    return "GET"
 }
 
 func anyNSError() -> NSError {

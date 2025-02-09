@@ -22,28 +22,21 @@ class URLRequestBuilder: RequestBuilder {
     }
     
     func build(for endpoint: String, method: String) -> URLRequest? {
-        guard let finalUrl = configBaseUrl(endpoint: endpoint) else {return nil }
-        var request = URLRequest(url: finalUrl)
+        guard let url = configBaseUrl(endpoint: endpoint), endpoint.isEmpty == false else {return nil }
+        var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("application/json", forHTTPHeaderField: acceptName)
         return request
     }
     
     private func configBaseUrl(endpoint: String) -> URL? {
-        var components = URLComponents()
-        components.path = endpoint
+        guard let baseUrl = URL(string: baseURL) else { return nil }
+        let fullUrl = baseUrl.appendingPathComponent(endpoint)
+        guard var components = URLComponents(url: fullUrl, resolvingAgainstBaseURL: false) else { return nil }
         components.queryItems = [
             URLQueryItem(name: apiKeyName, value: apiKey)
         ]
-        let urlComponents = components
-        guard let finalUrl = urlComponents.url(relativeTo: createURL()) else { return nil }
-        
-        return finalUrl
-    }
-    
-    private func createURL() -> URL? {
-        let url = URL(string: baseURL)
-        return url
+        return components.url
     }
     
 }
