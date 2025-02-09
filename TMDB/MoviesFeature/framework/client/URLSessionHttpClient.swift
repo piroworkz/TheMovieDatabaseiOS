@@ -23,6 +23,7 @@ public class URLSessionHttpClient: HttpClient {
             completion(.failure(IllegalStateError()))
             return
         }
+        
         session.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
