@@ -40,7 +40,7 @@ final class TMDBEndtoEndTests: XCTestCase {
             fatalError("Missing required environment variables: apiKey and/or baseUrlString")
         }
         
-        let requestBuilder = URLRequestBuilder(baseURL: baseUrlString, apiKey: apiKey)
+        let requestBuilder = try! URLRequestBuilder(baseURL: baseUrlString, apiKey: apiKey)
         let client = URLSessionHttpClient(requestBuilder: requestBuilder)
         let dataSource = RemoteCatalogLoader(client: client)
         return dataSource

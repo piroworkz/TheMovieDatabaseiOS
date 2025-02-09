@@ -11,13 +11,41 @@ import XCTest
 
 class URLRequestBuilderTests: XCTestCase {
     
-    func test_GIVEN_sutAndEmptyEndpoint_WHEN_buildIsCalled_THEN_shouldReturnNilUrlRequest() {
-        let endpoint = ""
+    func test_GIVEN_invalidUrlString_WHEN_sutIsInitialized_THEN_shouldThrowMalformedUrlError() {
+        let invalidUrlStrings = ["invalid url string", ""]
+        
+        invalidUrlStrings.forEach { invalidUrlString in
+            do {
+                let _ =  try URLRequestBuilder(baseURL: invalidUrlString, apiKey: anyApiKey())}
+            catch {
+                XCTAssertEqual(error as? RequestBuilderError, RequestBuilderError.invalidOrMissingBaseURL)
+            }
+        }
+    }
+    
+    func test_GIVEN_emptyApiKey_WHEN_sutIsInitialized_THEN_shouldThrowMissingApiKeyError() {
+        let emptyApiKey = ""
+        
+        do {
+            let _ =  try URLRequestBuilder(baseURL: anyBaseUrl(), apiKey: emptyApiKey)}
+        catch {
+            XCTAssertEqual(error as? RequestBuilderError, RequestBuilderError.missingApiKey)
+        }
+    }
+    
+    func test_GIVEN_invalidEndpoint_WHEN_buildIsCalled_THEN_shouldThrowMalformedURLError() {
+        let invalidEndpoints = ["", "invalid endpoint", "#", "/movies/popular", "movies/popular/"]
         let sut = buildSut()
         
-        let actual = sut.build(for: endpoint, method: getMethod())
-        
-        XCTAssertNil(actual)
+        invalidEndpoints.forEach {invalidEndpoint in
+            do {
+                let actual = try sut.build(for: invalidEndpoint, .get)
+                XCTFail("Expected to throw an error but didn't. Actual: \(String(describing: actual))")
+            } catch {
+                print("<-- ERROR \(error) -->")
+                XCTAssertEqual(error as? RequestBuilderError, RequestBuilderError.malformedURL)
+            }
+        }
     }
     
     func test_GIVEN_sut_WHEN_buildIsSuccessfull_THEN_shouldReturnValidUrlRequest() {
@@ -25,7 +53,7 @@ class URLRequestBuilderTests: XCTestCase {
         let expected = "\(anyBaseUrl())/\(endpoint)?api_key=\(anyApiKey())"
         let sut = buildSut()
         
-        let actual = sut.build(for: endpoint, method: getMethod())
+        let actual = try? sut.build(for: endpoint, .get)
         
         XCTAssertNotNil(actual)
         XCTAssertEqual(actual?.httpMethod, getMethod())
@@ -34,7 +62,7 @@ class URLRequestBuilderTests: XCTestCase {
     }
     
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> RequestBuilder {
-        let sut = URLRequestBuilder(baseURL: anyBaseUrl(), apiKey: anyApiKey())
+        let sut = try! URLRequestBuilder(baseURL: anyBaseUrl(), apiKey: anyApiKey())
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
     }

@@ -20,7 +20,7 @@ public class URLSessionHttpClient: HttpClient {
     struct InvalidRequest: Error {}
     
     public func get(from endpoint: String, completion: @escaping (HttpClientResult) -> Void) {
-        guard let request = requestBuilder.build(for: endpoint, method: "GET") else {
+        guard let request = try? requestBuilder.build(for: endpoint, .get) else {
             completion(.failure(InvalidRequest()))
             return
         }

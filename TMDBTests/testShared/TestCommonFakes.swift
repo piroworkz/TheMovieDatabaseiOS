@@ -20,7 +20,7 @@ func anyApiKey() -> String {
 }
 
 func anyEndpoint() -> String {
-    return "popular"
+    return "movie/popular"
 }
 
 func getMethod() -> String {

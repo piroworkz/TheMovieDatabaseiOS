@@ -8,7 +8,7 @@
 @testable import TMDB
 
 class RequestBuilderSpy: RequestBuilder {
-    func build(for endpoint: String, method: String) -> URLRequest? {
+    func build(for endpoint: String, _ httpMethod: HttpMethod) -> URLRequest {
         return URLRequest(url: URL(string: "\(anyURL())\(endpoint)")!)
     }
 }
