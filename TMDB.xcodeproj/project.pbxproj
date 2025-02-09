@@ -21,6 +21,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1810BD362D5833BF0003542F /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		1810BD372D5834490003542F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		182B38252D58271200ED5BE2 /* TMDBEndtoEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TMDBEndtoEndTests.xctestplan; sourceTree = "<group>"; };
 		183944DA2D56D31600C4001D /* TMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		183944E42D56D31600C4001D /* TMDBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TMDBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -88,6 +90,8 @@
 		183944D02D56D31600C4001D = {
 			isa = PBXGroup;
 			children = (
+				1810BD372D5834490003542F /* .gitignore */,
+				1810BD362D5833BF0003542F /* Secrets.xcconfig */,
 				182B38252D58271200ED5BE2 /* TMDBEndtoEndTests.xctestplan */,
 				188492AE2D57EEAB00E4F1F0 /* TMDB.xctestplan */,
 				183944DC2D56D31600C4001D /* TMDB */,
@@ -289,6 +293,7 @@
 /* Begin XCBuildConfiguration section */
 		183944EE2D56D31600C4001D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1810BD362D5833BF0003542F /* Secrets.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -509,6 +514,7 @@
 		};
 		188492BA2D57F0EA00E4F1F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1810BD362D5833BF0003542F /* Secrets.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

@@ -4,7 +4,21 @@
       "id" : "BC6323BC-A32E-4D7C-BAED-62E4869F5DB0",
       "name" : "Test Scheme Action",
       "options" : {
-
+        "environmentVariableEntries" : [
+          {
+            "key" : "baseUrlString",
+            "value" : "$(BASE_URL_STRING)"
+          },
+          {
+            "key" : "apiKey",
+            "value" : "$(API_KEY)"
+          }
+        ],
+        "targetForVariableExpansion" : {
+          "containerPath" : "container:TMDB.xcodeproj",
+          "identifier" : "188492B22D57F0EA00E4F1F0",
+          "name" : "TMDBEndtoEndTests"
+        }
       }
     }
   ],
