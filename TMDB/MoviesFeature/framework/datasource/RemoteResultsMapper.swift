@@ -32,7 +32,7 @@ public final class RemoteResultsMapper {
             let poster_path: String
             
             var movie: Movie {
-                return Movie(id: id, title: title, posterPath: poster_path)
+                return Movie(id: id, title: title, posterPath: "https://image.tmdb.org/t/p/w185\(poster_path)")
             }
         }
     }

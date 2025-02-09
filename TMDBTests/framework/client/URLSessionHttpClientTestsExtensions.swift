@@ -73,8 +73,14 @@ extension URLSessionHttpClientTests {
         override func stopLoading() { }
     }
     
+    private class RequestBuilderSpy: RequestBuilder {
+        func build(for endpoint: String, method: String) -> URLRequest? {
+            return URLRequest(url: URL(string: "\(anyURL())\(endpoint)")!)
+        }
+    }
+    
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> URLSessionHttpClient {
-        let urlRequestBuilder = URLRequestBuilder(baseURL: "https://example.com", apiKey: "my fake api key")
+        let urlRequestBuilder = RequestBuilderSpy()
         let sut = URLSessionHttpClient(requestBuilder: urlRequestBuilder)
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut

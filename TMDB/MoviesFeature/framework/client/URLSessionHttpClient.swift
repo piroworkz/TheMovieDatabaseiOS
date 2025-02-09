@@ -17,13 +17,13 @@ public class URLSessionHttpClient: HttpClient {
     }
     
     struct IllegalStateError: Error {}
+    struct InvalidRequest: Error {}
     
     public func get(from endpoint: String, completion: @escaping (HttpClientResult) -> Void) {
         guard let request = requestBuilder.build(for: endpoint, method: "GET") else {
-            completion(.failure(IllegalStateError()))
+            completion(.failure(InvalidRequest()))
             return
         }
-        
         session.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))

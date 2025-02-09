@@ -9,9 +9,9 @@ import XCTest
 @testable import TMDB
 
 final class TMDBEndtoEndTests: XCTestCase {
-    
-    
+
     func test_GIVEN_sut_WHEN_loadUseCaseIsExecuted_THEN_shouldReturnCatalogOfPopularMoviesFromAPI() {
+       
         let sut = buildSut()
         let expectation = expectation(description: "wait for items download to complete")
         
@@ -25,6 +25,7 @@ final class TMDBEndtoEndTests: XCTestCase {
         
         switch catalogResult {
         case let .success(response)?:
+            print(response)
             XCTAssertTrue(response.catalog.isEmpty == false)
         case let .failure(error)?:
             XCTFail("Unexpected error: \(error)")
@@ -38,6 +39,7 @@ final class TMDBEndtoEndTests: XCTestCase {
               let baseUrlString = ProcessInfo.processInfo.environment["baseUrlString"], !baseUrlString.isEmpty else {
             fatalError("Missing required environment variables: apiKey and/or baseUrlString")
         }
+        
         let requestBuilder = URLRequestBuilder(baseURL: baseUrlString, apiKey: apiKey)
         let client = URLSessionHttpClient(requestBuilder: requestBuilder)
         let dataSource = RemoteCatalogLoader(client: client)
