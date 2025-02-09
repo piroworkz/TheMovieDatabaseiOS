@@ -9,9 +9,9 @@ import XCTest
 @testable import TMDB
 
 final class TMDBEndtoEndTests: XCTestCase {
-
+    
     func test_GIVEN_sut_WHEN_loadUseCaseIsExecuted_THEN_shouldReturnCatalogOfPopularMoviesFromAPI() {
-       
+        
         let sut = buildSut()
         let expectation = expectation(description: "wait for items download to complete")
         
@@ -34,7 +34,7 @@ final class TMDBEndtoEndTests: XCTestCase {
         }
     }
     
-    private func buildSut() -> CatalogLoader {
+    private func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CatalogLoader {
         guard let apiKey = ProcessInfo.processInfo.environment["apiKey"], !apiKey.isEmpty,
               let baseUrlString = ProcessInfo.processInfo.environment["baseUrlString"], !baseUrlString.isEmpty else {
             fatalError("Missing required environment variables: apiKey and/or baseUrlString")
@@ -43,6 +43,9 @@ final class TMDBEndtoEndTests: XCTestCase {
         let requestBuilder = try! URLRequestBuilder(baseURL: baseUrlString, apiKey: apiKey)
         let client = URLSessionHttpClient(requestBuilder: requestBuilder)
         let dataSource = RemoteCatalogLoader(client: client)
+        trackMemoryLeaks(instanceOf: requestBuilder, file: file, line: line)
+        trackMemoryLeaks(instanceOf: client, file: file, line: line)
+        trackMemoryLeaks(instanceOf: dataSource, file: file, line: line)
         return dataSource
     }
 }

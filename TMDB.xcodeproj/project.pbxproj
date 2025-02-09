@@ -8,11 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		18331ED02D5918C700EE7715 /* TMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183944DA2D56D31600C4001D /* TMDB.framework */; };
+		18331EE82D59724500EE7715 /* TMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183944DA2D56D31600C4001D /* TMDB.framework */; };
 		183944E52D56D31600C4001D /* TMDB.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 183944DA2D56D31600C4001D /* TMDB.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
 		18331ED22D5918C700EE7715 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 183944D12D56D31600C4001D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 183944D92D56D31600C4001D;
+			remoteInfo = TMDB;
+		};
+		18331EE92D59724500EE7715 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 183944D12D56D31600C4001D /* Project object */;
 			proxyType = 1;
@@ -32,6 +40,7 @@
 		1810BD362D5833BF0003542F /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		1810BD372D5834490003542F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		182B38252D58271200ED5BE2 /* TMDBEndtoEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TMDBEndtoEndTests.xctestplan; sourceTree = "<group>"; };
+		18331EE42D59724500EE7715 /* SharedTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SharedTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		183944DA2D56D31600C4001D /* TMDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TMDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		183944E42D56D31600C4001D /* TMDBTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TMDBTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		188492AE2D57EEAB00E4F1F0 /* TMDB.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TMDB.xctestplan; sourceTree = "<group>"; };
@@ -39,6 +48,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		18331EEF2D59726D00EE7715 /* Exceptions for "SharedTest" folder in "SharedTest" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				TrackMemoryLeaks.swift,
+			);
+			target = 18331EE32D59724500EE7715 /* SharedTest */;
+		};
 		183944EC2D56D31600C4001D /* Exceptions for "TMDB" folder in "TMDB" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
@@ -49,6 +65,14 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		18331EE52D59724500EE7715 /* SharedTest */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				18331EEF2D59726D00EE7715 /* Exceptions for "SharedTest" folder in "SharedTest" target */,
+			);
+			path = SharedTest;
+			sourceTree = "<group>";
+		};
 		183944DC2D56D31600C4001D /* TMDB */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -70,6 +94,14 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		18331EE12D59724500EE7715 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				18331EE82D59724500EE7715 /* TMDB.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		183944D72D56D31600C4001D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -106,6 +138,7 @@
 				183944DC2D56D31600C4001D /* TMDB */,
 				183944E82D56D31600C4001D /* TMDBTests */,
 				188492B42D57F0EA00E4F1F0 /* TMDBEndtoEndTests */,
+				18331EE52D59724500EE7715 /* SharedTest */,
 				183944DB2D56D31600C4001D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -116,6 +149,7 @@
 				183944DA2D56D31600C4001D /* TMDB.framework */,
 				183944E42D56D31600C4001D /* TMDBTests.xctest */,
 				188492B32D57F0EA00E4F1F0 /* TMDBEndtoEndTests.xctest */,
+				18331EE42D59724500EE7715 /* SharedTest.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -133,6 +167,29 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		18331EE32D59724500EE7715 /* SharedTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 18331EEB2D59724500EE7715 /* Build configuration list for PBXNativeTarget "SharedTest" */;
+			buildPhases = (
+				18331EE02D59724500EE7715 /* Sources */,
+				18331EE12D59724500EE7715 /* Frameworks */,
+				18331EE22D59724500EE7715 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				18331EEA2D59724500EE7715 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				18331EE52D59724500EE7715 /* SharedTest */,
+			);
+			name = SharedTest;
+			packageProductDependencies = (
+			);
+			productName = SharedTest;
+			productReference = 18331EE42D59724500EE7715 /* SharedTest.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		183944D92D56D31600C4001D /* TMDB */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 183944ED2D56D31600C4001D /* Build configuration list for PBXNativeTarget "TMDB" */;
@@ -170,6 +227,7 @@
 				183944E72D56D31600C4001D /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				18331EE52D59724500EE7715 /* SharedTest */,
 				183944E82D56D31600C4001D /* TMDBTests */,
 			);
 			name = TMDBTests;
@@ -193,6 +251,7 @@
 				18331ED32D5918C700EE7715 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
+				18331EE52D59724500EE7715 /* SharedTest */,
 				188492B42D57F0EA00E4F1F0 /* TMDBEndtoEndTests */,
 			);
 			name = TMDBEndtoEndTests;
@@ -212,6 +271,9 @@
 				LastSwiftUpdateCheck = 1620;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
+					18331EE32D59724500EE7715 = {
+						CreatedOnToolsVersion = 16.2;
+					};
 					183944D92D56D31600C4001D = {
 						CreatedOnToolsVersion = 16.2;
 					};
@@ -240,11 +302,19 @@
 				183944D92D56D31600C4001D /* TMDB */,
 				183944E32D56D31600C4001D /* TMDBTests */,
 				188492B22D57F0EA00E4F1F0 /* TMDBEndtoEndTests */,
+				18331EE32D59724500EE7715 /* SharedTest */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		18331EE22D59724500EE7715 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		183944D82D56D31600C4001D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -269,6 +339,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		18331EE02D59724500EE7715 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		183944D62D56D31600C4001D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -298,6 +375,11 @@
 			target = 183944D92D56D31600C4001D /* TMDB */;
 			targetProxy = 18331ED22D5918C700EE7715 /* PBXContainerItemProxy */;
 		};
+		18331EEA2D59724500EE7715 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 183944D92D56D31600C4001D /* TMDB */;
+			targetProxy = 18331EE92D59724500EE7715 /* PBXContainerItemProxy */;
+		};
 		183944E72D56D31600C4001D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 183944D92D56D31600C4001D /* TMDB */;
@@ -306,6 +388,36 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		18331EEC2D59724500EE7715 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2CYZ6HP688;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.davidluna.SharedTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		18331EED2D59724500EE7715 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2CYZ6HP688;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.davidluna.SharedTest;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		183944EE2D56D31600C4001D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1810BD362D5833BF0003542F /* Secrets.xcconfig */;
@@ -561,6 +673,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		18331EEB2D59724500EE7715 /* Build configuration list for PBXNativeTarget "SharedTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				18331EEC2D59724500EE7715 /* Debug */,
+				18331EED2D59724500EE7715 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		183944D42D56D31600C4001D /* Build configuration list for PBXProject "TMDB" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
