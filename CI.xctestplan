@@ -1,33 +1,14 @@
 {
   "configurations" : [
     {
-      "id" : "BC6323BC-A32E-4D7C-BAED-62E4869F5DB0",
+      "id" : "882A16DC-3E3C-4629-AEEE-621C74317D1D",
       "name" : "Test Scheme Action",
       "options" : {
-        "environmentVariableEntries" : [
-          {
-            "key" : "baseUrlString",
-            "value" : "$(BASE_URL_STRING)"
-          },
-          {
-            "key" : "apiKey",
-            "value" : "$(API_KEY)"
-          }
-        ],
-        "targetForVariableExpansion" : {
-          "containerPath" : "container:TMDB.xcodeproj",
-          "identifier" : "188492B22D57F0EA00E4F1F0",
-          "name" : "TMDBEndtoEndTests"
-        }
+        "testExecutionOrdering" : "random"
       }
     }
   ],
   "defaultOptions" : {
-    "commandLineArgumentEntries" : [
-      {
-        "argument" : ""
-      }
-    ],
     "environmentVariableEntries" : [
       {
         "key" : "apiKey",
@@ -42,12 +23,17 @@
       "containerPath" : "container:TMDB.xcodeproj",
       "identifier" : "188492B22D57F0EA00E4F1F0",
       "name" : "TMDBEndtoEndTests"
-    },
-    "testExecutionOrdering" : "random"
+    }
   },
   "testTargets" : [
     {
-      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:TMDB.xcodeproj",
+        "identifier" : "183944E32D56D31600C4001D",
+        "name" : "TMDBTests"
+      }
+    },
+    {
       "target" : {
         "containerPath" : "container:TMDB.xcodeproj",
         "identifier" : "188492B22D57F0EA00E4F1F0",
