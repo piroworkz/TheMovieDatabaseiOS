@@ -33,16 +33,13 @@ class CatalogStore {
 final class CacheCatalogUseCaseTest: XCTestCase {
     
     func test_GIVEN_sut_WHEN_initialized_THEN_doesNotDeleteCache() {
-        let store = CatalogStore()
-        _ = LocalCatalogLoader(store: store)
+        let (_, store) = buildSut()
         
         XCTAssertEqual(store.deleteCachedCatalogCount, 0)
     }
     
-    
     func test_GIVEN_sut_WHEN_saveIsCalled_THEN_shouldRequestCacheDeletion() {
-        let store = CatalogStore()
-        let sut = LocalCatalogLoader(store: store)
+        let (sut, store) = buildSut()
         let catalog = createCatalog()
         
         sut.save(catalog)
@@ -53,6 +50,14 @@ final class CacheCatalogUseCaseTest: XCTestCase {
 }
 
 extension CacheCatalogUseCaseTest {
+    
+    func buildSut(file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalCatalogLoader, store: CatalogStore) {
+        let store = CatalogStore()
+        let sut = LocalCatalogLoader(store: store)
+        trackMemoryLeaks(instanceOf: store, file: file, line: line)
+        trackMemoryLeaks(instanceOf: sut, file: file, line: line)
+        return (sut, store)
+    }
     
     func createCatalog(_ count: Int = 4) -> Catalog {
         return Catalog(page: 1, totalPages: 0, catalog: (0...count).map { self.createMovie(id: $0) })
