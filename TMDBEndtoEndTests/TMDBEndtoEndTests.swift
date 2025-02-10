@@ -25,7 +25,6 @@ final class TMDBEndtoEndTests: XCTestCase {
         
         switch catalogResult {
         case let .success(response)?:
-            print(response)
             XCTAssertTrue(response.catalog.isEmpty == false)
         case let .failure(error)?:
             XCTFail("Unexpected error: \(error)")
