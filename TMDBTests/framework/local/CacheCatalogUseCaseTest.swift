@@ -30,13 +30,18 @@ class LocalCatalogLoader {
 
 class CatalogStore {
     typealias Completion = (Error?) -> Void
-    var deleteCachedCatalogCount = 0
-    var insertions = [(catalog: Catalog, timestamp: Date)]()
+    
+    enum ReceivedMessages :Equatable {
+        case deleteCache
+        case insert(Catalog, Date)
+    }
+    
     private var completions = [Completion]()
+    private(set) var messages = [ReceivedMessages]()
     
     func deleteCachedCatalog(completion: @escaping Completion) {
         completions.append(completion)
-        deleteCachedCatalogCount += 1
+        messages.append(.deleteCache)
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
@@ -48,7 +53,7 @@ class CatalogStore {
     }
     
     func insert(_ catalog: Catalog, _ timestamp: Date) {
-        insertions.append((catalog: catalog, timestamp: timestamp))
+        messages.append(.insert(catalog, timestamp))
     }
     
 }
@@ -58,7 +63,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
     func test_GIVEN_sut_WHEN_initialized_THEN_doesNotDeleteCache() {
         let (_, store) = buildSut()
         
-        XCTAssertEqual(store.deleteCachedCatalogCount, 0)
+        XCTAssertEqual(store.messages, [])
     }
     
     func test_GIVEN_sut_WHEN_saveIsCalled_THEN_shouldRequestCacheDeletion() {
@@ -67,7 +72,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         
         sut.save(catalog)
         
-        XCTAssertEqual(store.deleteCachedCatalogCount, 1)
+        XCTAssertEqual(store.messages, [.deleteCache])
     }
     
     func test_GIVEN_sut_WHEN_deletionFails_THEN_shouldNotRequestCacheInsertion() {
@@ -77,7 +82,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         sut.save(catalog)
         store.completeDeletion(with: anyNSError())
         
-        XCTAssertEqual(store.insertions.count, 0)
+        XCTAssertEqual(store.messages, [.deleteCache])
     }
     
     func test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestTimeStampedCacheInsertion() {
@@ -88,9 +93,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         sut.save(catalog)
         store.completeDeletionSuccessfully()
         
-        XCTAssertEqual(store.insertions.count, 1)
-        XCTAssertEqual(store.insertions.first?.catalog, catalog)
-        XCTAssertEqual(store.insertions.first?.timestamp, timestamp)
+        XCTAssertEqual(store.messages, [.deleteCache, .insert(catalog, timestamp)])
     }
     
 }
