@@ -64,6 +64,10 @@ class CatalogStore {
         messages.append(.insert(catalog, timestamp))
     }
     
+    func completeInsertSuccessfully(at index: Int = 0) {
+        completeDeletionSuccessfully()
+        onInsert[index](nil)
+    }
 }
 
 final class CacheCatalogUseCaseTest: XCTestCase {
@@ -122,7 +126,6 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         XCTAssertEqual(receivedError, expected)
     }
     
-    
     func test_GIVEN_sut_WHEN_insertFails_THEN_saveShouldFailAndReturnsError() {
         let expected = anyNSError()
         let catalog = createCatalog()
@@ -142,6 +145,24 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         XCTAssertEqual(receivedError, expected)
     }
     
+    func test_GIVEN_sut_WHEN_insertSucceeds_THEN_shouldReturnNilError() {
+        
+        let catalog = createCatalog()
+        let (sut, store) = buildSut()
+        let expectation = expectation(description: expectationDescription())
+        
+        var receivedError: NSError?
+        sut.save(catalog) { error in
+            receivedError = error as? NSError
+            expectation.fulfill()
+        }
+        
+        store.completeInsertSuccessfully()
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        XCTAssertNil(receivedError)
+    }
     
 }
 
