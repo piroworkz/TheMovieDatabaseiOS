@@ -21,7 +21,7 @@ class LocalCatalogLoader {
     func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {
         store.deleteCachedCatalog { [unowned self] error in
             if error == nil {
-                store.insert(catalog, currentDate())
+                store.insert(catalog, currentDate(), completion: completion)
             } else {
                 completion(error)
             }
@@ -31,30 +31,36 @@ class LocalCatalogLoader {
 
 
 class CatalogStore {
-    typealias Completion = (Error?) -> Void
+    typealias NullableErrorCompletion = (Error?) -> Void
     
     enum ReceivedMessages :Equatable {
         case deleteCache
         case insert(Catalog, Date)
     }
     
-    private var completions = [Completion]()
+    private var onDelete = [NullableErrorCompletion]()
+    private var onInsert = [NullableErrorCompletion]()
     private(set) var messages = [ReceivedMessages]()
     
-    func deleteCachedCatalog(completion: @escaping Completion) {
-        completions.append(completion)
+    func deleteCachedCatalog(completion: @escaping NullableErrorCompletion) {
+        onDelete.append(completion)
         messages.append(.deleteCache)
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
-        completions[index](error)
+        onDelete[index](error)
+    }
+    
+    func completeInsert(with error: Error, at index: Int = 0) {
+        onInsert[index](error)
     }
     
     func completeDeletionSuccessfully(at index: Int = 0) {
-        completions[index](nil)
+        onDelete[index](nil)
     }
     
-    func insert(_ catalog: Catalog, _ timestamp: Date) {
+    func insert(_ catalog: Catalog, _ timestamp: Date, completion: @escaping NullableErrorCompletion) {
+        onInsert.append(completion)
         messages.append(.insert(catalog, timestamp))
     }
     
@@ -98,7 +104,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         XCTAssertEqual(store.messages, [.deleteCache, .insert(catalog, timestamp)])
     }
     
-    func test_GIVEN_sut_WHEN_deletionFails_THEN_saveShouldFail() {
+    func test_GIVEN_sut_WHEN_deletionFails_THEN_saveShouldFailAndReturnsError() {
         let expected = anyNSError()
         let catalog = createCatalog()
         let (sut, store) = buildSut()
@@ -115,6 +121,28 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         
         XCTAssertEqual(receivedError, expected)
     }
+    
+    
+    func test_GIVEN_sut_WHEN_insertFails_THEN_saveShouldFailAndReturnsError() {
+        let expected = anyNSError()
+        let catalog = createCatalog()
+        let (sut, store) = buildSut()
+        let expectation = expectation(description: expectationDescription())
+        
+        var receivedError: NSError?
+        sut.save(catalog) { error in
+            receivedError = error as? NSError
+            expectation.fulfill()
+        }
+        store.completeDeletionSuccessfully()
+        store.completeInsert(with: anyNSError())
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        XCTAssertEqual(receivedError, expected)
+    }
+    
+    
 }
 
 extension CacheCatalogUseCaseTest {
