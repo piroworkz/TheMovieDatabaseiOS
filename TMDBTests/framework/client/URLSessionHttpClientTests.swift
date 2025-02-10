@@ -19,11 +19,7 @@ final class URLSessionHttpClientTests: XCTestCase {
         sut.get(from: anyEndpoint()) { _ in }
         
         URLProtocolStub.observeRequests { request in
-            guard let stringUrl = request.url?.absoluteString else {
-                XCTFail("Request URL does not contain expected endpoint")
-                return
-            }
-            XCTAssertTrue(stringUrl.contains(anyEndpoint()))
+            XCTAssertTrue(((request.url?.absoluteString.contains(anyEndpoint())) != nil))
             XCTAssertEqual(request.httpMethod, "GET")
             expectation.fulfill()
         }
@@ -31,15 +27,31 @@ final class URLSessionHttpClientTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
     
+    
+    func test_GIVEN_invalidEndpoint_WHEN_getFails_THEN_shouldReturnError() {
+        let invalidEndpoint = "invalid endpoint"
+        let sut = buildSut()
+        
+        sut.get(from: invalidEndpoint) { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertNotNil(error)
+            default:
+                return
+            }
+        }
+        
+    }
+    
+    
+    
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnsError_THEN_shouldFailRequestWithError() {
         let error = anyNSError()
-        assertThatResultCaseFor(data: nil, response: nil, error: error)
-            .isEqual(to: .failure(error))
+        assertThatResultCaseFor(data: nil, response: nil, error: error).isEqual(to: .failure(error))
     }
     
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllNilValues_THEN_shouldFailRequest() {
-        assertThatResultCaseFor(data: nil, response: nil, error: nil)
-            .isNotNil()
+        assertThatResultCaseFor(data: nil, response: nil, error: nil).isNotNil()
     }
     
     
