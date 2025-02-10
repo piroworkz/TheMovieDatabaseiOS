@@ -422,7 +422,6 @@
 		};
 		183944EE2D56D31600C4001D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1810BD362D5833BF0003542F /* Secrets.xcconfig */;
 			buildSettings = {
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -643,7 +642,6 @@
 		};
 		188492BA2D57F0EA00E4F1F0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1810BD362D5833BF0003542F /* Secrets.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

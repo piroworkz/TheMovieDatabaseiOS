@@ -35,6 +35,7 @@
       }
     },
     {
+      "parallelizable" : true,
       "target" : {
         "containerPath" : "container:TMDB.xcodeproj",
         "identifier" : "188492B22D57F0EA00E4F1F0",
