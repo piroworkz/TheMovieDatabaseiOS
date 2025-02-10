@@ -26,9 +26,9 @@ jobs:
       run: /usr/bin/xcodebuild -version
       
     - name: Create Secrets.xcconfig
-        run: |
-            echo "API_KEY=${{ secrets.API_KEY }}" > TheMovieDatabaseiOS/Secrets.xcconfig
-            echo "BASE_URL_STRING=${{ secrets.BASE_URL_STRING }}" >> TheMovieDatabaseiOS/Secrets.xcconfig
+      run: |
+        echo "API_KEY=${{ secrets.API_KEY }}" > TheMovieDatabaseiOS/Secrets.xcconfig
+        echo "BASE_URL_STRING=${{ secrets.BASE_URL_STRING }}" >> TheMovieDatabaseiOS/Secrets.xcconfig
 
       
     - name: Build and Test
