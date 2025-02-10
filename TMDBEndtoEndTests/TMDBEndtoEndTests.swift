@@ -40,7 +40,8 @@ final class TMDBEndtoEndTests: XCTestCase {
         }
         
         let requestBuilder = try! URLRequestBuilder(baseURL: baseUrlString, apiKey: apiKey)
-        let client = URLSessionHttpClient(requestBuilder: requestBuilder)
+        let session = URLSession(configuration: .ephemeral)
+        let client = URLSessionHttpClient(session: session ,requestBuilder: requestBuilder)
         let dataSource = RemoteCatalogLoader(client: client)
         trackMemoryLeaks(instanceOf: requestBuilder, file: file, line: line)
         trackMemoryLeaks(instanceOf: client, file: file, line: line)
