@@ -11,15 +11,17 @@ import TMDB
 class LocalCatalogLoader {
     
     private let store: CatalogStore
+    private let currentDate: () -> Date
     
-    init(store: CatalogStore) {
+    init(store: CatalogStore, currentDate: @escaping () -> Date) {
         self.store = store
+        self.currentDate = currentDate
     }
     
     func save(_ catalog: Catalog) {
         store.deleteCachedCatalog { [unowned self] error in
             if error == nil {
-                store.insert(catalog)
+                store.insert(catalog, currentDate())
             }
         }
     }
@@ -30,6 +32,7 @@ class CatalogStore {
     typealias Completion = (Error?) -> Void
     var deleteCachedCatalogCount = 0
     var insertCallCount = 0
+    var insertions = [(catalog: Catalog, timestamp: Date)]()
     private var completions = [Completion]()
     
     func deleteCachedCatalog(completion: @escaping Completion) {
@@ -45,8 +48,9 @@ class CatalogStore {
         completions[index](nil)
     }
     
-    func insert(_ catalog: Catalog) {
+    func insert(_ catalog: Catalog, _ timestamp: Date) {
         insertCallCount += 1
+        insertions.append((catalog: catalog, timestamp: timestamp))
     }
     
 }
@@ -78,23 +82,26 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         XCTAssertEqual(store.insertCallCount, 0)
     }
     
-    func test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestCacheInsertion() {
-        let (sut, store) = buildSut()
+    func test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestTimeStampedCacheInsertion() {
+        let timestamp = Date()
+        let (sut, store) = buildSut(currentDate: {timestamp})
         let catalog = createCatalog()
         
         sut.save(catalog)
         store.completeDeletionSuccessfully()
         
-        XCTAssertEqual(store.insertCallCount, 1)
+        XCTAssertEqual(store.insertions.count, 1)
+        XCTAssertEqual(store.insertions.first?.catalog, catalog)
+        XCTAssertEqual(store.insertions.first?.timestamp, timestamp)
     }
     
 }
 
 extension CacheCatalogUseCaseTest {
     
-    func buildSut(file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalCatalogLoader, store: CatalogStore) {
+    func buildSut(currentDate: @escaping () -> Date = Date.init ,file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalCatalogLoader, store: CatalogStore) {
         let store = CatalogStore()
-        let sut = LocalCatalogLoader(store: store)
+        let sut = LocalCatalogLoader(store: store, currentDate: currentDate)
         trackMemoryLeaks(instanceOf: store, file: file, line: line)
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return (sut, store)

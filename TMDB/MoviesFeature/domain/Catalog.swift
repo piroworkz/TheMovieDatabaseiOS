@@ -11,12 +11,12 @@ import Foundation
 public struct Catalog: Equatable {
     let page: Int
     let totalPages: Int
-    let catalog: [Movie]
+    let movies: [Movie]
     
     public init(page: Int, totalPages: Int, catalog: [Movie]) {
         self.page = page
         self.totalPages = totalPages
-        self.catalog = catalog
+        self.movies = catalog
     }
 }
 

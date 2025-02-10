@@ -25,7 +25,7 @@ final class TMDBEndtoEndTests: XCTestCase {
         
         switch catalogResult {
         case let .success(response)?:
-            XCTAssertTrue(response.catalog.isEmpty == false)
+            XCTAssertTrue(response.movies.isEmpty == false)
         case let .failure(error)?:
             XCTFail("Unexpected error: \(error)")
         default:
