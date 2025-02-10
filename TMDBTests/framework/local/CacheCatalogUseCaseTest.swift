@@ -31,7 +31,6 @@ class LocalCatalogLoader {
 class CatalogStore {
     typealias Completion = (Error?) -> Void
     var deleteCachedCatalogCount = 0
-    var insertCallCount = 0
     var insertions = [(catalog: Catalog, timestamp: Date)]()
     private var completions = [Completion]()
     
@@ -49,7 +48,6 @@ class CatalogStore {
     }
     
     func insert(_ catalog: Catalog, _ timestamp: Date) {
-        insertCallCount += 1
         insertions.append((catalog: catalog, timestamp: timestamp))
     }
     
@@ -79,7 +77,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         sut.save(catalog)
         store.completeDeletion(with: anyNSError())
         
-        XCTAssertEqual(store.insertCallCount, 0)
+        XCTAssertEqual(store.insertions.count, 0)
     }
     
     func test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestTimeStampedCacheInsertion() {
