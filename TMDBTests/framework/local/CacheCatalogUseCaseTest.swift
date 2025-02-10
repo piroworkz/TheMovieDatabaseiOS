@@ -29,7 +29,6 @@ class LocalCatalogLoader {
     }
 }
 
-
 class CatalogStore {
     typealias NullableErrorCompletion = (Error?) -> Void
     
@@ -80,90 +79,86 @@ final class CacheCatalogUseCaseTest: XCTestCase {
     
     func test_GIVEN_sut_WHEN_saveIsCalled_THEN_shouldRequestCacheDeletion() {
         let (sut, store) = buildSut()
-        let catalog = createCatalog()
         
-        sut.save(catalog) { _ in }
+        assertThat(
+            given: sut,
+            and: store,
+            whenever: {})
+        .isEqual(to: [.deleteCache])
         
-        XCTAssertEqual(store.messages, [.deleteCache])
     }
     
     func test_GIVEN_sut_WHEN_deletionFails_THEN_shouldNotRequestCacheInsertion() {
         let (sut, store) = buildSut()
-        let catalog = createCatalog()
         
-        sut.save(catalog) { _ in }
-        store.completeDeletion(with: anyNSError())
-        
-        XCTAssertEqual(store.messages, [.deleteCache])
+        assertThat(
+            given: sut,
+            and: store,
+            whenever: {store.completeDeletion(with: anyNSError())})
+        .isEqual(to: [.deleteCache])
     }
     
     func test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestTimeStampedCacheInsertion() {
         let timestamp = Date()
-        let catalog = createCatalog()
         let (sut, store) = buildSut(currentDate: {timestamp})
         
-        sut.save(catalog) { _ in }
-        store.completeDeletionSuccessfully()
+        assertThat(
+            given: sut,
+            and: store,
+            whenever: {store.completeDeletionSuccessfully()})
+        .isEqual(to: [.deleteCache, .insert(createCatalog(), timestamp)])
         
-        XCTAssertEqual(store.messages, [.deleteCache, .insert(catalog, timestamp)])
+        
     }
     
     func test_GIVEN_sut_WHEN_deletionFails_THEN_saveShouldFailAndReturnsError() {
         let expected = anyNSError()
-        let catalog = createCatalog()
         let (sut, store) = buildSut()
-        let expectation = expectation(description: expectationDescription())
         
-        var receivedError: NSError?
-        sut.save(catalog) { error in
-            receivedError = error as? NSError
-            expectation.fulfill()
-        }
-        store.completeDeletion(with: anyNSError())
-        
-        wait(for: [expectation], timeout: 1.0)
-        
-        XCTAssertEqual(receivedError, expected)
+        assertThat(
+            given: sut,
+            whenever: {store.completeDeletion(with: anyNSError())})
+        .isEqual(to: expected)
     }
     
     func test_GIVEN_sut_WHEN_insertFails_THEN_saveShouldFailAndReturnsError() {
         let expected = anyNSError()
-        let catalog = createCatalog()
         let (sut, store) = buildSut()
-        let expectation = expectation(description: expectationDescription())
         
-        var receivedError: NSError?
-        sut.save(catalog) { error in
-            receivedError = error as? NSError
-            expectation.fulfill()
-        }
-        store.completeDeletionSuccessfully()
-        store.completeInsert(with: anyNSError())
-        
-        wait(for: [expectation], timeout: 1.0)
-        
-        XCTAssertEqual(receivedError, expected)
+        assertThat(
+            given: sut,
+            whenever: {
+                store.completeDeletionSuccessfully()
+                store.completeInsert(with: anyNSError())
+            })
+        .isEqual(to: expected)
     }
     
     func test_GIVEN_sut_WHEN_insertSucceeds_THEN_shouldReturnNilError() {
-        
-        let catalog = createCatalog()
         let (sut, store) = buildSut()
-        let expectation = expectation(description: expectationDescription())
         
-        var receivedError: NSError?
-        sut.save(catalog) { error in
-            receivedError = error as? NSError
-            expectation.fulfill()
-        }
-        
-        store.completeInsertSuccessfully()
-        
-        wait(for: [expectation], timeout: 1.0)
-        
-        XCTAssertNil(receivedError)
+        assertThat(
+            given: sut,
+            whenever: { store.completeInsertSuccessfully() })
+        .isNil()
     }
     
+}
+
+extension Error? {
+    func isEqual(to expected: NSError?, file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(self as? NSError, expected, file: file, line: line)
+    }
+    
+    func isNil(file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertNil(self, file: file, line: line)
+    }
+}
+
+extension [CatalogStore.ReceivedMessages] {
+    func isEqual(to expected: [CatalogStore.ReceivedMessages], file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertEqual(self, expected, file: file, line: line)
+    }
 }
 
 extension CacheCatalogUseCaseTest {
@@ -183,5 +178,36 @@ extension CacheCatalogUseCaseTest {
     
     func createMovie(id: Int) -> Movie {
         return Movie(id: id, title: "Title \(id)", posterPath: "fake poster path \(id)")
+    }
+    
+    func assertThat(
+        given sut: LocalCatalogLoader,
+        whenever action: () -> Void
+    ) -> Error? {
+        let expectation = expectation(description: expectationDescription())
+        
+        var receivedError: NSError?
+        sut.save(createCatalog()) { error in
+            receivedError = error as? NSError
+            expectation.fulfill()
+        }
+        
+        action()
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        return receivedError
+    }
+    
+    func assertThat(
+        given sut: LocalCatalogLoader,
+        and store: CatalogStore,
+        whenever: () -> Void = {}
+    ) -> [CatalogStore.ReceivedMessages] {
+        
+        sut.save(createCatalog()) { _ in }
+        whenever()
+        
+        return store.messages
     }
 }
