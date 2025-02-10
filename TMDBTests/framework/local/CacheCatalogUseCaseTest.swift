@@ -18,10 +18,12 @@ class LocalCatalogLoader {
         self.currentDate = currentDate
     }
     
-    func save(_ catalog: Catalog) {
+    func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {
         store.deleteCachedCatalog { [unowned self] error in
             if error == nil {
                 store.insert(catalog, currentDate())
+            } else {
+                completion(error)
             }
         }
     }
@@ -70,7 +72,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         let (sut, store) = buildSut()
         let catalog = createCatalog()
         
-        sut.save(catalog)
+        sut.save(catalog) { _ in }
         
         XCTAssertEqual(store.messages, [.deleteCache])
     }
@@ -79,7 +81,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         let (sut, store) = buildSut()
         let catalog = createCatalog()
         
-        sut.save(catalog)
+        sut.save(catalog) { _ in }
         store.completeDeletion(with: anyNSError())
         
         XCTAssertEqual(store.messages, [.deleteCache])
@@ -87,15 +89,32 @@ final class CacheCatalogUseCaseTest: XCTestCase {
     
     func test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestTimeStampedCacheInsertion() {
         let timestamp = Date()
-        let (sut, store) = buildSut(currentDate: {timestamp})
         let catalog = createCatalog()
+        let (sut, store) = buildSut(currentDate: {timestamp})
         
-        sut.save(catalog)
+        sut.save(catalog) { _ in }
         store.completeDeletionSuccessfully()
         
         XCTAssertEqual(store.messages, [.deleteCache, .insert(catalog, timestamp)])
     }
     
+    func test_GIVEN_sut_WHEN_deletionFails_THEN_saveShouldFail() {
+        let expected = anyNSError()
+        let catalog = createCatalog()
+        let (sut, store) = buildSut()
+        let expectation = expectation(description: expectationDescription())
+        
+        var receivedError: NSError?
+        sut.save(catalog) { error in
+            receivedError = error as? NSError
+            expectation.fulfill()
+        }
+        store.completeDeletion(with: anyNSError())
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        XCTAssertEqual(receivedError, expected)
+    }
 }
 
 extension CacheCatalogUseCaseTest {
