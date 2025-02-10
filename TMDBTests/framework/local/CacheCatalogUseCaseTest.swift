@@ -17,21 +17,38 @@ class LocalCatalogLoader {
     }
     
     func save(_ catalog: Catalog) {
-        store.deleteCachedCatalog()
+        store.deleteCachedCatalog { [unowned self] error in
+            if error == nil {
+                store.insert(catalog)
+            }
+        }
     }
 }
 
 
 class CatalogStore {
+    typealias Completion = (Error?) -> Void
     var deleteCachedCatalogCount = 0
     var insertCallCount = 0
-    func deleteCachedCatalog() {
+    private var completions = [Completion]()
+    
+    func deleteCachedCatalog(completion: @escaping Completion) {
+        completions.append(completion)
         deleteCachedCatalogCount += 1
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
-        
+        completions[index](error)
     }
+    
+    func completeDeletionSuccessfully(at index: Int = 0) {
+        completions[index](nil)
+    }
+    
+    func insert(_ catalog: Catalog) {
+        insertCallCount += 1
+    }
+    
 }
 
 final class CacheCatalogUseCaseTest: XCTestCase {
@@ -59,6 +76,16 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         store.completeDeletion(with: anyNSError())
         
         XCTAssertEqual(store.insertCallCount, 0)
+    }
+    
+    func test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestCacheInsertion() {
+        let (sut, store) = buildSut()
+        let catalog = createCatalog()
+        
+        sut.save(catalog)
+        store.completeDeletionSuccessfully()
+        
+        XCTAssertEqual(store.insertCallCount, 1)
     }
     
 }
