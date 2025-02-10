@@ -27,8 +27,8 @@ jobs:
       
     - name: Create Secrets.xcconfig
       run: |
-        echo "API_KEY=${{ secrets.API_KEY }}" > TheMovieDatabaseiOS/Secrets.xcconfig
-        echo "BASE_URL_STRING=${{ secrets.BASE_URL_STRING }}" >> TheMovieDatabaseiOS/Secrets.xcconfig
+        echo "API_KEY=${{ secrets.API_KEY }}" > TMDB/Secrets.xcconfig
+        echo "BASE_URL_STRING=${{ secrets.BASE_URL_STRING }}" >> TMDB/Secrets.xcconfig
 
       
     - name: Build and Test
