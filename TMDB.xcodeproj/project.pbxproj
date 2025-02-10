@@ -488,7 +488,6 @@
 		};
 		183944F02D56D31600C4001D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1810BD362D5833BF0003542F /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
