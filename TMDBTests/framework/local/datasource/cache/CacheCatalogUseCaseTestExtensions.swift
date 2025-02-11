@@ -8,7 +8,10 @@
 import XCTest
 import TMDB
 
-extension CacheCatalogUseCaseTest {
+
+class XCTStoreTestCase: XCTestCase {}
+
+extension XCTStoreTestCase {
     
     func buildSut(currentDate: @escaping () -> Date = Date.init ,file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalCatalogLoader, store: CatalogStoreSpy) {
         let store = CatalogStoreSpy()
