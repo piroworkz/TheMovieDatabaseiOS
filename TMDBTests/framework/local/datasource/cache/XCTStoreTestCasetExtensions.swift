@@ -21,7 +21,8 @@ extension XCTStoreTestCase where Self: XCTestCase {
     }
     
     func createCatalog(_ count: Int = 4) -> Catalog {
-        return Catalog(page: 1, totalPages: 0, movies: (0...count).map { self.createMovie(id: $0) })
+        let movies = count > 0 ? (0...count).map { self.createMovie(id: $0) } : []
+        return Catalog(page: 0, totalPages: 0, movies: movies)
     }
     
     func createMovie(id: Int) -> Movie {

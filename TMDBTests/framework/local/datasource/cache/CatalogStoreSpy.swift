@@ -55,4 +55,9 @@ final class CatalogStoreSpy: CatalogStore {
         completeDeletionSuccessfully()
         onInsert[index](nil)
     }
+    
+    func completeRetrieveSuccessfully(at index: Int = 0) {
+        onRetrieve[index](nil)
+    }
+    
 }
