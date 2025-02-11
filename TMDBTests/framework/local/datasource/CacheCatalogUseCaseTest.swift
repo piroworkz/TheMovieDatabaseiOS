@@ -29,44 +29,10 @@ class LocalCatalogLoader {
     }
 }
 
-class CatalogStore {
-    typealias NullableErrorCompletion = (Error?) -> Void
-    
-    enum ReceivedMessages :Equatable {
-        case deleteCache
-        case insert(Catalog, Date)
-    }
-    
-    private var onDelete = [NullableErrorCompletion]()
-    private var onInsert = [NullableErrorCompletion]()
-    private(set) var messages = [ReceivedMessages]()
-    
-    func deleteCachedCatalog(completion: @escaping NullableErrorCompletion) {
-        onDelete.append(completion)
-        messages.append(.deleteCache)
-    }
-    
-    func completeDeletion(with error: Error, at index: Int = 0) {
-        onDelete[index](error)
-    }
-    
-    func completeInsert(with error: Error, at index: Int = 0) {
-        onInsert[index](error)
-    }
-    
-    func completeDeletionSuccessfully(at index: Int = 0) {
-        onDelete[index](nil)
-    }
-    
-    func insert(_ catalog: Catalog, _ timestamp: Date, completion: @escaping NullableErrorCompletion) {
-        onInsert.append(completion)
-        messages.append(.insert(catalog, timestamp))
-    }
-    
-    func completeInsertSuccessfully(at index: Int = 0) {
-        completeDeletionSuccessfully()
-        onInsert[index](nil)
-    }
+protocol CatalogStore {
+    typealias StoreCompletion = (Error?) -> Void
+    func deleteCachedCatalog(completion: @escaping StoreCompletion)
+    func insert(_ catalog: Catalog, _ timestamp: Date, completion: @escaping StoreCompletion)
 }
 
 final class CacheCatalogUseCaseTest: XCTestCase {

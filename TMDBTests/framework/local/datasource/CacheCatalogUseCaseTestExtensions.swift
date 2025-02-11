@@ -10,8 +10,8 @@ import TMDB
 
 extension CacheCatalogUseCaseTest {
     
-    func buildSut(currentDate: @escaping () -> Date = Date.init ,file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalCatalogLoader, store: CatalogStore) {
-        let store = CatalogStore()
+    func buildSut(currentDate: @escaping () -> Date = Date.init ,file: StaticString = #filePath, line: UInt = #line) -> (sut: LocalCatalogLoader, store: CatalogStoreSpy) {
+        let store = CatalogStoreSpy()
         let sut = LocalCatalogLoader(store: store, currentDate: currentDate)
         trackMemoryLeaks(instanceOf: store, file: file, line: line)
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
@@ -48,9 +48,9 @@ extension CacheCatalogUseCaseTest {
     
     func assertThat(
         given sut: LocalCatalogLoader,
-        and store: CatalogStore,
+        and store: CatalogStoreSpy,
         whenever: () -> Void = {}
-    ) -> [CatalogStore.ReceivedMessages] {
+    ) -> [CatalogStoreSpy.ReceivedMessages] {
         
         sut.save(createCatalog()) { _ in }
         whenever()
@@ -60,8 +60,8 @@ extension CacheCatalogUseCaseTest {
 }
 
 
-extension [CatalogStore.ReceivedMessages] {
-    func isEqual(to expected: [CatalogStore.ReceivedMessages], file: StaticString = #filePath, line: UInt = #line) {
+extension [CatalogStoreSpy.ReceivedMessages] {
+    func isEqual(to expected: [CatalogStoreSpy.ReceivedMessages], file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(self, expected, file: file, line: line)
     }
 }
