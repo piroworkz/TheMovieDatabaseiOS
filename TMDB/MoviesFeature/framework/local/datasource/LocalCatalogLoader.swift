@@ -19,13 +19,13 @@ public final class LocalCatalogLoader {
     }
     
     public func load(completion: @escaping (LoadResult) -> Void) {
-        store.retrieve { result in
+        store.retrieve { [unowned self] result in
             switch result {
             case let .failure(error):
                 completion(.failure(error))
-            case let .found(catalog, _):
+            case let .found(catalog, timestamp) where self.validate(timestamp):
                 completion(.success(catalog.toDomain()))
-            case .empty:
+            case .found, .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
             }
         }
@@ -47,5 +47,12 @@ public final class LocalCatalogLoader {
             guard self != nil else { return }
             completion(error)
         }
+    }
+    
+    private func validate(_ timestamp: Date) -> Bool {
+        guard let maxDate = Calendar.current.date(byAdding: .day, value: 7, to: timestamp) else {
+            return false
+        }
+        return currentDate() < maxDate
     }
 }

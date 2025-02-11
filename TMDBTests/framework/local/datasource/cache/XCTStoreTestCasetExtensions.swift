@@ -77,6 +77,11 @@ extension XCTStoreTestCase where Self: XCTestCase {
         
         return store.messages
     }
+    
+    func expirationDate(days: Int, seconds: TimeInterval, _ now: Date) -> Date {
+        return Calendar.current.date(byAdding: .day, value: days, to: now)!.advanced(by: seconds)
+    }
+    
 }
 
 
