@@ -86,10 +86,8 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         let store = CatalogStoreSpy()
         var sut: LocalCatalogLoader? = LocalCatalogLoader(store: store, currentDate: Date.init)
         
-        var receivedError = [NSError?]()
-        sut?.save(createCatalog()) { error in
-            receivedError.append(error as? NSError)
-        }
+        var receivedError = [LocalCatalogLoader.SaveResult]()
+        sut?.save(createCatalog()) { receivedError.append($0)}
         sut = nil
         store.completeDeletion(with: anyNSError())
         
@@ -100,10 +98,8 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         let store = CatalogStoreSpy()
         var sut: LocalCatalogLoader? = LocalCatalogLoader(store: store, currentDate: Date.init)
         
-        var receivedError = [NSError?]()
-        sut?.save(createCatalog()) { error in
-            receivedError.append(error as? NSError)
-        }
+        var receivedError = [LocalCatalogLoader.SaveResult]()
+        sut?.save(createCatalog()) { receivedError.append($0)}
         
         store.completeDeletionSuccessfully()
         sut = nil

@@ -67,7 +67,7 @@ extension [CatalogStoreSpy.ReceivedMessages] {
 }
 
 
-extension Error? {
+extension LocalCatalogLoader.SaveResult {
     func isEqual(to expected: NSError?, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(self as? NSError, expected, file: file, line: line)
     }

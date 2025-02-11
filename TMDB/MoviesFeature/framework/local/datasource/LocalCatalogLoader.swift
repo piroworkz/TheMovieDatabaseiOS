@@ -8,7 +8,7 @@
 import Foundation
 
 class LocalCatalogLoader {
-    
+    typealias SaveResult = Error?
     private let store: CatalogStore
     private let currentDate: () -> Date
     
@@ -28,7 +28,7 @@ class LocalCatalogLoader {
         }
     }
     
-    private func insert(catalog: Catalog, completion: @escaping (Error?) -> Void) {
+    private func insert(catalog: Catalog, completion: @escaping (SaveResult) -> Void) {
         store.insert(catalog, currentDate()) {[weak self] error in
             guard self != nil else { return }
             completion(error)
