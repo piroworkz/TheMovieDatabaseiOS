@@ -8,7 +8,7 @@
 
 
 extension Catalog {
-    func toLocal() -> LocalCatalog {
+    public func toLocal() -> LocalCatalog {
         return LocalCatalog(page: page, totalPages: totalPages, movies: movies.toLocal())
     }
 }

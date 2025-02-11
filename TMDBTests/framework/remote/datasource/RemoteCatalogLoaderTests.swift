@@ -76,7 +76,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         assertThat(
             given: sut,
             whenever: {spy.complete(withCode: 200, data: emptyListJsonData)})
-        .isEqual(to: decode(emptyListJsonData))
+        .isEqual(to: catalogResult(0))
     }
     
     func test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndValidJsonBody_THEN_loadShouldRespondWithSuccessResult() {
@@ -86,7 +86,7 @@ final class RemoteCatalogLoaderTests: XCTestCase {
         assertThat(
             given: sut,
             whenever: {spy.complete(withCode: 200, data: successResult)})
-        .isEqual(to: decode(successResult))
+        .isEqual(to: catalogResult())
     }
     
     func test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotDeliverResult() {

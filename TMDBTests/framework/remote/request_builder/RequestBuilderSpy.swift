@@ -5,7 +5,7 @@
 //  Created by David Luna on 09/02/25.
 //
 
-@testable import TMDB
+import TMDB
 
 class RequestBuilderSpy: RequestBuilder {
     func build(for endpoint: String, _ httpMethod: HttpMethod) throws -> URLRequest {

@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import TMDB
+import TMDB
 
 extension RemoteCatalogLoader.Result? {
     func isEqual(to expected: RemoteCatalogLoader.Result?, file: StaticString = #filePath, line: UInt = #line) {

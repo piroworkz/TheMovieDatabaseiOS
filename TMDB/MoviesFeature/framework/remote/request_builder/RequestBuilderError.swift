@@ -6,7 +6,7 @@
 //
 import Foundation
 
-enum RequestBuilderError: Error {
+public enum RequestBuilderError: Error {
     case invalidOrMissingBaseURL
     case missingApiKey
     case malformedURL

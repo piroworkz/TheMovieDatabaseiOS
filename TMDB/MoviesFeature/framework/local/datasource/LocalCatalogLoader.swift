@@ -7,17 +7,17 @@
 
 import Foundation
 
-class LocalCatalogLoader {
-    typealias SaveResult = Error?
+public final class LocalCatalogLoader {
+    public typealias SaveResult = Error?
     private let store: CatalogStore
     private let currentDate: () -> Date
     
-    init(store: CatalogStore, currentDate: @escaping () -> Date) {
+    public init(store: CatalogStore, currentDate: @escaping () -> Date) {
         self.store = store
         self.currentDate = currentDate
     }
     
-    func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {
+    public func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {
         store.deleteCachedCatalog { [weak self] error in
             guard let self = self else { return }
             if let error = error {

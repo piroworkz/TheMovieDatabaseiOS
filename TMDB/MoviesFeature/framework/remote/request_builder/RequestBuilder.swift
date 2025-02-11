@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol RequestBuilder {
+public protocol RequestBuilder {
     func build(for endpoint: String, _ httpMethod: HttpMethod) throws -> URLRequest
 }

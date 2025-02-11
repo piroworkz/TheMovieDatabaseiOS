@@ -11,7 +11,7 @@ import Foundation
 public struct Catalog: Equatable {
     let page: Int
     let totalPages: Int
-    let movies: [Movie]
+    public let movies: [Movie]
     
     public init(page: Int, totalPages: Int, movies: [Movie]) {
         self.page = page

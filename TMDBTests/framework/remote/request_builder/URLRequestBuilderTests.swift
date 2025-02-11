@@ -7,7 +7,7 @@
 
 
 import XCTest
-@testable import TMDB
+import TMDB
 
 class URLRequestBuilderTests: XCTestCase {
     

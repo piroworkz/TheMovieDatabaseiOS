@@ -5,7 +5,7 @@
 //  Created by David Luna on 10/02/25.
 //
 
-@testable import TMDB
+import TMDB
 
 final class CatalogStoreSpy: CatalogStore {
     

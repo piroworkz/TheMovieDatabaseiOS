@@ -7,14 +7,14 @@
 
 import Foundation
 
-class URLRequestBuilder: RequestBuilder {
+public final class URLRequestBuilder: RequestBuilder {
     
     private let baseURL: URL
     private let apiKey: String
     private let apiKeyName: String = "api_key"
     private let acceptName: String = "Accept"
     
-    init(baseURL: String, apiKey: String) throws {
+    public init(baseURL: String, apiKey: String) throws {
         
         guard let url = URL(string: baseURL) else {
             throw RequestBuilderError.invalidOrMissingBaseURL
@@ -27,7 +27,7 @@ class URLRequestBuilder: RequestBuilder {
         self.apiKey = apiKey
     }
     
-    func build(for endpoint: String, _ httpMethod: HttpMethod) throws -> URLRequest {
+    public func build(for endpoint: String, _ httpMethod: HttpMethod) throws -> URLRequest {
         guard let endpoint = validateEndpoint(endpoint),
               let url = configBaseUrl(endpoint: endpoint) else {
             throw RequestBuilderError.malformedURL

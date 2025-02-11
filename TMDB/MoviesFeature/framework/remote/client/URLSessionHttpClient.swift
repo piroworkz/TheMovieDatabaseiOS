@@ -7,11 +7,11 @@
 
 import Foundation
 
-public class URLSessionHttpClient: HttpClient {
+public final class URLSessionHttpClient: HttpClient {
     private let session: URLSession
     private let requestBuilder: RequestBuilder
     
-    init (session: URLSession = .shared, requestBuilder: RequestBuilder) {
+    public init (session: URLSession = .shared, requestBuilder: RequestBuilder) {
         self.session = session
         self.requestBuilder = requestBuilder
     }

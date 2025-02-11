@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import TMDB
+import TMDB
 
 extension URLSessionHttpClientTests {
     

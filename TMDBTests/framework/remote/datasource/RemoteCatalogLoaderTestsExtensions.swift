@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import TMDB
+import TMDB
 
 extension RemoteCatalogLoaderTests {
     
@@ -73,12 +73,13 @@ extension RemoteCatalogLoaderTests {
         ]
     }
     
-    func decode(_ data: Data) -> RemoteCatalogLoader.Result {
-        do {
-            let result = try RemoteCatalogSerializer.decode(data, 200)
-            return RemoteCatalogLoader.Result.success(result.toDomain())
-        } catch {
-            return RemoteCatalogLoader.Result.failure(error)
-        }
+    func catalogResult(_ count: Int = 3) -> RemoteCatalogLoader.Result {
+        let movies = count > 0 ? (0..<count).map { movieResult($0) } : []
+        return .success(Catalog(page: count / 3, totalPages: count / 3, movies: movies))
     }
+    
+    func movieResult(_ index: Int) -> Movie {
+        return Movie(id: index, title: "title \(index)", posterPath: "posterPath \(index)")
+    }
+    
 }
