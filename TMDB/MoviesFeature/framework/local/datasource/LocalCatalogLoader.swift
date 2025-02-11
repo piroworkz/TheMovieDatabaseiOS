@@ -17,8 +17,8 @@ public final class LocalCatalogLoader {
         self.currentDate = currentDate
     }
     
-    public func load() {
-        store.retrieve()
+    public func load(completion: @escaping (Error?) -> Void) {
+        store.retrieve(completion: completion)
     }
     
     public func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {

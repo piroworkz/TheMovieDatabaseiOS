@@ -30,7 +30,8 @@ final class CatalogStoreSpy: CatalogStore {
         messages.append(.insert(catalog, timestamp))
     }
     
-    func retrieve() {
+    func retrieve(completion: @escaping StoreCompletion) {
+        onRetrieve.append(completion)
         messages.append(.retrieve)
     }
     
@@ -40,6 +41,10 @@ final class CatalogStoreSpy: CatalogStore {
     
     func completeInsert(with error: Error, at index: Int = 0) {
         onInsert[index](error)
+    }
+        
+    func completeRetrieve(with error: Error, at index: Int = 0) {
+        onRetrieve[index](error)
     }
     
     func completeDeletionSuccessfully(at index: Int = 0) {
