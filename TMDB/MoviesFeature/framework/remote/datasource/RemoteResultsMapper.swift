@@ -23,7 +23,7 @@ public final class RemoteResultsMapper {
         let total_pages: Int
         
         var response: Catalog {
-            return Catalog(page: page, totalPages: total_pages, catalog: results.map { $0.movie })
+            return Catalog(page: page, totalPages: total_pages, movies: results.map { $0.movie })
         }
         
         struct Result: Decodable {

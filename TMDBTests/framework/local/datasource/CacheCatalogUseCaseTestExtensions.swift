@@ -19,9 +19,8 @@ extension CacheCatalogUseCaseTest {
     }
     
     func createCatalog(_ count: Int = 4) -> Catalog {
-        return Catalog(page: 1, totalPages: 0, catalog: (0...count).map { self.createMovie(id: $0) })
+        return Catalog(page: 1, totalPages: 0, movies: (0...count).map { self.createMovie(id: $0) })
     }
-    
     
     func createMovie(id: Int) -> Movie {
         return Movie(id: id, title: "Title \(id)", posterPath: "fake poster path \(id)")

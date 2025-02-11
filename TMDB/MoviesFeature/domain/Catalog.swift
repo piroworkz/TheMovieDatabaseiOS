@@ -13,10 +13,10 @@ public struct Catalog: Equatable {
     let totalPages: Int
     let movies: [Movie]
     
-    public init(page: Int, totalPages: Int, catalog: [Movie]) {
+    public init(page: Int, totalPages: Int, movies: [Movie]) {
         self.page = page
         self.totalPages = totalPages
-        self.movies = catalog
+        self.movies = movies
     }
 }
 

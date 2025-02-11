@@ -45,7 +45,7 @@ final class CacheCatalogUseCaseTest: XCTestCase {
             given: sut,
             and: store,
             whenever: {store.completeDeletionSuccessfully()})
-        .isEqual(to: [.deleteCache, .insert(createCatalog(), timestamp)])
+        .isEqual(to: [.deleteCache, .insert(createCatalog().toLocal(), timestamp)])
         
         
     }
@@ -107,6 +107,4 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         
         XCTAssertTrue(receivedError.isEmpty)
     }
-    
-
 }

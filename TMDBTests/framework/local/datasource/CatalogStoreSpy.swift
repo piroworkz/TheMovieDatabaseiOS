@@ -11,7 +11,7 @@ final class CatalogStoreSpy: CatalogStore {
     
     enum ReceivedMessages :Equatable {
         case deleteCache
-        case insert(Catalog, Date)
+        case insert(LocalCatalog, Date)
     }
     
     private var onDelete = [StoreCompletion]()
@@ -23,7 +23,7 @@ final class CatalogStoreSpy: CatalogStore {
         messages.append(.deleteCache)
     }
     
-    func insert(_ catalog: Catalog, _ timestamp: Date, completion: @escaping StoreCompletion) {
+    func insert(_ catalog: LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion) {
         onInsert.append(completion)
         messages.append(.insert(catalog, timestamp))
     }
