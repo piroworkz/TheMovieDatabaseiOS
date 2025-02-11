@@ -5,9 +5,9 @@
 //  Created by David Luna on 10/02/25.
 //
 
-import TMDB
+@testable import TMDB
 
-internal class CatalogStoreSpy: CatalogStore {
+final class CatalogStoreSpy: CatalogStore {
     
     enum ReceivedMessages :Equatable {
         case deleteCache

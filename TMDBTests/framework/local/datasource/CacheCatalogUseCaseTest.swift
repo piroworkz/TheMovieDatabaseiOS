@@ -6,34 +6,7 @@
 //
 
 import XCTest
-import TMDB
-
-class LocalCatalogLoader {
-    
-    private let store: CatalogStore
-    private let currentDate: () -> Date
-    
-    init(store: CatalogStore, currentDate: @escaping () -> Date) {
-        self.store = store
-        self.currentDate = currentDate
-    }
-    
-    func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {
-        store.deleteCachedCatalog { [unowned self] error in
-            if error == nil {
-                store.insert(catalog, currentDate(), completion: completion)
-            } else {
-                completion(error)
-            }
-        }
-    }
-}
-
-protocol CatalogStore {
-    typealias StoreCompletion = (Error?) -> Void
-    func deleteCachedCatalog(completion: @escaping StoreCompletion)
-    func insert(_ catalog: Catalog, _ timestamp: Date, completion: @escaping StoreCompletion)
-}
+@testable import TMDB
 
 final class CacheCatalogUseCaseTest: XCTestCase {
     

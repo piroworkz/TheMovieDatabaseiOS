@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import TMDB
+@testable import TMDB
 
 extension CacheCatalogUseCaseTest {
     
