@@ -45,4 +45,16 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         ).isEqual(to: .success(expected))
     }
     
+    func test_GIVEN_sut_WHEN_cacheHasNotReachedExpirationDate_THEN_loadShouldReturnCachedCatalog() {
+        let now = Date()
+        let expirationDate = Calendar.current.date(byAdding: .day, value: -7, to: now)!.advanced(by: 1)
+        let (sut, store) = buildSut(currentDate: { now })
+        let expected = createCatalog()
+        
+        assertThat(
+            given: sut,
+            whenever: { store.completeRetrieveSuccessfully(with: expected.toLocal(), expirationDate) }
+        ).isEqual(to: .success(expected))
+    }
+    
 }

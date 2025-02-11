@@ -17,7 +17,7 @@ final class CatalogStoreSpy: CatalogStore {
     
     private var onDelete = [StoreCompletion]()
     private var onInsert = [StoreCompletion]()
-    private var onRetrieve = [StoreCompletion]()
+    private var onRetrieve = [RetrieveCompletion]()
     private(set) var messages = [ReceivedMessages]()
     
     func deleteCachedCatalog(completion: @escaping StoreCompletion) {
@@ -30,7 +30,7 @@ final class CatalogStoreSpy: CatalogStore {
         messages.append(.insert(catalog, timestamp))
     }
     
-    func retrieve(completion: @escaping StoreCompletion) {
+    func retrieve(completion: @escaping RetrieveCompletion) {
         onRetrieve.append(completion)
         messages.append(.retrieve)
     }
@@ -44,7 +44,7 @@ final class CatalogStoreSpy: CatalogStore {
     }
         
     func completeRetrieve(with error: Error, at index: Int = 0) {
-        onRetrieve[index](error)
+        onRetrieve[index](.failure(error))
     }
     
     func completeDeletionSuccessfully(at index: Int = 0) {
@@ -57,7 +57,11 @@ final class CatalogStoreSpy: CatalogStore {
     }
     
     func completeRetrieveSuccessfully(at index: Int = 0) {
-        onRetrieve[index](nil)
+        onRetrieve[index](.empty)
+    }
+    
+    func completeRetrieveSuccessfully(with catalog: LocalCatalog,_ timestamp: Date, at index: Int = 0) {
+        onRetrieve[index](.found(catalog: catalog, timestamp: timestamp))
     }
     
 }

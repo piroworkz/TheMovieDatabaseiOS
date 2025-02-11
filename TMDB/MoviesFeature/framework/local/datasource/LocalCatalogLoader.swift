@@ -19,10 +19,13 @@ public final class LocalCatalogLoader {
     }
     
     public func load(completion: @escaping (LoadResult) -> Void) {
-        store.retrieve { error in
-            if let error = error {
+        store.retrieve { result in
+            switch result {
+            case let .failure(error):
                 completion(.failure(error))
-            } else {
+            case let .found(catalog, _):
+                completion(.success(catalog.toDomain()))
+            case .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
             }
         }

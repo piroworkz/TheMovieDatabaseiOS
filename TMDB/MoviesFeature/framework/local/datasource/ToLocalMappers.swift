@@ -5,7 +5,7 @@
 //  Created by David Luna on 11/02/25.
 //
 
-
+import Foundation
 
 extension Catalog {
     public func toLocal() -> LocalCatalog {
@@ -18,3 +18,17 @@ extension [Movie] {
         return map {LocalMovie(id: $0.id, title: $0.title, posterPath: $0.posterPath) }
     }
 }
+
+
+extension LocalCatalog {
+    public func toDomain() -> Catalog {
+        return Catalog(page: page, totalPages: totalPages, movies: movies.toDomain())
+    }
+}
+
+extension [LocalMovie] {
+    func toDomain() -> [Movie] {
+        return map {Movie(id: $0.id, title: $0.title, posterPath: $0.posterPath) }
+    }
+}
+
