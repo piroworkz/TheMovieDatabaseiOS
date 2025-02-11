@@ -8,7 +8,7 @@
 import XCTest
 import TMDB
 
-extension RemoteCatalogLoader.Result? {
+extension CatalogResult? {
     func isEqual(to expected: RemoteCatalogLoader.Result?, file: StaticString = #filePath, line: UInt = #line) {
         switch (self, expected) {
         case let (.success(actualResult), .success(expectedResult)):

@@ -50,6 +50,24 @@ extension XCTStoreTestCase where Self: XCTestCase {
   
     func assertThat(
         given sut: LocalCatalogLoader,
+        whenever action: () -> Void
+    ) -> LocalCatalogLoader.LoadResult? {
+        let expectation = expectation(description: expectationDescription())
+        
+        var receivedResult:  LocalCatalogLoader.LoadResult?
+        sut.load { result in
+            receivedResult = result
+            expectation.fulfill()
+        }
+        action()
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        return receivedResult
+    }
+  
+    func assertThat(
+        given sut: LocalCatalogLoader,
         and store: CatalogStoreSpy,
         whenever: () -> Void = {}
     ) -> [CatalogStoreSpy.ReceivedMessages] {
