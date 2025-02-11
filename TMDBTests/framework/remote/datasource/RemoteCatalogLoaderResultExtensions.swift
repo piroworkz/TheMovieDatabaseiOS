@@ -13,7 +13,7 @@ extension RemoteCatalogLoader.Result? {
         switch (self, expected) {
         case let (.success(actualResult), .success(expectedResult)):
             XCTAssertEqual(actualResult, expectedResult, file: file, line: line)
-        case let (.failure(actualResult as RemoteCatalogLoader.Error), .failure(expectedResult as RemoteCatalogLoader.Error)):
+        case let (.failure(actualResult as NSError), .failure(expectedResult as NSError)):
             XCTAssertEqual(actualResult, expectedResult, file: file, line: line)
         default :
             XCTFail("Expected result \(String(describing: expected)) but got \(String(describing: self)) instead", file: file, line: line)

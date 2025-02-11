@@ -28,48 +28,21 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
     func test_GIVEN_sut_WHEN_retrieveFails_THEN_loadShouldReturnError() {
         let (sut, store) = buildSut()
         let expected = anyNSError()
-        let expectation = expectation(description: expectationDescription())
         
-        var receivedError: NSError?
-        sut.load {result in
-            switch result {
-            case .failure(let error):
-                receivedError = error as NSError?
-            default:
-                XCTFail("Unexpected result: \(result)")
-            }
-            expectation.fulfill()
-        }
-        store.completeRetrieve(with: expected)
-        
-        wait(for: [expectation], timeout: 1.0)
-        XCTAssertEqual(receivedError, expected)
+        assertThat(
+            given: sut,
+            whenever: { store.completeRetrieve(with: expected) }
+        ).isEqual(to: .failure(expected))
     }
     
     func test_GIVEN_sut_WHEN_cacheIsEmpty_THEN_loadShouldReturnEmptyCatalog() {
         let (sut, store) = buildSut()
         let expected = createCatalog(0)
-        let expectation = expectation(description: expectationDescription())
         
-        var receivedCatalog: Catalog?
-        sut.load {result in
-            switch result {
-            case .success(let catalog):
-                receivedCatalog = catalog
-            default:
-                XCTFail("Unexpected result: \(result)")
-            }
-            expectation.fulfill()
-        }
-        store.completeRetrieveSuccessfully()
-        
-        wait(for: [expectation], timeout: 1.0)
-        
-        XCTAssertEqual(receivedCatalog, expected)
+        assertThat(
+            given: sut,
+            whenever: { store.completeRetrieveSuccessfully() }
+        ).isEqual(to: .success(expected))
     }
-    
-}
-
-extension LocalCatalogLoader.LoadResult {
     
 }
