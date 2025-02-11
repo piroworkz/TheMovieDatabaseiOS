@@ -8,7 +8,7 @@
 import XCTest
 import TMDB
 
-final class LoadCatalogFromCacheTests: XCTStoreTestCase {
+final class LoadCatalogFromCacheTests:XCTestCase, XCTStoreTestCase {
     
     func test_GIVEN_sut_WHEN_initialized_THEN_shouldNotLoadCatalogFromCache() {
         let (_, store) = buildSut()

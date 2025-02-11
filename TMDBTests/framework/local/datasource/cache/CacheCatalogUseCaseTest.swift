@@ -8,7 +8,7 @@
 import XCTest
 import TMDB
 
-final class CacheCatalogUseCaseTest: XCTStoreTestCase {
+final class CacheCatalogUseCaseTest: XCTestCase, XCTStoreTestCase {
     
     func test_GIVEN_sut_WHEN_initialized_THEN_doesNotDeleteCache() {
         let (_, store) = buildSut()
