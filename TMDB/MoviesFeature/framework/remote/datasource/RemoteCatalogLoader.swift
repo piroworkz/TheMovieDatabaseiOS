@@ -25,13 +25,17 @@ public class RemoteCatalogLoader: CatalogLoader {
         client.get(from: endpoint) { [weak self] result in
             guard self != nil else { return }
             
-            result.fold(
-                onSuccess: {data, response in
-                    completion(RemoteResultsMapper.map(data, response.statusCode))
-                },
-                onFailure: { _ in
-                    completion(.failure(Error.connectivity))
-                })
+            switch result {
+            case .failure:
+                completion(.failure(Error.connectivity))
+            case let .success(data, response):
+                do {
+                    let catalog = try RemoteCatalogSerializer.decode(data, response.statusCode)
+                    completion(.success(catalog.toDomain()))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
         }
     }
 }

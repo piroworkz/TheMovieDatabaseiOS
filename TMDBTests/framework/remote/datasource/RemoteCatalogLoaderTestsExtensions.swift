@@ -6,7 +6,7 @@
 //
 
 import XCTest
-import TMDB
+@testable import TMDB
 
 extension RemoteCatalogLoaderTests {
     
@@ -74,6 +74,11 @@ extension RemoteCatalogLoaderTests {
     }
     
     func decode(_ data: Data) -> RemoteCatalogLoader.Result {
-        return RemoteResultsMapper.map(data, 200)
+        do {
+            let result = try RemoteCatalogSerializer.decode(data, 200)
+            return RemoteCatalogLoader.Result.success(result.toDomain())
+        } catch {
+            return RemoteCatalogLoader.Result.failure(error)
+        }
     }
 }
