@@ -46,7 +46,7 @@ extension XCTStoreTestCase where Self: XCTestCase {
         
         return receivedError
     }
-    
+  
     func assertThat(
         given sut: LocalCatalogLoader,
         and store: CatalogStoreSpy,

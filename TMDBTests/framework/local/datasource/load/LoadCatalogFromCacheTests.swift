@@ -16,4 +16,15 @@ final class LoadCatalogFromCacheTests:XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [])
     }
     
+    
+    func test_GIVEN_sut_WHEN_loadIsCalled_THEN_shouldSendRetrieveMessage() {
+        let (sut, store) = buildSut()
+        
+        sut.load()
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
+
+    
 }

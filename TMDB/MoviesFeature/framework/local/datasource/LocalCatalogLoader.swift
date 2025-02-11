@@ -17,6 +17,10 @@ public final class LocalCatalogLoader {
         self.currentDate = currentDate
     }
     
+    public func load() {
+        store.retrieve()
+    }
+    
     public func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {
         store.deleteCachedCatalog { [weak self] error in
             guard let self = self else { return }

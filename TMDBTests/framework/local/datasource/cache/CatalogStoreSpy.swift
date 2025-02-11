@@ -12,10 +12,12 @@ final class CatalogStoreSpy: CatalogStore {
     enum ReceivedMessages :Equatable {
         case deleteCache
         case insert(LocalCatalog, Date)
+        case retrieve
     }
     
     private var onDelete = [StoreCompletion]()
     private var onInsert = [StoreCompletion]()
+    private var onRetrieve = [StoreCompletion]()
     private(set) var messages = [ReceivedMessages]()
     
     func deleteCachedCatalog(completion: @escaping StoreCompletion) {
@@ -26,6 +28,10 @@ final class CatalogStoreSpy: CatalogStore {
     func insert(_ catalog: LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion) {
         onInsert.append(completion)
         messages.append(.insert(catalog, timestamp))
+    }
+    
+    func retrieve() {
+        messages.append(.retrieve)
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
