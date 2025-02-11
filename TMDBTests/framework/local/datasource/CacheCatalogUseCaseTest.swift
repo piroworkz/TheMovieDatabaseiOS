@@ -82,4 +82,20 @@ final class CacheCatalogUseCaseTest: XCTestCase {
         .isNil()
     }
     
+    
+    func test_GIVEN_sut_WHEN_instanceIsDeallocated_THEN_doesNotDeliverDleteError() {
+        let store = CatalogStoreSpy()
+        var sut: LocalCatalogLoader? = LocalCatalogLoader(store: store, currentDate: Date.init)
+        
+        var receivedError = [NSError?]()
+        sut?.save(createCatalog()) { error in
+            receivedError.append(error as? NSError)
+        }
+        sut = nil
+        store.completeDeletion(with: anyNSError())
+        
+        XCTAssertTrue(receivedError.isEmpty)
+    }
+    
+
 }

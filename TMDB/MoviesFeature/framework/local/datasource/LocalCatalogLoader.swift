@@ -18,7 +18,8 @@ class LocalCatalogLoader {
     }
     
     func save(_ catalog: Catalog, completion: @escaping (Error?) -> Void) {
-        store.deleteCachedCatalog { [unowned self] error in
+        store.deleteCachedCatalog { [weak self] error in
+            guard let self = self else { return }
             if error == nil {
                 store.insert(catalog, currentDate(), completion: completion)
             } else {
