@@ -24,7 +24,6 @@ final class ValidateCacheUseCaseTests: XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
     }
     
-    
     func test_GIVEN_sut_WHEN_validateCacheSucceeds_THEN_shouldNotDeleteOnEmptyCache() {
         let (sut, store) = buildSut()
         
@@ -34,5 +33,18 @@ final class ValidateCacheUseCaseTests: XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
+    
+    func test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotDeleteCache() {
+        let now = Date()
+        let expirationDate = expirationDate(days: -7, seconds: 1, now)
+        let (sut, store) = buildSut(currentDate: { now })
+        
+        sut.validateCache()
+        store.completeRetrieveSuccessfully(with: createCatalog().toLocal(), expirationDate)
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
+
 
 }
