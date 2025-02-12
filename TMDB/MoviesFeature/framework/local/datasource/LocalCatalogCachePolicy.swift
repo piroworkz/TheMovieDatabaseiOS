@@ -5,7 +5,7 @@
 //  Created by David Luna on 12/02/25.
 //
 
-
+import Foundation
 
 private final class LocalCatalogCachePolicy {
     private let currentDate: () -> Date
