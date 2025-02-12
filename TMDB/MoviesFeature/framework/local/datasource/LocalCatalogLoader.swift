@@ -48,8 +48,15 @@ public final class LocalCatalogLoader {
     }
     
     public func validateCache() {
-        store.retrieve {_ in}
-        store.deleteCachedCatalog {_ in}
+        store.retrieve { [unowned self] result in
+            switch result {
+            case .failure:
+                self.store.deleteCachedCatalog {_ in}
+            default:
+                break
+            }
+        }
+        
     }
     
     private func insert(catalog: Catalog, completion: @escaping (SaveResult) -> Void) {

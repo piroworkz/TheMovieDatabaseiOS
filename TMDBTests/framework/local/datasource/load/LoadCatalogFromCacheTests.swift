@@ -78,6 +78,18 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
+    
+    func test_GIVEN_sut_WHEN_cacheIsEmpty_THEN_shouldNotHaveSideEffects() {
+        let (sut, store) = buildSut()
+        
+        sut.load { _ in }
+        store.completeRetrieveSuccessfully(with: createCatalog(0).toLocal(), Date())
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
+
+    
     func test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotCallDelete() {
         let now = Date()
         let expirationDate = expirationDate(days: -7, seconds: 1, now)

@@ -23,4 +23,16 @@ final class ValidateCacheUseCaseTests: XCTestCase, XCTStoreTestCase {
         
         XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
     }
+    
+    
+    func test_GIVEN_sut_WHEN_validateCacheSucceeds_THEN_shouldNotDeleteOnEmptyCache() {
+        let (sut, store) = buildSut()
+        
+        sut.validateCache()
+        store.completeRetrieveSuccessfully(with: createCatalog(0).toLocal(), Date())
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
+
 }
