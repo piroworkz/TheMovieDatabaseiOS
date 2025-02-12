@@ -8,8 +8,7 @@
 import Foundation
 
 public final class LocalCatalogLoader {
-    public typealias SaveResult = Error?
-    public typealias LoadResult = CatalogResult
+    
     private let store: CatalogStore
     private let currentDate: () -> Date
     
@@ -17,6 +16,18 @@ public final class LocalCatalogLoader {
         self.store = store
         self.currentDate = currentDate
     }
+    
+    private func validate(_ timestamp: Date) -> Bool {
+        let daysToExpiration = 7
+        guard let maxDate = Calendar.current.date(byAdding: .day, value: daysToExpiration, to: timestamp) else {
+            return false
+        }
+        return currentDate() < maxDate
+    }
+}
+
+extension LocalCatalogLoader {
+    public typealias LoadResult = CatalogResult
     
     public func load(completion: @escaping (LoadResult) -> Void) {
         store.retrieve { [weak self] result in
@@ -27,13 +38,16 @@ public final class LocalCatalogLoader {
                 completion(.failure(error))
             case let .found(catalog, timestamp) where self.validate(timestamp):
                 completion(.success(catalog.toDomain()))
-            case .found:
-                completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
-            case .empty:
+            case .found, .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
             }
         }
     }
+    
+}
+
+extension LocalCatalogLoader {
+    public typealias SaveResult = Error?
     
     public func save(_ catalog: Catalog, completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedCatalog { [weak self] error in
@@ -45,6 +59,16 @@ public final class LocalCatalogLoader {
             }
         }
     }
+    
+    private func insert(catalog: Catalog, completion: @escaping (SaveResult) -> Void) {
+        store.insert(catalog.toLocal(), currentDate()) {[weak self] error in
+            guard self != nil else { return }
+            completion(error)
+        }
+    }
+}
+
+extension LocalCatalogLoader {
     
     public func validateCache() {
         store.retrieve { [weak self] result in
@@ -62,18 +86,4 @@ public final class LocalCatalogLoader {
         
     }
     
-    private func insert(catalog: Catalog, completion: @escaping (SaveResult) -> Void) {
-        store.insert(catalog.toLocal(), currentDate()) {[weak self] error in
-            guard self != nil else { return }
-            completion(error)
-        }
-    }
-    
-    private func validate(_ timestamp: Date) -> Bool {
-        let daysToExpiration = 7
-        guard let maxDate = Calendar.current.date(byAdding: .day, value: daysToExpiration, to: timestamp) else {
-            return false
-        }
-        return currentDate() < maxDate
-    }
 }
