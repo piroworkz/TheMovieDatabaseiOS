@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import TMDB
 
 final class ValidateCacheUseCaseTests: XCTestCase, XCTStoreTestCase {
     
@@ -33,7 +34,6 @@ final class ValidateCacheUseCaseTests: XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    
     func test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotDeleteCache() {
         let now = Date()
         let expirationDate = expirationDate(days: -7, seconds: 1, now)
@@ -45,6 +45,28 @@ final class ValidateCacheUseCaseTests: XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-
+    
+    func test_GIVEN_sut_WHEN_cacheIsExpired_THEN_shouldDeleteExpiredCache() {
+        let now = Date()
+        let expirationDate = expirationDate(days: -7,seconds: -1, now)
+        let (sut, store) = buildSut(currentDate: { now })
+        
+        sut.validateCache()
+        store.completeRetrieveSuccessfully(with: createCatalog(0).toLocal(), expirationDate)
+        
+        XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
+    }
+    
+    func test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotDeleteCache() {
+        let store = CatalogStoreSpy()
+        var sut: LocalCatalogLoader? = LocalCatalogLoader(store: store, currentDate: Date.init)
+        
+        sut?.validateCache()
+        
+        sut = nil
+        store.completeRetrieveSuccessfully()
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
 
 }

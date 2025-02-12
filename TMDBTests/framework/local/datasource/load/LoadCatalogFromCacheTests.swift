@@ -99,7 +99,7 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    func test_GIVEN_sut_WHEN_cacheIsExpired_THEN_shouldCallDelete() {
+    func test_GIVEN_sut_WHEN_cacheIsExpired_THEN_shouldNotHaveSideEffects() {
         let now = Date()
         let expirationDate = expirationDate(days: -7,seconds: -1, now)
         let (sut, store) = buildSut(currentDate: { now })
@@ -107,7 +107,7 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         sut.load { _ in }
         store.completeRetrieveSuccessfully(with: createCatalog(0).toLocal(), expirationDate)
         
-        XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
+        XCTAssertEqual(store.messages, [.retrieve])
     }
     
     func test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotReturnResult() {

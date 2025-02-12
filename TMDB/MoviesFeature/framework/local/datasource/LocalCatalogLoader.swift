@@ -28,7 +28,6 @@ public final class LocalCatalogLoader {
             case let .found(catalog, timestamp) where self.validate(timestamp):
                 completion(.success(catalog.toDomain()))
             case .found:
-                self.store.deleteCachedCatalog { _ in }
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
             case .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
@@ -48,11 +47,15 @@ public final class LocalCatalogLoader {
     }
     
     public func validateCache() {
-        store.retrieve { [unowned self] result in
+        store.retrieve { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .failure:
                 self.store.deleteCachedCatalog {_ in}
-            default:
+            case let .found(_, timestamp) where !self.validate(timestamp):
+                self.store.deleteCachedCatalog {_ in}
+            case .empty, .found:
                 break
             }
         }
