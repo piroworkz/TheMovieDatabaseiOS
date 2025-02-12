@@ -47,7 +47,7 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
     
     func test_GIVEN_sut_WHEN_cacheHasNotReachedExpirationDate_THEN_loadShouldReturnCachedCatalog() {
         let now = Date()
-        let expirationDate = expirationDate(days: -7, seconds: 1, now)
+        let expirationDate = expirationDate(adding: 1, from: now)
         let (sut, store) = buildSut(currentDate: { now })
         let expected = createCatalog()
         
@@ -59,7 +59,7 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
     
     func test_GIVEN_sut_WHEN_cacheHasReachedExpirationDate_THEN_loadShouldReturnEmptyCatalog() {
         let now = Date()
-        let expirationDate = expirationDate(days: -7, seconds: nil, now)
+        let expirationDate = expirationDate(from: now)
         let (sut, store) = buildSut(currentDate: { now })
         let expected = createCatalog(0)
         
@@ -90,7 +90,7 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
     
     func test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotHaveSideEffects() {
         let now = Date()
-        let expirationDate = expirationDate(days: -7, seconds: 1, now)
+        let expirationDate = expirationDate(adding: 1, from: now)
         let (sut, store) = buildSut(currentDate: { now })
         
         sut.load { _ in }
@@ -101,7 +101,7 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
     
     func test_GIVEN_sut_WHEN_cacheIsExpired_THEN_shouldNotHaveSideEffects() {
         let now = Date()
-        let expirationDate = expirationDate(days: -7,seconds: -1, now)
+        let expirationDate = expirationDate(adding: -1, from: now)
         let (sut, store) = buildSut(currentDate: { now })
         
         sut.load { _ in }
@@ -122,5 +122,5 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         
         XCTAssertTrue(receivedResults.isEmpty)
     }
-
+    
 }

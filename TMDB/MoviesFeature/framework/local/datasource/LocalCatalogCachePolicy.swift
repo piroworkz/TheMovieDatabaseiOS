@@ -18,5 +18,4 @@ internal final class LocalCatalogCachePolicy {
         }
         return currentDate < maxDate
     }
-    
 }

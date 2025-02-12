@@ -65,7 +65,6 @@ extension LocalCatalogLoader {
     public func validateCache() {
         store.retrieve { [weak self] result in
             guard let self = self else { return }
-            
             switch result {
             case .failure:
                 self.store.deleteCachedCatalog {_ in}
