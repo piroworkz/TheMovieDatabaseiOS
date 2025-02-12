@@ -7,19 +7,14 @@
 
 import Foundation
 
-private final class LocalCatalogCachePolicy {
-    private let currentDate: () -> Date
+internal final class LocalCatalogCachePolicy {
     
-    init(currentDate: @escaping () -> Date) {
-        self.currentDate = currentDate
-    }
-    
-    func validate(_ timestamp: Date) -> Bool {
+    func validate(_ timestamp: Date, currentDate: Date) -> Bool {
         let daysToExpiration = 7
         guard let maxDate = Calendar.current.date(byAdding: .day, value: daysToExpiration, to: timestamp) else {
             return false
         }
-        return currentDate() < maxDate
+        return currentDate < maxDate
     }
     
 }
