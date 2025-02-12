@@ -79,6 +79,16 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
     }
     
+    
+    func test_GIVEN_sut_WHEN_cacheIsEmpty_THEN_shouldNotCallDelete() {
+        let (sut, store) = buildSut()
+        
+        sut.load { _ in }
+        store.completeRetrieveSuccessfully(with: createCatalog(0).toLocal(), Date())
+        
+        XCTAssertEqual(store.messages, [.retrieve])
+    }
+    
 
     
 }
