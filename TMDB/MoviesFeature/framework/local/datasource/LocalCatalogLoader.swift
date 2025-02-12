@@ -11,7 +11,6 @@ public final class LocalCatalogLoader {
     
     private let store: CatalogStore
     private let currentDate: () -> Date
-    private let policy: LocalCatalogCachePolicy = LocalCatalogCachePolicy()
     
     public init(store: CatalogStore, currentDate: @escaping () -> Date) {
         self.store = store
@@ -29,7 +28,7 @@ extension LocalCatalogLoader {
             switch result {
             case let .failure(error):
                 completion(.failure(error))
-            case let .found(catalog, timestamp) where self.policy.validate(timestamp, currentDate: currentDate()):
+            case let .found(catalog, timestamp) where LocalCatalogCachePolicy.validate(timestamp, currentDate: currentDate()):
                 completion(.success(catalog.toDomain()))
             case .found, .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
@@ -70,7 +69,7 @@ extension LocalCatalogLoader {
             switch result {
             case .failure:
                 self.store.deleteCachedCatalog {_ in}
-            case let .found(_, timestamp) where !self.policy.validate(timestamp, currentDate: currentDate()):
+            case let .found(_, timestamp) where !LocalCatalogCachePolicy.validate(timestamp, currentDate: currentDate()):
                 self.store.deleteCachedCatalog {_ in}
             case .empty, .found:
                 break
