@@ -19,7 +19,9 @@ public final class LocalCatalogLoader {
     }
     
     public func load(completion: @escaping (LoadResult) -> Void) {
-        store.retrieve { [unowned self] result in
+        store.retrieve { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case let .failure(error):
                 self.store.deleteCachedCatalog { _ in }
