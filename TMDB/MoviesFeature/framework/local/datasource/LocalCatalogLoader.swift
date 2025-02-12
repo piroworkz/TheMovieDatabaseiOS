@@ -26,7 +26,10 @@ public final class LocalCatalogLoader {
                 completion(.failure(error))
             case let .found(catalog, timestamp) where self.validate(timestamp):
                 completion(.success(catalog.toDomain()))
-            case .found, .empty:
+            case .found:
+                self.store.deleteCachedCatalog { _ in }
+                completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
+            case .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
             }
         }

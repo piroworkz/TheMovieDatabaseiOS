@@ -69,7 +69,6 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         ).isEqual(to: .success(expected))
     }
     
-    
     func test_GIVEN_sut_WHEN_retrieveFailsWithError_THEN_shouldDeleteCache() {
         let (sut, store) = buildSut()
         
@@ -78,7 +77,6 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         
         XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
     }
-    
     
     func test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotCallDelete() {
         let now = Date()
@@ -91,6 +89,14 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         XCTAssertEqual(store.messages, [.retrieve])
     }
     
-    
-    
+    func test_GIVEN_sut_WHEN_cacheIsExpired_THEN_shouldCallDelete() {
+        let now = Date()
+        let expirationDate = expirationDate(days: -7,seconds: nil, now)
+        let (sut, store) = buildSut(currentDate: { now })
+        
+        sut.load { _ in }
+        store.completeRetrieveSuccessfully(with: createCatalog(0).toLocal(), expirationDate)
+        
+        XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
+    }
 }
