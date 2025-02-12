@@ -11,18 +11,12 @@ public final class LocalCatalogLoader {
     
     private let store: CatalogStore
     private let currentDate: () -> Date
+    private let policy: LocalCatalogCachePolicy
     
     public init(store: CatalogStore, currentDate: @escaping () -> Date) {
         self.store = store
         self.currentDate = currentDate
-    }
-    
-    private func validate(_ timestamp: Date) -> Bool {
-        let daysToExpiration = 7
-        guard let maxDate = Calendar.current.date(byAdding: .day, value: daysToExpiration, to: timestamp) else {
-            return false
-        }
-        return currentDate() < maxDate
+        self.policy = LocalCatalogCachePolicy(currentDate: currentDate)
     }
 }
 
@@ -36,7 +30,7 @@ extension LocalCatalogLoader {
             switch result {
             case let .failure(error):
                 completion(.failure(error))
-            case let .found(catalog, timestamp) where self.validate(timestamp):
+            case let .found(catalog, timestamp) where self.policy.validate(timestamp):
                 completion(.success(catalog.toDomain()))
             case .found, .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
@@ -77,7 +71,7 @@ extension LocalCatalogLoader {
             switch result {
             case .failure:
                 self.store.deleteCachedCatalog {_ in}
-            case let .found(_, timestamp) where !self.validate(timestamp):
+            case let .found(_, timestamp) where !self.policy.validate(timestamp):
                 self.store.deleteCachedCatalog {_ in}
             case .empty, .found:
                 break
