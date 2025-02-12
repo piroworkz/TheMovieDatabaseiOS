@@ -30,7 +30,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:TMDB.xctestplan"
+            reference = "container:TMDB/TMDB.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>

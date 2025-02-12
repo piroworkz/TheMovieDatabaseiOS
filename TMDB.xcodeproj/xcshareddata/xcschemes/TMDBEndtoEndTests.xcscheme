@@ -14,7 +14,7 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <TestPlans>
          <TestPlanReference
-            reference = "container:TMDBEndtoEndTests.xctestplan"
+            reference = "container:TMDBEndtoEndTests/TMDBEndtoEndTests.xctestplan"
             default = "YES">
          </TestPlanReference>
       </TestPlans>
