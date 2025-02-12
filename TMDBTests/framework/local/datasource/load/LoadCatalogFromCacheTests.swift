@@ -57,7 +57,7 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         ).isEqual(to: .success(expected))
     }
     
-    func test_GIVEN_sut_WHEN_cacheHasReachedExpirationDate_THEN_loadShouldNotReturnCatalog() {
+    func test_GIVEN_sut_WHEN_cacheHasReachedExpirationDate_THEN_loadShouldReturnEmptyCatalog() {
         let now = Date()
         let expirationDate = expirationDate(days: -7, seconds: 0, now)
         let (sut, store) = buildSut(currentDate: { now })

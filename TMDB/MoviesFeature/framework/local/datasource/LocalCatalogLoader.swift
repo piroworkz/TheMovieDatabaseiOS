@@ -50,7 +50,8 @@ public final class LocalCatalogLoader {
     }
     
     private func validate(_ timestamp: Date) -> Bool {
-        guard let maxDate = Calendar.current.date(byAdding: .day, value: 7, to: timestamp) else {
+        let daysToExpiration = 7
+        guard let maxDate = Calendar.current.date(byAdding: .day, value: daysToExpiration, to: timestamp) else {
             return false
         }
         return currentDate() < maxDate
