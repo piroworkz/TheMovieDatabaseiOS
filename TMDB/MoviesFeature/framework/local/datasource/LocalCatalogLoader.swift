@@ -8,8 +8,7 @@
 import Foundation
 
 public final class LocalCatalogLoader {
-    public typealias SaveResult = Error?
-    public typealias LoadResult = CatalogResult
+    
     private let store: CatalogStore
     private let currentDate: () -> Date
     
@@ -17,6 +16,10 @@ public final class LocalCatalogLoader {
         self.store = store
         self.currentDate = currentDate
     }
+}
+
+extension LocalCatalogLoader {
+    public typealias LoadResult = CatalogResult
     
     public func load(completion: @escaping (LoadResult) -> Void) {
         store.retrieve { [weak self] result in
@@ -24,18 +27,19 @@ public final class LocalCatalogLoader {
             
             switch result {
             case let .failure(error):
-                self.store.deleteCachedCatalog { _ in }
                 completion(.failure(error))
-            case let .found(catalog, timestamp) where self.validate(timestamp):
+            case let .found(catalog, timestamp) where LocalCatalogCachePolicy.validate(timestamp, currentDate: currentDate()):
                 completion(.success(catalog.toDomain()))
-            case .found:
-                self.store.deleteCachedCatalog { _ in }
-                completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
-            case .empty:
+            case .found, .empty:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
             }
         }
     }
+    
+}
+
+extension LocalCatalogLoader {
+    public typealias SaveResult = Error?
     
     public func save(_ catalog: Catalog, completion: @escaping (SaveResult) -> Void) {
         store.deleteCachedCatalog { [weak self] error in
@@ -54,12 +58,23 @@ public final class LocalCatalogLoader {
             completion(error)
         }
     }
+}
+
+extension LocalCatalogLoader {
     
-    private func validate(_ timestamp: Date) -> Bool {
-        let daysToExpiration = 7
-        guard let maxDate = Calendar.current.date(byAdding: .day, value: daysToExpiration, to: timestamp) else {
-            return false
+    public func validateCache() {
+        store.retrieve { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .failure:
+                self.store.deleteCachedCatalog {_ in}
+            case let .found(_, timestamp) where !LocalCatalogCachePolicy.validate(timestamp, currentDate: currentDate()):
+                self.store.deleteCachedCatalog {_ in}
+            case .empty, .found:
+                break
+            }
         }
-        return currentDate() < maxDate
+        
     }
+    
 }
