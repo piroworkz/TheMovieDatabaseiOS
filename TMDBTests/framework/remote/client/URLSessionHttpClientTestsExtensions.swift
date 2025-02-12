@@ -1,112 +1,80 @@
 //
-//  URLProtocolStub.swift
-//  TMDB
+//  URLSessionHttpClientTests.swift
+//  TMDBTests
 //
-//  Created by David Luna on 08/02/25.
+//  Created by David Luna on 07/02/25.
 //
 
 import XCTest
 import TMDB
 
-extension URLSessionHttpClientTests {
+final class URLSessionHttpClientTests: XCTestCase {
     
-    struct Stub {
-        let data: Data?
-        let response: URLResponse?
-        let error: Error?
+    func test_GIVEN_sut_WHEN_getIsCalled_THEN_shouldMakeRequestWithProvidedURL() {
         
-        init(data: Data?, response: URLResponse?, error: Error?) {
-            self.data = data
-            self.response = response
-            self.error = error
-        }
-    }
-    
-    class URLProtocolStub: URLProtocol {
-        private static var stub: Stub?
-        private static var requestObserver: ((URLRequest) -> Void)?
+        let sut = buildSut()
         
-        static func stub(data: Data?, response: URLResponse?, error: Error?) {
-            stub = Stub(data: data, response: response, error: error)
-        }
-        
-        static func observeRequests(observer: @escaping (URLRequest) -> Void) {
-            requestObserver = observer
-        }
-        
-        static func startInterceptingRequests() {
-            URLProtocol.registerClass(URLProtocolStub.self)
-        }
-        
-        static func stopInterceptingRequests() {
-            URLProtocol.unregisterClass(URLProtocolStub.self)
-            requestObserver = nil
-            stub = nil
-        }
-        
-        override class func canInit(with request: URLRequest) -> Bool {
-            return true
-        }
-        
-        override class func canonicalRequest(for request: URLRequest) -> URLRequest {
-            return request
-        }
-        
-        override func startLoading() {
-            if let requestObserver = URLProtocolStub.requestObserver {
-                client?.urlProtocolDidFinishLoading(self)
-                return requestObserver(request)
-            }
-            if let data = URLProtocolStub.stub?.data {
-                client?.urlProtocol(self, didLoad: data)
-            }
-            
-            if let response =  URLProtocolStub.stub?.response {
-                client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-            }
-            
-            if let error =  URLProtocolStub.stub?.error {
-                client?.urlProtocol(self, didFailWithError: error)
-            }
-            
-            client?.urlProtocolDidFinishLoading(self)
-        }
-        
-        override func stopLoading() { }
-    }
-    
-    func buildSut(file: StaticString = #filePath, line: UInt = #line) -> URLSessionHttpClient {
-        let urlRequestBuilder = RequestBuilderSpy()
-        let sut = URLSessionHttpClient(requestBuilder: urlRequestBuilder)
-        trackMemoryLeaks(instanceOf: sut, file: file, line: line)
-        return sut
-    }
-    
-    func assertThatResultCaseFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HttpClientResult? {
-        let sut = buildSut(file: file, line: line)
         let expectation = expectation(description: expectationDescription())
         
-        URLProtocolStub.stub(data: data, response: response, error: error)
+        sut.get(from: anyEndpoint()) { _ in }
         
-        var result: HttpClientResult?
-        sut.get(from: anyEndpoint()) { receivedResult in
-            result = receivedResult
+        URLProtocolStub.observeRequests { request in
+            XCTAssertTrue(((request.url?.absoluteString.contains(anyEndpoint())) != nil))
+            XCTAssertEqual(request.httpMethod, "GET")
             expectation.fulfill()
         }
         
         wait(for: [expectation], timeout: 1.0)
+    }
+    
+    
+    func test_GIVEN_invalidEndpoint_WHEN_getFails_THEN_shouldReturnError() {
+        let invalidEndpoint = "invalid endpoint"
+        let sut = buildSut()
         
-        return result
+        sut.get(from: invalidEndpoint) { result in
+            switch result {
+            case .failure(let error):
+                XCTAssertNotNil(error)
+            default:
+                return
+            }
+        }
+        
     }
     
-    override func setUp() {
-        super.setUp()
-        URLProtocolStub.startInterceptingRequests()
+    
+    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnsError_THEN_shouldFailRequestWithError() {
+        let error = anyNSError()
+        assertThatResultCaseFor(data: nil, response: nil, error: error).isEqual(to: .failure(error))
     }
     
-    override func tearDown() {
-        super.tearDown()
-        URLProtocolStub.stopInterceptingRequests()
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllNilValues_THEN_shouldFailRequest() {
+        assertThatResultCaseFor(data: nil, response: nil, error: nil).isNotNil()
     }
     
+    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllRepresentationValues_THEN_shouldFailRequest() {
+        assertThatResultCaseFor(data: nil, response: nil, error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: nil).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: nil, error: nil).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: nil, error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: nil, response: anyUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: nil, response: anyHttpUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: anyNSError()).isNotNil()
+        assertThatResultCaseFor(data: anyData(), response: anyUrlResponse(), error: nil).isNotNil()
+    }
+    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccess_THEN_shouldReturnData() {
+        assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: nil)
+            .isEqual(to: .success(anyData(), anyHttpUrlResponse()))
+    }
+    
+    func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccessAndEmptyData_THEN_shouldReturnEmptyData() {
+        let emptyData: Data = Data()
+        assertThatResultCaseFor(data: emptyData, response: anyHttpUrlResponse(), error: nil)
+            .isEqual(to: .success(emptyData, anyHttpUrlResponse()))
+    }
 }
