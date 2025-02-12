@@ -24,7 +24,6 @@ public final class LocalCatalogLoader {
             
             switch result {
             case let .failure(error):
-                self.store.deleteCachedCatalog { _ in }
                 completion(.failure(error))
             case let .found(catalog, timestamp) where self.validate(timestamp):
                 completion(.success(catalog.toDomain()))
@@ -46,6 +45,11 @@ public final class LocalCatalogLoader {
                 self.insert(catalog: catalog, completion: completion)
             }
         }
+    }
+    
+    public func validateCache() {
+        store.retrieve {_ in}
+        store.deleteCachedCatalog {_ in}
     }
     
     private func insert(catalog: Catalog, completion: @escaping (SaveResult) -> Void) {

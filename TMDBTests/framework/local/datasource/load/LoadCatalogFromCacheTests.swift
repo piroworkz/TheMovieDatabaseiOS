@@ -69,13 +69,13 @@ final class LoadCatalogFromCacheTests : XCTestCase, XCTStoreTestCase {
         ).isEqual(to: .success(expected))
     }
     
-    func test_GIVEN_sut_WHEN_retrieveFailsWithError_THEN_shouldDeleteCache() {
+    func test_GIVEN_sut_WHEN_retrieveFailsWithError_THEN_shouldNotHaveSideEffects() {
         let (sut, store) = buildSut()
         
         sut.load { _ in }
         store.completeRetrieve(with: anyNSError())
         
-        XCTAssertEqual(store.messages, [.retrieve, .deleteCache])
+        XCTAssertEqual(store.messages, [.retrieve])
     }
     
     func test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotCallDelete() {
