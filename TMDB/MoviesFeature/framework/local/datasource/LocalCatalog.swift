@@ -8,9 +8,9 @@
 import Foundation
 
 public struct LocalCatalog: Equatable {
-    let page: Int
-    let totalPages: Int
-    let movies: [LocalMovie]
+    public let page: Int
+    public let totalPages: Int
+    public let movies: [LocalMovie]
     
     public init(page: Int, totalPages: Int, movies: [LocalMovie]) {
         self.page = page
@@ -20,9 +20,9 @@ public struct LocalCatalog: Equatable {
 }
 
 public struct LocalMovie: Equatable {
-    let id: Int
-    let title: String
-    let posterPath: String
+    public let id: Int
+    public let title: String
+    public let posterPath: String
     
     public init(id: Int, title: String, posterPath: String) {
         self.id = id
@@ -30,6 +30,3 @@ public struct LocalMovie: Equatable {
         self.posterPath = posterPath
     }
 }
-
-extension LocalCatalog: Codable {}
-extension LocalMovie : Codable {}

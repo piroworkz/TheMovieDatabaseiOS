@@ -10,15 +10,59 @@ import TMDB
 
 class CodableCatalogStorage {
     
-    private let storageURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("catalog.store")
+    private let storageURL: URL
+    
+    init(storageURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("catalog.store")) {
+        self.storageURL = storageURL
+    }
+    
     
     private struct CatalogCache: Codable {
-        let catalog: LocalCatalog
+        let catalog: CodableCatalog
         let timestamp: Date
+        
+        init(catalog: CodableCatalog, timestamp: Date) {
+            self.catalog = catalog
+            self.timestamp = timestamp
+        }
+        
+        var localCatalog: LocalCatalog {
+            return LocalCatalog(page: catalog.page, totalPages: catalog.totalPages, movies: catalog.movies.map { $0.localMovie })
+        }
     }
+    
+    private struct CodableCatalog: Codable {
+        let page: Int
+        let totalPages: Int
+        let movies: [CodableMovie]
+        
+        init(_ catalog: LocalCatalog) {
+            page = catalog.page
+            totalPages = catalog.totalPages
+            movies = catalog.movies.map( CodableMovie.init )
+        }
+    }
+    
+    struct CodableMovie: Codable {
+        let id: Int
+        let title: String
+        let posterPath: String
+        
+        init(_ movie: LocalMovie) {
+            id = movie.id
+            title = movie.title
+            posterPath = movie.posterPath
+        }
+        
+        var localMovie: LocalMovie {
+            return LocalMovie(id: id, title: title, posterPath: posterPath)
+        }
+    }
+    
     func insert(catalog: LocalCatalog, timestamp: Date, completion: @escaping CatalogStore.StoreCompletion) {
         let encoder = JSONEncoder()
-        let encoded = try! encoder.encode(CatalogCache(catalog: catalog, timestamp: timestamp))
+        let cache = CatalogCache(catalog: CodableCatalog(catalog), timestamp: timestamp)
+        let encoded = try! encoder.encode(cache)
         try! encoded.write(to: storageURL)
         completion(nil)
     }
@@ -29,7 +73,7 @@ class CodableCatalogStorage {
         }
         let decoder = JSONDecoder()
         let cache = try! decoder.decode(CatalogCache.self, from: data)
-        completion(.found(catalog: cache.catalog, timestamp: cache.timestamp))
+        completion(.found(catalog: cache.localCatalog, timestamp: cache.timestamp))
     }
 }
 
