@@ -6,6 +6,7 @@
 //
 
 import XCTest
+import TMDB
 
 func anyURL() -> URL {
     return URL(string: "https://example.com")!
@@ -47,3 +48,11 @@ func expectationDescription(_ description: String = "Wait for request to complet
     return description
 }
 
+func createCatalog(_ count: Int = 4) -> Catalog {
+    let movies = count > 0 ? (0...count).map { createMovie(id: $0) } : []
+    return Catalog(page: 0, totalPages: 0, movies: movies)
+}
+
+func createMovie(id: Int) -> Movie {
+    return Movie(id: id, title: "Title \(id)", posterPath: "fake poster path \(id)")
+}

@@ -30,3 +30,6 @@ public struct LocalMovie: Equatable {
         self.posterPath = posterPath
     }
 }
+
+extension LocalCatalog: Codable {}
+extension LocalMovie : Codable {}

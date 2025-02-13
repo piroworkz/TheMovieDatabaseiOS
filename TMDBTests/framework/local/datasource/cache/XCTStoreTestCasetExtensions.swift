@@ -20,15 +20,6 @@ extension XCTStoreTestCase where Self: XCTestCase {
         return (sut, store)
     }
     
-    func createCatalog(_ count: Int = 4) -> Catalog {
-        let movies = count > 0 ? (0...count).map { self.createMovie(id: $0) } : []
-        return Catalog(page: 0, totalPages: 0, movies: movies)
-    }
-    
-    func createMovie(id: Int) -> Movie {
-        return Movie(id: id, title: "Title \(id)", posterPath: "fake poster path \(id)")
-    }
-    
     func assertThat(
         given sut: LocalCatalogLoader,
         whenever action: () -> Void
