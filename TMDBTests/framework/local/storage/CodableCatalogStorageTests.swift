@@ -71,9 +71,15 @@ class CodableCatalogStorage {
         guard let data = try? Data(contentsOf: storageURL) else {
             return completion(.empty)
         }
-        let decoder = JSONDecoder()
-        let cache = try! decoder.decode(CatalogCache.self, from: data)
-        completion(.found(catalog: cache.localCatalog, timestamp: cache.timestamp))
+        do {
+            let decoder = JSONDecoder()
+            let cache = try decoder.decode(CatalogCache.self, from: data)
+            completion(.found(catalog: cache.localCatalog, timestamp: cache.timestamp))
+        } catch {
+            print("<-- \(error)")
+            completion(.failure(error))
+        }
+
     }
 }
 
@@ -91,17 +97,18 @@ final class CodableCatalogStorageTests: XCTestCase {
         assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
     
-    func test_GIVEN_localCatalogAndTimestamp_WHEN_retrieveIsCalledAfterInsertingCache_THEN_shouldDeliverInsertedValues() {
+    func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverFoundValues() {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
         
         assertThatInsertResult(with: (localCatalog, timestamp), sut).isNil()
+        
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
     
     
-    func test_GIVEN_localCatalogAndTimestamp_WHEN_retrieveIsCalledMultipleTimesFromNonEmptyCache_THEN_shouldDeliverInsertedValues() {
+    func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverSameFoundValues() {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
@@ -109,6 +116,15 @@ final class CodableCatalogStorageTests: XCTestCase {
         assertThatInsertResult(with: (localCatalog, timestamp), sut).isNil()
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
+    }
+    
+    func test_GIVEN_cacheDataIsNotValid_WHEN_retrieveIsCalled_THEN_shouldDeliverFailureWithError() {
+        let sut = buildSut()
+        let expectedError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "The given data was not valid JSON."))
+        
+        try! "invalid data".write(to: testStorageURL(), atomically: false, encoding: .utf8)
+        
+        assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
     }
 }
 
@@ -178,15 +194,21 @@ extension CatalogStoreResult? {
     func isEqual(to expected: CatalogStoreResult?, file: StaticString = #filePath, line: UInt = #line) {
         switch (self, expected) {
         case (.empty, .empty):
-            break  // ✅ Son iguales si ambos son .empty
+            break
             
         case let (.found(actualCatalog, actualTimestamp), .found(expectedCatalog, expectedTimestamp)):
             XCTAssertEqual(actualCatalog, expectedCatalog, file: file, line: line)
             XCTAssertEqual(actualTimestamp, expectedTimestamp, file: file, line: line)
             
-        case let (.failure(actualError as NSError), .failure(expectedError as NSError)):
-            XCTAssertEqual(actualError.domain, expectedError.domain, file: file, line: line)
-            XCTAssertEqual(actualError.code, expectedError.code, file: file, line: line)
+        case let (.failure(actualError), .failure(expectedError)):
+              if let actualNSError = actualError as NSError?, let expectedNSError = expectedError as NSError? {
+                  XCTAssertEqual(actualNSError.domain, expectedNSError.domain, file: file, line: line)
+                  XCTAssertEqual(actualNSError.code, expectedNSError.code, file: file, line: line)
+              } else if let actualDecodingError = actualError as? DecodingError, let expectedDecodingError = expectedError as? DecodingError {
+                  XCTAssertEqual(actualDecodingError.localizedDescription, expectedDecodingError.localizedDescription, file: file, line: line)
+              } else {
+                  XCTFail("Errors are of different types or are not comparable", file: file, line: line)
+              }
             
         default:
             XCTFail("Expected result \(String(describing: expected)) but got \(String(describing: self)) instead", file: file, line: line)
