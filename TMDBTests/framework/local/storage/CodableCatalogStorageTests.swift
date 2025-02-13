@@ -141,6 +141,36 @@ final class CodableCatalogStorageTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
     
+    
+    func test_GIVEN_localCatalogAndTimestamp_WHEN_retrieveIsCalledMultipleTimesFromNonEmptyCache_THEN_shouldDeliverInsertedValues() {
+        let sut = buildSut()
+        let localCatalog = createCatalog().toLocal()
+        let timestamp = Date()
+        let expectation = expectation(description: expectationDescription())
+        
+        sut.insert(catalog: localCatalog, timestamp: timestamp) { insertError in
+            XCTAssertNil(insertError, "Failed to insert catalog")
+            
+            sut.retrieve { firstRetrieveResult in
+                sut.retrieve { secondRetrieveResult in
+                    switch (firstRetrieveResult, secondRetrieveResult) {
+                    case let (.found(firstCatalog, firstTimestamp), .found(secondCatalog, secondTimestamp)):
+                        XCTAssertEqual(firstCatalog, localCatalog)
+                        XCTAssertEqual(firstTimestamp, timestamp)
+                        XCTAssertEqual(secondCatalog, localCatalog)
+                        XCTAssertEqual(secondTimestamp, timestamp)
+                    default:
+                        XCTFail("Expected found result with inserted \(localCatalog) and \(timestamp) but got \(firstRetrieveResult) and \(secondRetrieveResult)")
+                    }
+                    expectation.fulfill()
+                }
+            }
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+    }
+    
+
 }
 
 
