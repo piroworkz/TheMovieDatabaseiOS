@@ -157,16 +157,16 @@ extension CodableCatalogStorageTests {
     }
     
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CodableCatalogStorage {
-        let sut = CodableCatalogStorage(storageURL: storageURL())
+        let sut = CodableCatalogStorage(storageURL: testStorageURL())
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
     }
     
     private func clearStorage() {
-        try? FileManager.default.removeItem(at: storageURL())
+        try? FileManager.default.removeItem(at: testStorageURL())
     }
     
-    private func storageURL() -> URL {
-       return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("catalog.store")
+    private func testStorageURL() -> URL {
+        return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
 }
