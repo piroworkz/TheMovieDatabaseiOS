@@ -12,7 +12,7 @@ class CodableCatalogStorage {
     
     private let storageURL: URL
     
-    init(storageURL: URL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("catalog.store")) {
+    init(storageURL: URL) {
         self.storageURL = storageURL
     }
     
@@ -81,7 +81,7 @@ final class CodableCatalogStorageTests: XCTestCase {
     private let storageURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("catalog.store")
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
-        let sut = CodableCatalogStorage()
+        let sut = buildSut()
         let expectation = expectation(description: expectationDescription())
         
         sut.retrieve { result in
@@ -98,7 +98,7 @@ final class CodableCatalogStorageTests: XCTestCase {
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty() {
-        let sut = CodableCatalogStorage()
+        let sut = buildSut()
         let expectation = expectation(description: expectationDescription())
         
         sut.retrieve { firstResult in
@@ -117,7 +117,7 @@ final class CodableCatalogStorageTests: XCTestCase {
     }
     
     func test_GIVEN_localCatalogAndTimestamp_WHEN_retrieveIsCalledAfterInsertingCache_THEN_shouldDeliverInsertedValues() {
-        let sut = CodableCatalogStorage()
+        let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
         let expectation = expectation(description: expectationDescription())
@@ -158,7 +158,13 @@ extension CodableCatalogStorageTests {
         clearStorage()
     }
     
-    func clearStorage() {
+    func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CodableCatalogStorage {
+        let sut = CodableCatalogStorage(storageURL: storageURL)
+        trackMemoryLeaks(instanceOf: sut, file: file, line: line)
+        return sut
+    }
+    
+    private func clearStorage() {
         try? FileManager.default.removeItem(at: storageURL)
     }
 }
