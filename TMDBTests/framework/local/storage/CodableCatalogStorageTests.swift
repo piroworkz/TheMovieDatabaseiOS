@@ -78,7 +78,6 @@ class CodableCatalogStorage {
 }
 
 final class CodableCatalogStorageTests: XCTestCase {
-    private let storageURL = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("catalog.store")
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
         let sut = buildSut()
@@ -142,7 +141,6 @@ final class CodableCatalogStorageTests: XCTestCase {
         wait(for: [expectation], timeout: 1.0)
     }
     
-    
 }
 
 
@@ -159,12 +157,16 @@ extension CodableCatalogStorageTests {
     }
     
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CodableCatalogStorage {
-        let sut = CodableCatalogStorage(storageURL: storageURL)
+        let sut = CodableCatalogStorage(storageURL: storageURL())
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
     }
     
     private func clearStorage() {
-        try? FileManager.default.removeItem(at: storageURL)
+        try? FileManager.default.removeItem(at: storageURL())
+    }
+    
+    private func storageURL() -> URL {
+       return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("catalog.store")
     }
 }
