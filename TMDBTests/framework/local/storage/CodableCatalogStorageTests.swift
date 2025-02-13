@@ -76,7 +76,6 @@ class CodableCatalogStorage {
             let cache = try decoder.decode(CatalogCache.self, from: data)
             completion(.found(catalog: cache.localCatalog, timestamp: cache.timestamp))
         } catch {
-            print("<-- \(error)")
             completion(.failure(error))
         }
 
@@ -126,6 +125,17 @@ final class CodableCatalogStorageTests: XCTestCase {
         
         assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
     }
+    
+    func test_GIVEN_cacheDataIsNotValid_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverFailureWithError() {
+        let sut = buildSut()
+        let expectedError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "The given data was not valid JSON."))
+        
+        try! "invalid data".write(to: testStorageURL(), atomically: false, encoding: .utf8)
+        
+        assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
+        assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
+    }
+    
 }
 
 
