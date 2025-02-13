@@ -81,64 +81,23 @@ final class CodableCatalogStorageTests: XCTestCase {
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
         let sut = buildSut()
-        let expectation = expectation(description: expectationDescription())
-        
-        sut.retrieve { result in
-            switch result {
-            case .empty:
-                break
-            default:
-                XCTFail("Expected empty catalog but got: \n\(String(describing: result))")
-            }
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 1.0)
+        assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty() {
         let sut = buildSut()
-        let expectation = expectation(description: expectationDescription())
         
-        sut.retrieve { firstResult in
-            sut.retrieve { secondResult in
-                switch (firstResult, secondResult) {
-                case (.empty, .empty):
-                    break
-                default:
-                    XCTFail("Expected empty catalog but got: \n\(firstResult) \(secondResult)")
-                }
-                expectation.fulfill()
-            }
-        }
-        
-        wait(for: [expectation], timeout: 1.0)
+        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
     
     func test_GIVEN_localCatalogAndTimestamp_WHEN_retrieveIsCalledAfterInsertingCache_THEN_shouldDeliverInsertedValues() {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
-        let expectation = expectation(description: expectationDescription())
         
-        sut.insert(catalog: localCatalog, timestamp: timestamp) { insertError in
-            XCTAssertNil(insertError, "Failed to insert catalog")
-            
-            if insertError == nil {
-                sut.retrieve { retrieveResult in
-                    switch retrieveResult{
-                    case let .found(catalogResult, timestampResult):
-                        XCTAssertEqual(catalogResult, localCatalog)
-                        XCTAssertEqual(timestampResult, timestamp)
-                    default:
-                        XCTFail("Expected catalog but got: \(retrieveResult)")
-                    }
-                    expectation.fulfill()
-                }
-            }
-        }
-        
-        wait(for: [expectation], timeout: 1.0)
+        assertThatInsertResult(with: (localCatalog, timestamp), sut).isNil()
+        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
     
     
@@ -146,31 +105,11 @@ final class CodableCatalogStorageTests: XCTestCase {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
-        let expectation = expectation(description: expectationDescription())
         
-        sut.insert(catalog: localCatalog, timestamp: timestamp) { insertError in
-            XCTAssertNil(insertError, "Failed to insert catalog")
-            
-            sut.retrieve { firstRetrieveResult in
-                sut.retrieve { secondRetrieveResult in
-                    switch (firstRetrieveResult, secondRetrieveResult) {
-                    case let (.found(firstCatalog, firstTimestamp), .found(secondCatalog, secondTimestamp)):
-                        XCTAssertEqual(firstCatalog, localCatalog)
-                        XCTAssertEqual(firstTimestamp, timestamp)
-                        XCTAssertEqual(secondCatalog, localCatalog)
-                        XCTAssertEqual(secondTimestamp, timestamp)
-                    default:
-                        XCTFail("Expected found result with inserted \(localCatalog) and \(timestamp) but got \(firstRetrieveResult) and \(secondRetrieveResult)")
-                    }
-                    expectation.fulfill()
-                }
-            }
-        }
-        
-        wait(for: [expectation], timeout: 1.0)
+        assertThatInsertResult(with: (localCatalog, timestamp), sut).isNil()
+        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
+        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
-    
-
 }
 
 
@@ -198,5 +137,67 @@ extension CodableCatalogStorageTests {
     
     private func testStorageURL() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
+    }
+    
+    func assertThatRetrieveResult(
+        _ sut: CodableCatalogStorage
+    ) -> CatalogStoreResult? {
+        let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
+        
+        var receivedResult: CatalogStoreResult?
+        sut.retrieve { result in
+            receivedResult = result
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        return receivedResult
+    }
+    
+    func assertThatInsertResult(
+        with expected: (catalog:LocalCatalog, timestamp: Date),
+        _ sut: CodableCatalogStorage
+    ) -> Error? {
+        let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
+        
+        var receivedError: Error?
+        sut.insert(catalog: expected.catalog, timestamp: expected.timestamp) { error in
+            receivedError = error
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        return receivedError
+    }
+}
+
+extension CatalogStoreResult? {
+    
+    func isEqual(to expected: CatalogStoreResult?, file: StaticString = #filePath, line: UInt = #line) {
+        switch (self, expected) {
+        case (.empty, .empty):
+            break  // ✅ Son iguales si ambos son .empty
+            
+        case let (.found(actualCatalog, actualTimestamp), .found(expectedCatalog, expectedTimestamp)):
+            XCTAssertEqual(actualCatalog, expectedCatalog, file: file, line: line)
+            XCTAssertEqual(actualTimestamp, expectedTimestamp, file: file, line: line)
+            
+        case let (.failure(actualError as NSError), .failure(expectedError as NSError)):
+            XCTAssertEqual(actualError.domain, expectedError.domain, file: file, line: line)
+            XCTAssertEqual(actualError.code, expectedError.code, file: file, line: line)
+            
+        default:
+            XCTFail("Expected result \(String(describing: expected)) but got \(String(describing: self)) instead", file: file, line: line)
+        }
+    }
+    
+    func isNotNil(file: StaticString = #filePath, line: UInt = #line) {
+        if case .failure(let error) = self {
+            XCTAssertNotNil(error, file: file, line: line)
+        } else {
+            XCTFail("Expected failure but got \(String(describing: self))", file: file, line: line)
+        }
     }
 }
