@@ -50,7 +50,7 @@ extension CodableCatalogStorageTests {
         return receivedResult
     }
     
-    func assertThatInsertResult(
+    func assertThatInsertError(
         with expected: (catalog:LocalCatalog, timestamp: Date),
         _ sut: CatalogStore
     ) -> Error? {
@@ -67,7 +67,7 @@ extension CodableCatalogStorageTests {
         return receivedError
     }
     
-    func assertThatDeleteResult(
+    func assertThatDeleteError(
         _ sut: CatalogStore
     ) -> Error? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")

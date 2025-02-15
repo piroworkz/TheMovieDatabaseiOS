@@ -27,7 +27,7 @@ final class CodableCatalogStorageTests: XCTestCase {
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
         
-        assertThatInsertResult(with: (localCatalog, timestamp), sut).isNil()
+        assertThatInsertError(with: (localCatalog, timestamp), sut).isNil()
         
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
@@ -37,7 +37,7 @@ final class CodableCatalogStorageTests: XCTestCase {
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
         
-        assertThatInsertResult(with: (localCatalog, timestamp), sut).isNil()
+        assertThatInsertError(with: (localCatalog, timestamp), sut).isNil()
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
@@ -68,9 +68,9 @@ final class CodableCatalogStorageTests: XCTestCase {
         let newTimeStamp: Date = existingTimestamp.addingTimeInterval(10)
         let newLocalCatalog = createCatalog(2).toLocal()
         
-        assertThatInsertResult(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isNil()
+        assertThatInsertError(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isNil()
         
-        assertThatInsertResult(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isNil()
+        assertThatInsertError(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isNil()
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: newLocalCatalog, timestamp: newTimeStamp))
     }
     
@@ -80,13 +80,13 @@ final class CodableCatalogStorageTests: XCTestCase {
         let timestamp = Date()
         let localCatalog = createCatalog().toLocal()
         
-        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isNotNil()
+        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNotNil()
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_deleteIsCalled_THEN_shouldNotHaveSideEffects() {
         let sut = buildSut()
         
-        assertThatDeleteResult(sut).isNil()
+        assertThatDeleteError(sut).isNil()
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_deleteSucceeds_THEN_shouldDeleteExistingCache() {
@@ -94,8 +94,8 @@ final class CodableCatalogStorageTests: XCTestCase {
         let timestamp = Date()
         let localCatalog = createCatalog().toLocal()
         
-        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
-        assertThatDeleteResult(sut).isNil()
+        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+        assertThatDeleteError(sut).isNil()
         
         assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
@@ -104,6 +104,35 @@ final class CodableCatalogStorageTests: XCTestCase {
         let invalidStoreURL = cachesDirectory()
         let sut = buildSut(storeURL: invalidStoreURL)
         
-        assertThatDeleteResult(sut).isNotNil()
+        assertThatDeleteError(sut).isNotNil()
     }
+    
+    func test_GIVEN_multipleOperations_WHEN_executedSerially_THEN_shouldCompleteOperationsInOrder() {
+        let sut = buildSut()
+        var completionOrder = [XCTestExpectation]()
+        
+        let firstOperation = expectation(description: "first operation")
+        sut.insert(createCatalog().toLocal(), Date()) { _ in
+            completionOrder.append(firstOperation)
+            firstOperation.fulfill()
+        }
+        
+        let secondtOperation = expectation(description: "second operation")
+        sut.deleteCachedCatalog { _ in
+            completionOrder.append(secondtOperation)
+            secondtOperation.fulfill()
+        }
+        
+        let thirdOperation = expectation(description: "third operation")
+        sut.insert(createCatalog().toLocal(), Date()) { _ in
+            completionOrder.append(thirdOperation)
+            thirdOperation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 5.0)
+        
+        XCTAssertEqual(completionOrder, [firstOperation, secondtOperation, thirdOperation])
+    }
+    
+    
 }
