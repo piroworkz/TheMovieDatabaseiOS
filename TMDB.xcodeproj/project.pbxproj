@@ -39,7 +39,6 @@
 /* Begin PBXFileReference section */
 		1810BD362D5833BF0003542F /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		1810BD372D5834490003542F /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
-		182535902D611CB5000A5A7F /* CatalogCache.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = CatalogCache.xcdatamodel; sourceTree = "<group>"; };
 		182B38252D58271200ED5BE2 /* TMDBEndtoEndTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = TMDBEndtoEndTests.xctestplan; sourceTree = "<group>"; };
 		18331EE42D59724500EE7715 /* SharedTest.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SharedTest.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		18331EF42D59756600EE7715 /* CI.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = CI.xctestplan; sourceTree = "<group>"; };
@@ -50,6 +49,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		1825359A2D6144B2000A5A7F /* Exceptions for "TMDB" folder in "TMDBTests" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				MoviesFeature/framework/core_data/CatalogCache.xcdatamodeld,
+			);
+			target = 183944E32D56D31600C4001D /* TMDBTests */;
+		};
 		18331EEF2D59726D00EE7715 /* Exceptions for "SharedTest" folder in "SharedTest" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -79,6 +85,7 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				183944EC2D56D31600C4001D /* Exceptions for "TMDB" folder in "TMDB" target */,
+				1825359A2D6144B2000A5A7F /* Exceptions for "TMDB" folder in "TMDBTests" target */,
 			);
 			path = TMDB;
 			sourceTree = "<group>";
@@ -133,7 +140,6 @@
 		183944D02D56D31600C4001D = {
 			isa = PBXGroup;
 			children = (
-				1825358F2D611CB5000A5A7F /* CatalogCache.xcdatamodeld */,
 				18331EF42D59756600EE7715 /* CI.xctestplan */,
 				1810BD372D5834490003542F /* .gitignore */,
 				1810BD362D5833BF0003542F /* Secrets.xcconfig */,
@@ -721,19 +727,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCVersionGroup section */
-		1825358F2D611CB5000A5A7F /* CatalogCache.xcdatamodeld */ = {
-			isa = XCVersionGroup;
-			children = (
-				182535902D611CB5000A5A7F /* CatalogCache.xcdatamodel */,
-			);
-			currentVersion = 182535902D611CB5000A5A7F /* CatalogCache.xcdatamodel */;
-			path = CatalogCache.xcdatamodeld;
-			sourceTree = "<group>";
-			versionGroupType = wrapper.xcdatamodel;
-		};
-/* End XCVersionGroup section */
 	};
 	rootObject = 183944D12D56D31600C4001D /* Project object */;
 }

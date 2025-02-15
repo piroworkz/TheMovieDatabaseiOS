@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
-    <entity name="ManagedCache" representedClassName="ManagedCache" syncable="YES" codeGenerationType="class">
+    <entity name="ManagedCache" representedClassName="ManagedCache" syncable="YES">
         <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
-        <relationship name="catalog" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ManagedCatalog"/>
+        <relationship name="catalog" maxCount="1" deletionRule="Cascade" destinationEntity="ManagedCatalog" inverseName="cache" inverseEntity="ManagedCatalog"/>
     </entity>
-    <entity name="ManagedCatalog" representedClassName="ManagedCatalog" parentEntity="ManagedCache" syncable="YES" codeGenerationType="class">
+    <entity name="ManagedCatalog" representedClassName="ManagedCatalog" syncable="YES">
         <attribute name="page" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalPages" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="cache" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedCache" inverseName="catalog" inverseEntity="ManagedCache"/>
         <relationship name="movies" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MovieEntity" inverseName="page" inverseEntity="MovieEntity"/>
     </entity>
-    <entity name="MovieEntity" representedClassName="MovieEntity" syncable="YES" codeGenerationType="class">
+    <entity name="MovieEntity" representedClassName="MovieEntity" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="posterPath" attributeType="String"/>
         <attribute name="title" attributeType="String"/>

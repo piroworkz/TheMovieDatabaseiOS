@@ -7,15 +7,17 @@
 
 import CoreData
 
- class ManagedCache: NSManagedObject {
+class ManagedCache: NSManagedObject {
     @NSManaged var timestamp: Date
-    @NSManaged var catalog: ManagedCatalog
+    @NSManaged fileprivate var catalog: ManagedCatalog
 }
 
 private class ManagedCatalog: NSManagedObject {
     @NSManaged var page: Int64
     @NSManaged var totalPages: Int64
     @NSManaged var movies: NSOrderedSet
+    
+    @NSManaged var cache: ManagedCache?
 }
 
 private class ManagedMovie: NSManagedObject {

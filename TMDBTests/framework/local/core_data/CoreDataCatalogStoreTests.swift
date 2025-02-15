@@ -12,7 +12,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
         let sut = buildSut()
-        
+
         assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
     
