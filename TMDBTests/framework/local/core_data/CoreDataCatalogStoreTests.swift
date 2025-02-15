@@ -68,7 +68,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
 extension CoreDataCatalogStoreTests {
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CatalogStore {
         let storeBundle = Bundle(for: CoreDataCatalogStore.self)
-        let sut = CoreDataCatalogStore(bundle: storeBundle)
+        let sut = try! CoreDataCatalogStore(bundle: storeBundle)
         trackMemoryLeaks(instanceOf: sut)
         return sut
     }

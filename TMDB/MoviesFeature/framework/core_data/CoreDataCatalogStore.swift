@@ -8,10 +8,10 @@
 import CoreData
 
 public final class CoreDataCatalogStore: CatalogStore {
-    private let container: NSPersistentContainer?
+    private let container: NSPersistentContainer
     
-    public init(bundle: Bundle = .main) {
-        container = try? NSPersistentContainer.load(modelName: "CacheStore", in: bundle)
+    public init(bundle: Bundle = .main) throws {
+        container = try NSPersistentContainer.load(modelName: "CacheStore", in: bundle)
     }
     
     public func deleteCachedCatalog(completion: @escaping StoreCompletion) {
