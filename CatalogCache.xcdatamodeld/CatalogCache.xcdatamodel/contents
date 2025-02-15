@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="ManagedCache" representedClassName="ManagedCache" syncable="YES" codeGenerationType="class">
-        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="timestamp" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="catalog" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ManagedCatalog"/>
     </entity>
     <entity name="ManagedCatalog" representedClassName="ManagedCatalog" parentEntity="ManagedCache" syncable="YES" codeGenerationType="class">
