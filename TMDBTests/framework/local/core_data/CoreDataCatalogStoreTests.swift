@@ -12,7 +12,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
         let sut = buildSut()
-
+        
         assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
     
@@ -62,13 +62,14 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
     func test_GIVEN_multipleOperations_WHEN_executedSerially_THEN_shouldCompleteOperationsInOrder() {
         
     }
-
+    
 }
 
 extension CoreDataCatalogStoreTests {
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CatalogStore {
         let storeBundle = Bundle(for: CoreDataCatalogStore.self)
-        let sut = try! CoreDataCatalogStore(bundle: storeBundle)
+        let storeURL = URL(fileURLWithPath: "/dev/null")
+        let sut = try! CoreDataCatalogStore(storeURL: storeURL, bundle: storeBundle)
         trackMemoryLeaks(instanceOf: sut)
         return sut
     }
