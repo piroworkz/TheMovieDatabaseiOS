@@ -84,6 +84,10 @@ class CodableCatalogStorage {
         }
 
     }
+    
+    func deleteCachedCatalog(completion: @escaping CatalogStore.StoreCompletion) {
+        completion(nil)
+    }
 }
 
 final class CodableCatalogStorageTests: XCTestCase {
@@ -162,6 +166,12 @@ final class CodableCatalogStorageTests: XCTestCase {
         assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isNotNil()
     }
     
+    func test_GIVEN_cacheIsEmpty_WHEN_deleteIsCalled_THEN_shouldNotHaveSideEffects() {
+        let sut = buildSut()
+        
+        assertThatDeleteResult(sut).isNil()
+    }
+    
 
 }
 
@@ -216,6 +226,22 @@ extension CodableCatalogStorageTests {
         
         var receivedError: Error?
         sut.insert(catalog: expected.catalog, timestamp: expected.timestamp) { error in
+            receivedError = error
+            expectation.fulfill()
+        }
+        
+        wait(for: [expectation], timeout: 1.0)
+        
+        return receivedError
+    }
+    
+    func assertThatDeleteResult(
+        _ sut: CodableCatalogStorage
+    ) -> Error? {
+        let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
+        
+        var receivedError: Error?
+        sut.deleteCachedCatalog { error in
             receivedError = error
             expectation.fulfill()
         }
