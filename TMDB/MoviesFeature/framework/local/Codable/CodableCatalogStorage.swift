@@ -5,17 +5,17 @@
 //  Created by David Luna on 14/02/25.
 //
 
+import Foundation
 
-
-class CodableCatalogStorage: CatalogStore {
+public final class CodableCatalogStorage: CatalogStore {
     
     private let storageURL: URL
     
-    init(storageURL: URL) {
+    public init(storageURL: URL) {
         self.storageURL = storageURL
     }
     
-    func insert(_ catalog: LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion) {
+    public func insert(_ catalog: LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion) {
         do {
             let encoder = JSONEncoder()
             let cache = CatalogCache(catalog: CodableCatalog(catalog), timestamp: timestamp)
@@ -27,7 +27,7 @@ class CodableCatalogStorage: CatalogStore {
         }
     }
     
-    func retrieve(completion: @escaping RetrieveCompletion) {
+    public func retrieve(completion: @escaping RetrieveCompletion) {
         guard let data = try? Data(contentsOf: storageURL) else {
             return completion(.empty)
         }
@@ -41,7 +41,7 @@ class CodableCatalogStorage: CatalogStore {
         
     }
     
-    func deleteCachedCatalog(completion: @escaping StoreCompletion) {
+    public func deleteCachedCatalog(completion: @escaping StoreCompletion) {
         
         if !FileManager.default.fileExists(atPath: storageURL.path) {
             completion(nil)

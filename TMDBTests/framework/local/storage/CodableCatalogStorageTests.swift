@@ -32,7 +32,6 @@ final class CodableCatalogStorageTests: XCTestCase {
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
     
-    
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverSameFoundValues() {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
