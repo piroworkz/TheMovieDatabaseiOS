@@ -20,7 +20,7 @@ extension CodableCatalogStorageTests {
         clearStorage()
     }
     
-    func buildSut(storeURL: URL? = nil, file: StaticString = #filePath, line: UInt = #line) -> CodableCatalogStorage {
+    func buildSut(storeURL: URL? = nil, file: StaticString = #filePath, line: UInt = #line) -> CatalogStore {
         let sut = CodableCatalogStorage(storageURL: storeURL ?? testStorageURL())
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
@@ -35,7 +35,7 @@ extension CodableCatalogStorageTests {
     }
     
     func assertThatRetrieveResult(
-        _ sut: CodableCatalogStorage
+        _ sut: CatalogStore
     ) -> CatalogStoreResult? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
@@ -52,7 +52,7 @@ extension CodableCatalogStorageTests {
     
     func assertThatInsertResult(
         with expected: (catalog:LocalCatalog, timestamp: Date),
-        _ sut: CodableCatalogStorage
+        _ sut: CatalogStore
     ) -> Error? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
@@ -68,7 +68,7 @@ extension CodableCatalogStorageTests {
     }
     
     func assertThatDeleteResult(
-        _ sut: CodableCatalogStorage
+        _ sut: CatalogStore
     ) -> Error? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
