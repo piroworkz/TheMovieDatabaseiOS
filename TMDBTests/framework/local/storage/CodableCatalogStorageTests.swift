@@ -60,11 +60,15 @@ class CodableCatalogStorage {
     }
     
     func insert(catalog: LocalCatalog, timestamp: Date, completion: @escaping CatalogStore.StoreCompletion) {
-        let encoder = JSONEncoder()
-        let cache = CatalogCache(catalog: CodableCatalog(catalog), timestamp: timestamp)
-        let encoded = try! encoder.encode(cache)
-        try! encoded.write(to: storageURL)
-        completion(nil)
+        do {
+            let encoder = JSONEncoder()
+            let cache = CatalogCache(catalog: CodableCatalog(catalog), timestamp: timestamp)
+            let encoded = try encoder.encode(cache)
+            try encoded.write(to: storageURL)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
     }
     
     func retrieve(completion: @escaping CatalogStore.RetrieveCompletion) {
@@ -149,8 +153,16 @@ final class CodableCatalogStorageTests: XCTestCase {
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: newLocalCatalog, timestamp: newTimeStamp))
     }
     
-
+    func test_GIVEN_invalidStoreURL_WHEN_insertFails_THEN_shouldDeliverInsertError() {
+        let invalidStoreURL = URL(fileURLWithPath: "invalid://path")
+        let sut = buildSut(storeURL: invalidStoreURL)
+        let timestamp = Date()
+        let localCatalog = createCatalog().toLocal()
+        
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isNotNil()
+    }
     
+
 }
 
 
@@ -166,8 +178,8 @@ extension CodableCatalogStorageTests {
         clearStorage()
     }
     
-    func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CodableCatalogStorage {
-        let sut = CodableCatalogStorage(storageURL: testStorageURL())
+    func buildSut(storeURL: URL? = nil, file: StaticString = #filePath, line: UInt = #line) -> CodableCatalogStorage {
+        let sut = CodableCatalogStorage(storageURL: storeURL ?? testStorageURL())
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
     }

@@ -29,7 +29,7 @@ func getMethod() -> String {
 }
 
 func anyNSError() -> NSError {
-    return NSError(domain: "", code: 0, userInfo: nil)
+    return NSError(domain: "", code: 4, userInfo: nil)
 }
 
 func anyHttpUrlResponse() -> HTTPURLResponse {

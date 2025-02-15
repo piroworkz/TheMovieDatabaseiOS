@@ -95,4 +95,10 @@ extension Error? {
     func isNil(file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertNil(self, file: file, line: line)
     }
+    
+    func isNotNil(file: StaticString = #filePath, line: UInt = #line) {
+        XCTAssertNotNil(self, file: file, line: line)
+    }
+    
+    
 }
