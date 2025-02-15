@@ -8,22 +8,6 @@
 import XCTest
 import TMDB
 
-class CoreDataCatalogStore: CatalogStore {
-    func deleteCachedCatalog(completion: @escaping StoreCompletion) {
-        
-    }
-    
-    func insert(_ catalog: TMDB.LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion) {
-        
-    }
-    
-    func retrieve(completion: @escaping RetrieveCompletion) {
-        completion(.empty)
-    }
-    
-    
-}
-
 final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
@@ -83,7 +67,8 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
 
 extension CoreDataCatalogStoreTests {
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CatalogStore {
-        let sut = CoreDataCatalogStore()
+        let storeBundle = Bundle(for: CoreDataCatalogStore.self)
+        let sut = CoreDataCatalogStore(bundle: storeBundle)
         trackMemoryLeaks(instanceOf: sut)
         return sut
     }

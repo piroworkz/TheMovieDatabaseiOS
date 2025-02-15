@@ -7,7 +7,7 @@
 
 import CoreData
 
-private class ManagedCache: NSManagedObject {
+ class ManagedCache: NSManagedObject {
     @NSManaged var timestamp: Date
     @NSManaged var catalog: ManagedCatalog
 }
