@@ -43,7 +43,7 @@ class CodableCatalogStorage {
         }
     }
     
-    struct CodableMovie: Codable {
+    private struct CodableMovie: Codable {
         let id: Int
         let title: String
         let posterPath: String
@@ -135,6 +135,21 @@ final class CodableCatalogStorageTests: XCTestCase {
         assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
         assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
     }
+    
+    func test_GIVEN_cacheIsNotEmpty_WHEN_insertIsCalled_THEN_shouldOverWriteExistingCache() {
+        let sut = buildSut()
+        let existingTimestamp = Date()
+        let existingLocalCatalog = createCatalog(1).toLocal()
+        let newTimeStamp: Date = existingTimestamp.addingTimeInterval(10)
+        let newLocalCatalog = createCatalog(2).toLocal()
+        
+        assertThatInsertResult(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isNil()
+        
+        assertThatInsertResult(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isNil()
+        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: newLocalCatalog, timestamp: newTimeStamp))
+    }
+    
+
     
 }
 
