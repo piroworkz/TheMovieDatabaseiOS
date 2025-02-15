@@ -9,9 +9,10 @@ import CoreData
 
 public final class CoreDataCatalogStore: CatalogStore {
     private let container: NSPersistentContainer
-    
+    private let context: NSManagedObjectContext
     public init(bundle: Bundle = .main) throws {
         container = try NSPersistentContainer.load(modelName: "CatalogCache", in: bundle)
+        context = container.newBackgroundContext()
     }
     
     public func deleteCachedCatalog(completion: @escaping StoreCompletion) {
