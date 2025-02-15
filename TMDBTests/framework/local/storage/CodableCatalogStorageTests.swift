@@ -82,11 +82,21 @@ class CodableCatalogStorage {
         } catch {
             completion(.failure(error))
         }
-
+        
     }
     
     func deleteCachedCatalog(completion: @escaping CatalogStore.StoreCompletion) {
-        completion(nil)
+        
+        if !FileManager.default.fileExists(atPath: storageURL.path) {
+            completion(nil)
+            return
+        }
+        do {
+            try FileManager.default.removeItem(at: storageURL)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
     }
 }
 
@@ -172,7 +182,25 @@ final class CodableCatalogStorageTests: XCTestCase {
         assertThatDeleteResult(sut).isNil()
     }
     
-
+    func test_GIVEN_cacheIsNotEmpty_WHEN_deleteSucceeds_THEN_shouldDeleteExistingCache() {
+        let sut = buildSut()
+        let timestamp = Date()
+        let localCatalog = createCatalog().toLocal()
+        
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+        assertThatDeleteResult(sut).isNil()
+        
+        assertThatRetrieveResult(sut).isEqual(to: .empty)
+    }
+    
+    func test_GIVEN_invalidStoreURL_WHEN_deleteFails_THEN_shouldDeliverDeleteError() {
+        let invalidStoreURL = cachesDirectory()
+        let sut = buildSut(storeURL: invalidStoreURL)
+        
+        assertThatDeleteResult(sut).isNotNil()
+    }
+    
+    
 }
 
 
@@ -201,6 +229,12 @@ extension CodableCatalogStorageTests {
     private func testStorageURL() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
+    
+    func cachesDirectory() -> URL {
+        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+    }
+    
+    
     
     func assertThatRetrieveResult(
         _ sut: CodableCatalogStorage
@@ -264,14 +298,14 @@ extension CatalogStoreResult? {
             XCTAssertEqual(actualTimestamp, expectedTimestamp, file: file, line: line)
             
         case let (.failure(actualError), .failure(expectedError)):
-              if let actualNSError = actualError as NSError?, let expectedNSError = expectedError as NSError? {
-                  XCTAssertEqual(actualNSError.domain, expectedNSError.domain, file: file, line: line)
-                  XCTAssertEqual(actualNSError.code, expectedNSError.code, file: file, line: line)
-              } else if let actualDecodingError = actualError as? DecodingError, let expectedDecodingError = expectedError as? DecodingError {
-                  XCTAssertEqual(actualDecodingError.localizedDescription, expectedDecodingError.localizedDescription, file: file, line: line)
-              } else {
-                  XCTFail("Errors are of different types or are not comparable", file: file, line: line)
-              }
+            if let actualNSError = actualError as NSError?, let expectedNSError = expectedError as NSError? {
+                XCTAssertEqual(actualNSError.domain, expectedNSError.domain, file: file, line: line)
+                XCTAssertEqual(actualNSError.code, expectedNSError.code, file: file, line: line)
+            } else if let actualDecodingError = actualError as? DecodingError, let expectedDecodingError = expectedError as? DecodingError {
+                XCTAssertEqual(actualDecodingError.localizedDescription, expectedDecodingError.localizedDescription, file: file, line: line)
+            } else {
+                XCTFail("Errors are of different types or are not comparable", file: file, line: line)
+            }
             
         default:
             XCTFail("Expected result \(String(describing: expected)) but got \(String(describing: self)) instead", file: file, line: line)
