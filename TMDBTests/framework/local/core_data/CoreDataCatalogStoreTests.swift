@@ -27,13 +27,16 @@ class CoreDataCatalogStore: CatalogStore {
 final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
-        let sut = CoreDataCatalogStore()
+        let sut = buildSut()
         
         assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty() {
+        let sut = buildSut()
         
+        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        assertThatRetrieveResult(sut).isEqual(to: .empty)
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverFoundValues() {
