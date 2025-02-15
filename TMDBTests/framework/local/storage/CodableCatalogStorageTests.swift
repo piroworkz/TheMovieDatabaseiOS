@@ -8,7 +8,7 @@
 import XCTest
 import TMDB
 
-class CodableCatalogStorage {
+class CodableCatalogStorage: CatalogStore {
     
     private let storageURL: URL
     
@@ -16,6 +16,45 @@ class CodableCatalogStorage {
         self.storageURL = storageURL
     }
     
+    func insert(_ catalog: LocalCatalog, _ timestamp: Date, completion: @escaping CatalogStore.StoreCompletion) {
+        do {
+            let encoder = JSONEncoder()
+            let cache = CatalogCache(catalog: CodableCatalog(catalog), timestamp: timestamp)
+            let encoded = try encoder.encode(cache)
+            try encoded.write(to: storageURL)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
+    }
+    
+    func retrieve(completion: @escaping CatalogStore.RetrieveCompletion) {
+        guard let data = try? Data(contentsOf: storageURL) else {
+            return completion(.empty)
+        }
+        do {
+            let decoder = JSONDecoder()
+            let cache = try decoder.decode(CatalogCache.self, from: data)
+            completion(.found(catalog: cache.localCatalog, timestamp: cache.timestamp))
+        } catch {
+            completion(.failure(error))
+        }
+        
+    }
+    
+    func deleteCachedCatalog(completion: @escaping CatalogStore.StoreCompletion) {
+        
+        if !FileManager.default.fileExists(atPath: storageURL.path) {
+            completion(nil)
+            return
+        }
+        do {
+            try FileManager.default.removeItem(at: storageURL)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
+    }
     
     private struct CatalogCache: Codable {
         let catalog: CodableCatalog
@@ -56,46 +95,6 @@ class CodableCatalogStorage {
         
         var localMovie: LocalMovie {
             return LocalMovie(id: id, title: title, posterPath: posterPath)
-        }
-    }
-    
-    func insert(catalog: LocalCatalog, timestamp: Date, completion: @escaping CatalogStore.StoreCompletion) {
-        do {
-            let encoder = JSONEncoder()
-            let cache = CatalogCache(catalog: CodableCatalog(catalog), timestamp: timestamp)
-            let encoded = try encoder.encode(cache)
-            try encoded.write(to: storageURL)
-            completion(nil)
-        } catch {
-            completion(error)
-        }
-    }
-    
-    func retrieve(completion: @escaping CatalogStore.RetrieveCompletion) {
-        guard let data = try? Data(contentsOf: storageURL) else {
-            return completion(.empty)
-        }
-        do {
-            let decoder = JSONDecoder()
-            let cache = try decoder.decode(CatalogCache.self, from: data)
-            completion(.found(catalog: cache.localCatalog, timestamp: cache.timestamp))
-        } catch {
-            completion(.failure(error))
-        }
-        
-    }
-    
-    func deleteCachedCatalog(completion: @escaping CatalogStore.StoreCompletion) {
-        
-        if !FileManager.default.fileExists(atPath: storageURL.path) {
-            completion(nil)
-            return
-        }
-        do {
-            try FileManager.default.removeItem(at: storageURL)
-            completion(nil)
-        } catch {
-            completion(error)
         }
     }
 }
@@ -199,8 +198,6 @@ final class CodableCatalogStorageTests: XCTestCase {
         
         assertThatDeleteResult(sut).isNotNil()
     }
-    
-    
 }
 
 
@@ -259,7 +256,7 @@ extension CodableCatalogStorageTests {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
         var receivedError: Error?
-        sut.insert(catalog: expected.catalog, timestamp: expected.timestamp) { error in
+        sut.insert(expected.catalog, expected.timestamp) { error in
             receivedError = error
             expectation.fulfill()
         }
