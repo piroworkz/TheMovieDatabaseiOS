@@ -8,17 +8,7 @@
 import XCTest
 import TMDB
 
-extension CodableCatalogStorageTests {
-    
-    override func setUp() {
-        super.setUp()
-        clearStorage()
-    }
-    
-    override func tearDown() {
-        super.tearDown()
-        clearStorage()
-    }
+extension CatalogStoreSpecs where Self: XCTestCase {
     
     func buildSut(storeURL: URL? = nil, file: StaticString = #filePath, line: UInt = #line) -> CatalogStore {
         let sut = CodableCatalogStorage(storageURL: storeURL ?? testStorageURL())
@@ -83,7 +73,7 @@ extension CodableCatalogStorageTests {
         return receivedError
     }
     
-    private func clearStorage() {
+    func clearStorage() {
         try? FileManager.default.removeItem(at: testStorageURL())
     }
 }
