@@ -131,7 +131,7 @@ final class CodableCatalogStorageTests: XCTestCase {
         
         waitForExpectations(timeout: 5.0)
         
-        XCTAssertEqual(completionOrder, [firstOperation, secondtOperation, thirdOperation])
+        XCTAssertEqual(completionOrder, [firstOperation, secondtOperation, thirdOperation], "Expected side-effects to run serially but operations finished in different order")
     }
     
     
