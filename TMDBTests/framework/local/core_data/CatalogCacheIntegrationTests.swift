@@ -10,7 +10,6 @@ import TMDB
 
 final class CatalogCacheIntegrationTests: XCTestCase {
     
-    
     func test_GIVEN_cacheIsEmpty_WHEN_load_THEN_shouldDeliverEmptyCache() {
         let sut = buildSut()
         let expectation = expectation(description: expectationDescription())
@@ -33,7 +32,6 @@ final class CatalogCacheIntegrationTests: XCTestCase {
     
     
     
-    
     func buildSut(file: StaticString = #filePath, line: UInt = #line) -> GetCatalogCaheUseCase {
         let storeBundle = Bundle(for: CoreDataCatalogStore.self)
         let storeURL = storageURLTests()
@@ -46,11 +44,11 @@ final class CatalogCacheIntegrationTests: XCTestCase {
         return sut
     }
     
-    func storageURLTests() -> URL {
+    private func storageURLTests() -> URL {
         return cachesDirectory().appendingPathComponent("\(type(of: self)).store")
     }
     
-    func cachesDirectory() -> URL {
+    private func cachesDirectory() -> URL {
         return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
     }
 }
