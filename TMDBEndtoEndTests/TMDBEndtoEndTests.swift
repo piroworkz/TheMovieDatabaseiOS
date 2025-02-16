@@ -33,7 +33,7 @@ final class TMDBEndtoEndTests: XCTestCase {
         }
     }
     
-    private func buildSut(file: StaticString = #filePath, line: UInt = #line) -> CatalogLoader {
+    private func buildSut(file: StaticString = #filePath, line: UInt = #line) -> FetchCatalogUseCase {
         guard let apiKey = ProcessInfo.processInfo.environment["apiKey"], !apiKey.isEmpty,
               let baseUrlString = ProcessInfo.processInfo.environment["baseUrlString"], !baseUrlString.isEmpty else {
             fatalError("Missing required environment variables: apiKey and/or baseUrlString")
