@@ -52,11 +52,19 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
     
+    func test_GIVEN_cacheIsEmpty_WHEN_insertSucceeds_THEN_shouldNotDeliverError() {
+        let sut = buildSut()
+        let localCatalog = createCatalog().toLocal()
+        let timestamp: Date = Date()
+        
+        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+    }
+    
     func test_GIVEN_cacheDataIsNotValid_WHEN_retrieveIsCalled_THEN_shouldDeliverFailureWithError() {
         let sut = buildSut()
         let expectedError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "The given data was not valid JSON."))
         
-        try! "invalid data".write(to: testStorageURL(), atomically: false, encoding: .utf8)
+        try! "invalid data".write(to: storageURLTests(), atomically: false, encoding: .utf8)
         
         assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
     }
@@ -65,7 +73,7 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         let sut = buildSut()
         let expectedError = DecodingError.dataCorrupted(DecodingError.Context(codingPath: [], debugDescription: "The given data was not valid JSON."))
         
-        try! "invalid data".write(to: testStorageURL(), atomically: false, encoding: .utf8)
+        try! "invalid data".write(to: storageURLTests(), atomically: false, encoding: .utf8)
         
         assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
         assertThatRetrieveResult(sut).isEqual(to: .failure(expectedError))
@@ -143,6 +151,4 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         
         XCTAssertEqual(completionOrder, [firstOperation, secondtOperation, thirdOperation], "Expected side-effects to run serially but operations finished in different order")
     }
-    
-    
 }

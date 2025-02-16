@@ -11,12 +11,12 @@ import TMDB
 extension CatalogStoreSpecs where Self: XCTestCase {
     
     func buildSut(storeURL: URL? = nil, file: StaticString = #filePath, line: UInt = #line) -> CatalogStore {
-        let sut = CodableCatalogStorage(storageURL: storeURL ?? testStorageURL())
+        let sut = CodableCatalogStorage(storageURL: storeURL ?? storageURLTests())
         trackMemoryLeaks(instanceOf: sut, file: file, line: line)
         return sut
     }
     
-    func testStorageURL() -> URL {
+    func storageURLTests() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
     
@@ -74,7 +74,7 @@ extension CatalogStoreSpecs where Self: XCTestCase {
     }
     
     func clearStorage() {
-        try? FileManager.default.removeItem(at: testStorageURL())
+        try? FileManager.default.removeItem(at: storageURLTests())
     }
 }
 
