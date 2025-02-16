@@ -9,8 +9,8 @@ import Foundation
 
 
 public struct Catalog: Equatable {
-    let page: Int
-    let totalPages: Int
+    public let page: Int
+    public let totalPages: Int
     public let movies: [Movie]
     
     public init(page: Int, totalPages: Int, movies: [Movie]) {
@@ -21,9 +21,9 @@ public struct Catalog: Equatable {
 }
 
 public struct Movie: Equatable {
-    let id: Int
-    let title: String
-    let posterPath: String
+    public let id: Int
+    public let title: String
+    public let posterPath: String
     
     public init(id: Int, title: String, posterPath: String) {
         self.id = id

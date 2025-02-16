@@ -85,20 +85,3 @@ extension [CatalogStoreSpy.ReceivedMessages] {
         XCTAssertEqual(self, expected, file: file, line: line)
     }
 }
-
-
-extension Error? {
-    func isEqual(to expected: NSError?, file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertEqual(self as? NSError, expected, file: file, line: line)
-    }
-    
-    func isNil(file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertNil(self, file: file, line: line)
-    }
-    
-    func isNotNil(file: StaticString = #filePath, line: UInt = #line) {
-        XCTAssertNotNil(self, file: file, line: line)
-    }
-    
-    
-}

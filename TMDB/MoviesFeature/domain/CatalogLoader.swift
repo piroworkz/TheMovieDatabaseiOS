@@ -12,6 +12,10 @@ public enum CatalogResult {
     case failure(Error)
 }
 
-public protocol CatalogLoader {
+public protocol FetchCatalogUseCase {
     func load(from endpoint: String, completion: @escaping (CatalogResult) -> Void)
+}
+
+public protocol GetCatalogCaheUseCase {
+    func load(completion: @escaping (CatalogResult) -> Void)
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public class RemoteCatalogLoader: CatalogLoader {
+public class RemoteCatalogLoader: FetchCatalogUseCase {
     private let client: HttpClient
     
     public init(client: HttpClient) {

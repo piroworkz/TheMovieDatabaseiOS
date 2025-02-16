@@ -7,7 +7,7 @@
 
 import Foundation
 
-public final class LocalCatalogLoader {
+public final class LocalCatalogLoader: GetCatalogCaheUseCase {
     
     private let store: CatalogStore
     private let currentDate: () -> Date
@@ -20,7 +20,6 @@ public final class LocalCatalogLoader {
 
 extension LocalCatalogLoader {
     public typealias LoadResult = CatalogResult
-    
     public func load(completion: @escaping (LoadResult) -> Void) {
         store.retrieve { [weak self] result in
             guard let self = self else { return }

@@ -30,6 +30,7 @@ internal extension NSPersistentContainer {
             }
         }
         try loaderError.map { throw LoadingError.failedToLoadPersistentStores($0) }
+        
         return container
     }
 }

@@ -30,6 +30,13 @@
     {
       "target" : {
         "containerPath" : "container:TMDB.xcodeproj",
+        "identifier" : "18247AF12D6280BB00CA0069",
+        "name" : "TMDBCacheIntegrationTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:TMDB.xcodeproj",
         "identifier" : "183944E32D56D31600C4001D",
         "name" : "TMDBTests"
       }
