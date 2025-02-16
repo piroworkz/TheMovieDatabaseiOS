@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23605" systemVersion="24D60" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="ManagedCache" representedClassName=".ManagedCache" syncable="YES">
+        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <relationship name="catalog" maxCount="1" deletionRule="Cascade" destinationEntity="ManagedCatalog" inverseName="cache" inverseEntity="ManagedCatalog"/>
+    </entity>
+    <entity name="ManagedCatalog" representedClassName=".ManagedCatalog" syncable="YES">
+        <attribute name="page" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="totalPages" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="cache" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedCache" inverseName="catalog" inverseEntity="ManagedCache"/>
+        <relationship name="movies" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="ManagedMovie" inverseName="catalog" inverseEntity="ManagedMovie"/>
+    </entity>
+    <entity name="ManagedMovie" representedClassName=".ManagedMovie" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="posterPath" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="catalog" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ManagedCatalog" inverseName="movies" inverseEntity="ManagedCatalog"/>
+    </entity>
+</model>
