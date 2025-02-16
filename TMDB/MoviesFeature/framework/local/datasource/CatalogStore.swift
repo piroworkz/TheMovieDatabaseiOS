@@ -20,3 +20,26 @@ public protocol CatalogStore {
     func insert(_ catalog: LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion)
     func retrieve(completion: @escaping RetrieveCompletion)
 }
+
+extension CatalogStoreResult {
+    var foundValues: (catalog: LocalCatalog, timestamp: Date)? {
+         if case let .found(catalog, timestamp) = self {
+             return (catalog, timestamp)
+         }
+         return nil
+     }
+    
+    var error: Error? {
+        if case let .failure(error) = self {
+            return error
+        }
+        return nil
+    }
+    
+    var isEmpty: Bool {
+        if case .empty = self {
+            return true
+        }
+        return false
+    }
+}
