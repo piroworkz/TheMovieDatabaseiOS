@@ -34,4 +34,16 @@ final class TMDBCacheIntegrationTests: XCTestCase {
         assertThatSaveResult(expected, from: sutToPerformSave).isNil()
         assertThatLoadResult(from: sutToPerformLoad).isEqual(to: .success(expected))
     }
+    
+    func test_GIVEN_multipleInstancesOfSut_WHEN_saveSucceeds_THEN_shouldOverWriteExistingCache() {
+        let sutForFirstSave = buildSut()
+        let sutForSecondSave = buildSut()
+        let firstCatalog = createCatalog(1)
+        let expectedCatalog = createCatalog(2)
+        
+        assertThatSaveResult(firstCatalog, from: sutForFirstSave).isNil()
+        assertThatSaveResult(expectedCatalog, from: sutForSecondSave).isNil()
+        assertThatLoadResult(from: sutForSecondSave).isEqual(to: .success(expectedCatalog))
+    }
+    
 }
