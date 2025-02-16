@@ -51,20 +51,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		18247B152D62823000CA0069 /* Exceptions for "TMDBSharedTestsUtils" folder in "TMDBSharedTestsUtils" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				TrackMemoryLeaks.swift,
-			);
-			target = 18247B0C2D62822700CA0069 /* TMDBSharedTestsUtils */;
-		};
-		18247B2B2D62A35F00CA0069 /* Exceptions for "TMDBSharedTestsUtils" folder in "TMDBEndtoEndTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				TrackMemoryLeaks.swift,
-			);
-			target = 188492B22D57F0EA00E4F1F0 /* TMDBEndtoEndTests */;
-		};
 		183944EC2D56D31600C4001D /* Exceptions for "TMDB" folder in "TMDB" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			publicHeaders = (
@@ -82,10 +68,6 @@
 		};
 		18247B0E2D62822700CA0069 /* TMDBSharedTestsUtils */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				18247B2B2D62A35F00CA0069 /* Exceptions for "TMDBSharedTestsUtils" folder in "TMDBEndtoEndTests" target */,
-				18247B152D62823000CA0069 /* Exceptions for "TMDBSharedTestsUtils" folder in "TMDBSharedTestsUtils" target */,
-			);
 			path = TMDBSharedTestsUtils;
 			sourceTree = "<group>";
 		};
