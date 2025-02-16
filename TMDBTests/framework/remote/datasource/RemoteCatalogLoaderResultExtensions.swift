@@ -19,4 +19,5 @@ extension CatalogResult? {
             XCTFail("Expected result \(String(describing: expected)) but got \(String(describing: self)) instead", file: file, line: line)
         }
     }
+    
 }

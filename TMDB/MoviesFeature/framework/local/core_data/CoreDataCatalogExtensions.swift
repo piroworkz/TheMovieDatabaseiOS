@@ -7,9 +7,8 @@
 import CoreData
 
 internal extension NSPersistentContainer {
-
+    
     enum LoadingError: Swift.Error {
-
         case modelNotFound
         case failedToLoadPersistentStores(Swift.Error)
     }
@@ -30,6 +29,7 @@ internal extension NSPersistentContainer {
             }
         }
         try loaderError.map { throw LoadingError.failedToLoadPersistentStores($0) }
+        
         return container
     }
 }

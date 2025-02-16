@@ -1,0 +1,103 @@
+{
+  "configurations" : [
+    {
+      "id" : "5727EA30-B16C-4A7F-8287-3FB33B13588E",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "CacheCatalogUseCaseTest",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_deletionFails_THEN_saveShouldFailAndReturnsError()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_deletionFails_THEN_shouldNotRequestCacheInsertion()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_deletionSucceeds_THEN_shouldRequestTimeStampedCacheInsertion()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_initialized_THEN_doesNotDeleteCache()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_insertFails_THEN_saveShouldFailAndReturnsError()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_insertSucceeds_THEN_shouldReturnNilError()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_instanceIsDeallocated_THEN_doesNotDeliverDeleteError()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_instanceIsDeallocated_THEN_doesNotDeliverInsertError()",
+        "CacheCatalogUseCaseTest\/test_GIVEN_sut_WHEN_saveIsCalled_THEN_shouldRequestCacheDeletion()",
+        "CodableCatalogStorageTests",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheDataIsNotValid_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverFailureWithError()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheDataIsNotValid_WHEN_retrieveIsCalled_THEN_shouldDeliverFailureWithError()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsEmpty_WHEN_deleteIsCalled_THEN_shouldNotHaveSideEffects()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsEmpty_WHEN_insertSucceeds_THEN_shouldNotDeliverError()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsNotEmpty_WHEN_deleteSucceeds_THEN_shouldDeleteExistingCache()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsNotEmpty_WHEN_insertIsCalled_THEN_shouldOverWriteExistingCache()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverSameFoundValues()",
+        "CodableCatalogStorageTests\/test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverFoundValues()",
+        "CodableCatalogStorageTests\/test_GIVEN_invalidStoreURL_WHEN_deleteFails_THEN_shouldDeliverDeleteError()",
+        "CodableCatalogStorageTests\/test_GIVEN_invalidStoreURL_WHEN_insertFails_THEN_shouldDeliverInsertError()",
+        "CodableCatalogStorageTests\/test_GIVEN_multipleOperations_WHEN_executedSerially_THEN_shouldCompleteOperationsInOrder()",
+        "CoreDataCatalogStoreTests",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsEmpty_WHEN_deleteIsCalled_THEN_shouldNotHaveSideEffects()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsEmpty_WHEN_insertSucceeds_THEN_shouldNotDeliverError()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsNotEmpty_WHEN_deleteSucceeds_THEN_shouldDeleteExistingCache()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsNotEmpty_WHEN_insertIsCalled_THEN_shouldOverWriteExistingCache()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverSameFoundValues()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverFoundValues()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_invalidStoreURL_WHEN_deleteFails_THEN_shouldDeliverDeleteError()",
+        "CoreDataCatalogStoreTests\/test_GIVEN_multipleOperations_WHEN_executedSerially_THEN_shouldCompleteOperationsInOrder()",
+        "LoadCatalogFromCacheTests",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_cacheHasNotReachedExpirationDate_THEN_loadShouldReturnCachedCatalog()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_cacheHasReachedExpirationDate_THEN_loadShouldReturnEmptyCatalog()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_cacheIsEmpty_THEN_loadShouldReturnEmptyCatalog()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_cacheIsEmpty_THEN_shouldNotHaveSideEffects()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_cacheIsExpired_THEN_shouldNotHaveSideEffects()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotHaveSideEffects()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_initialized_THEN_shouldNotLoadCatalogFromCache()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_loadIsCalled_THEN_shouldSendRetrieveMessage()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_retrieveFailsWithError_THEN_shouldNotHaveSideEffects()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_retrieveFails_THEN_loadShouldReturnError()",
+        "LoadCatalogFromCacheTests\/test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotReturnResult()",
+        "RemoteCatalogLoaderTests",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sutAndExpectedURLsArray_WHEN_loadIsCalledTwice_THEN_shouldMakeRequestToProvidedUrlTwice()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sutAndTestParams_WHEN_clientCompletesWithStatusCodeOtherThan200_THEN_loadShouldReturnInvalidDataError()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sutIsInitialized_WHEN_loadIsCalled_THEN_shouldMakeRequestToProvidedUrl()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sut_WHEN_clientCompletesWithError_THEN_loadShouldReturnConnectivityError()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndEmptyJsonBody_THEN_loadShouldRespondWithSuccessEmptyResult()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndInvalidJsonBody_THEN_loadShouldRespondWithInvalidDataError()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sut_WHEN_clientCompletesWithStatusCode200AndValidJsonBody_THEN_loadShouldRespondWithSuccessResult()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sut_WHEN_initialized_THEN_shouldNotRequestDataFromAPI()",
+        "RemoteCatalogLoaderTests\/test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotDeliverResult()",
+        "URLRequestBuilderTests",
+        "URLRequestBuilderTests\/test_GIVEN_emptyApiKey_WHEN_sutIsInitialized_THEN_shouldThrowMissingApiKeyError()",
+        "URLRequestBuilderTests\/test_GIVEN_invalidEndpoint_WHEN_buildIsCalled_THEN_shouldThrowMalformedURLError()",
+        "URLRequestBuilderTests\/test_GIVEN_invalidUrlString_WHEN_sutIsInitialized_THEN_shouldThrowMalformedUrlError()",
+        "URLRequestBuilderTests\/test_GIVEN_sut_WHEN_buildIsSuccessfull_THEN_shouldReturnValidUrlRequest()",
+        "URLSessionHttpClientTests",
+        "URLSessionHttpClientTests\/test_GIVEN_invalidEndpoint_WHEN_getFails_THEN_shouldReturnError()",
+        "URLSessionHttpClientTests\/test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccessAndEmptyData_THEN_shouldReturnEmptyData()",
+        "URLSessionHttpClientTests\/test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccess_THEN_shouldReturnData()",
+        "URLSessionHttpClientTests\/test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllNilValues_THEN_shouldFailRequest()",
+        "URLSessionHttpClientTests\/test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnAllRepresentationValues_THEN_shouldFailRequest()",
+        "URLSessionHttpClientTests\/test_GIVEN_sut_WHEN_getIsCalledAndDataTaskReturnsError_THEN_shouldFailRequestWithError()",
+        "URLSessionHttpClientTests\/test_GIVEN_sut_WHEN_getIsCalled_THEN_shouldMakeRequestWithProvidedURL()",
+        "ValidateCacheUseCaseTests",
+        "ValidateCacheUseCaseTests\/test_GIVEN_sut_WHEN_cacheIsExpired_THEN_shouldDeleteExpiredCache()",
+        "ValidateCacheUseCaseTests\/test_GIVEN_sut_WHEN_cacheIsNotExpired_THEN_shouldNotDeleteCache()",
+        "ValidateCacheUseCaseTests\/test_GIVEN_sut_WHEN_initialized_THEN_shouldNotLoadCatalogFromCache()",
+        "ValidateCacheUseCaseTests\/test_GIVEN_sut_WHEN_sutHasBeenDeallocated_THEN_shouldNotDeleteCache()",
+        "ValidateCacheUseCaseTests\/test_GIVEN_sut_WHEN_validateCacheSucceeds_THEN_shouldDeleteCache()",
+        "ValidateCacheUseCaseTests\/test_GIVEN_sut_WHEN_validateCacheSucceeds_THEN_shouldNotDeleteOnEmptyCache()"
+      ],
+      "target" : {
+        "containerPath" : "container:TMDB.xcodeproj",
+        "identifier" : "183944E32D56D31600C4001D",
+        "name" : "TMDBTests"
+      }
+    }
+  ],
+  "version" : 1
+}
