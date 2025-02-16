@@ -5,7 +5,6 @@
 //  Created by David Luna on 15/02/25.
 //
 
-
 protocol CatalogStoreSpecs {
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty()
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty()
