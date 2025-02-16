@@ -17,12 +17,9 @@ public final class CoreDataCatalogStore: CatalogStore {
     }
     
     public func deleteCachedCatalog(completion: @escaping StoreCompletion) {
-        let context = self.context
-        context.perform {
+        perform { context in
             do {
-                if let existingCache = try? ManagedCache.find(in: context) {
-                    context.delete(existingCache)
-                }
+                try ManagedCache.find(in: context).map(context.delete).map(context.save)
                 completion(nil)
             } catch {
                 completion(error)
@@ -31,10 +28,8 @@ public final class CoreDataCatalogStore: CatalogStore {
     }
     
     public func insert(_ catalog: TMDB.LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion) {
-        let context = self.context
-        context.perform {
+        perform { context in
             do {
-                print("<-- saving \(catalog)")
                 ManagedCache.make(from: catalog, timestamp, in: context)
                 try context.save()
                 completion(nil)
@@ -45,11 +40,9 @@ public final class CoreDataCatalogStore: CatalogStore {
     }
     
     public func retrieve(completion: @escaping RetrieveCompletion) {
-        let context = self.context
-        context.perform {
+        perform { context in
             do {
                 if let cache = try ManagedCache.find(in: context) {
-                    print("<-- RETRIEVE \(cache.catalog.asLocal)")
                     completion(.found(catalog: cache.local, timestamp: cache.timestamp))
                 } else {
                     completion(.empty)
@@ -58,6 +51,11 @@ public final class CoreDataCatalogStore: CatalogStore {
                 completion(.failure(error))
             }
         }
+    }
+    
+    private func perform(_ action: @escaping (NSManagedObjectContext) -> Void) {
+        let context = self.context
+        context.perform { action(context) }
     }
 }
 
