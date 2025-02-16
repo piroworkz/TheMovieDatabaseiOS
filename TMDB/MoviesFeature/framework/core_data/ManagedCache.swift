@@ -14,27 +14,16 @@ class ManagedCache: NSManagedObject {
     var local: LocalCatalog {
         return catalog.asLocal
     }
-}
-
-@objc(ManagedCache)
-class ManagedCatalog: NSManagedObject {
-    @NSManaged var page: Int64
-    @NSManaged var totalPages: Int64
-    @NSManaged var movies: NSOrderedSet
-    @NSManaged var cache: ManagedCache
-    var asLocal: LocalCatalog {
-        LocalCatalog(page: Int(page), totalPages: Int(totalPages), movies: movies.compactMap { $0 as? ManagedMovie }.map {$0.asLocal} )
-    }
-}
-
-@objc(ManagedCache)
-class ManagedMovie: NSManagedObject {
-    @NSManaged var id: Int64
-    @NSManaged var title: String
-    @NSManaged var posterPath: String
-    @NSManaged var catalog: ManagedCatalog
     
-    var asLocal: LocalMovie {
-        LocalMovie(id: Int(id), title: title, posterPath: posterPath)
+    static func find(in context: NSManagedObjectContext) throws -> ManagedCache? {
+        let request = NSFetchRequest<ManagedCache>(entityName: entity().name!)
+        request.returnsObjectsAsFaults = false
+        return try context.fetch(request).first
+    }
+    
+    static func make(from catalog: TMDB.LocalCatalog, _ timestamp: Date, in context: NSManagedObjectContext) {
+        let managedCache = ManagedCache(context: context)
+        managedCache.timestamp = timestamp
+        managedCache.catalog = ManagedCatalog.toManagedCatalog(catalog, in: context)
     }
 }
