@@ -56,3 +56,7 @@ func createCatalog(_ count: Int = 3) -> Catalog {
 func createMovie(id: Int) -> Movie {
     return Movie(id: id, title: "Title \(id)", posterPath: "fake poster path \(id)")
 }
+
+func emptyCatalog() -> Catalog {
+    return Catalog(page: 0, totalPages: 0, movies: [])
+}
