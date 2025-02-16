@@ -7,10 +7,10 @@
 
 import Foundation
 
-internal final class RemoteCatalogSerializer {
+final class RemoteCatalogSerializer {
     private static var successCode: Int { return 200 }
     
-    internal static func decode(_ data: Data, _ statusCode: Int) throws -> RemoteCatalog {
+    static func decode(_ data: Data, _ statusCode: Int) throws -> RemoteCatalog {
         guard statusCode == successCode, let remoteCatalog = try? JSONDecoder().decode(RemoteCatalog.self, from: data) else {
             throw RemoteCatalogLoader.Error.invalidData
         }
