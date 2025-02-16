@@ -49,13 +49,6 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		1825359A2D6144B2000A5A7F /* Exceptions for "TMDB" folder in "TMDBTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				MoviesFeature/framework/core_data/CatalogCache.xcdatamodeld,
-			);
-			target = 183944E32D56D31600C4001D /* TMDBTests */;
-		};
 		18331EEF2D59726D00EE7715 /* Exceptions for "SharedTest" folder in "SharedTest" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
@@ -85,7 +78,6 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 				183944EC2D56D31600C4001D /* Exceptions for "TMDB" folder in "TMDB" target */,
-				1825359A2D6144B2000A5A7F /* Exceptions for "TMDB" folder in "TMDBTests" target */,
 			);
 			path = TMDB;
 			sourceTree = "<group>";

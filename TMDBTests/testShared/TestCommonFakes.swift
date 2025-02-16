@@ -48,7 +48,7 @@ func expectationDescription(_ description: String = "Wait for request to complet
     return description
 }
 
-func createCatalog(_ count: Int = 4) -> Catalog {
+func createCatalog(_ count: Int = 3) -> Catalog {
     let movies = count > 0 ? (0...count).map { createMovie(id: $0) } : []
     return Catalog(page: 0, totalPages: 0, movies: movies)
 }

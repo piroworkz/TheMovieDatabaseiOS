@@ -24,7 +24,12 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverFoundValues() {
+        let sut = buildSut()
+        let localCatalog = createCatalog().toLocal()
+        let timestamp: Date = Date()
         
+        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverSameFoundValues() {
