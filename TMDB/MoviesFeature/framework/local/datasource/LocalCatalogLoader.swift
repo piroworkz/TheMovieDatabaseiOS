@@ -38,23 +38,29 @@ extension LocalCatalogLoader {
 }
 
 extension LocalCatalogLoader {
-    public typealias SaveResult = Error?
+    public typealias SaveResult = Result<Void, Error>
     
     public func save(_ catalog: Catalog, completion: @escaping (SaveResult) -> Void) {
-        store.deleteCachedCatalog { [weak self] error in
+        store.deleteCachedCatalog { [weak self] result in
             guard let self = self else { return }
-            if let error = error {
-                completion(error)
-            } else {
+            switch result {
+            case .success:
                 self.insert(catalog: catalog, completion: completion)
+            case let .failure(error):
+                completion(.failure(error))
             }
         }
     }
     
     private func insert(catalog: Catalog, completion: @escaping (SaveResult) -> Void) {
-        store.insert(catalog.toLocal(), currentDate()) {[weak self] error in
+        store.insert(catalog.toLocal(), currentDate()) {[weak self] result in
             guard self != nil else { return }
-            completion(error)
+            switch result {
+            case .success:
+                completion(.success(()))
+            case let .failure(error):
+                completion(.failure(error))
+            }
         }
     }
 }

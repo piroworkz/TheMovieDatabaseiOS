@@ -12,7 +12,7 @@ public typealias CatalogStoreResult = Result<Cache?, Error>
 public typealias Cache = (catalog: LocalCatalog, timestamp: Date)
 
 public protocol CatalogStore {
-    typealias StoreResult = Error?
+    typealias StoreResult = Result<Void, Error>
     typealias StoreCompletion = (StoreResult) -> Void
     typealias RetrieveCompletion = (CatalogStoreResult) -> Void
     func deleteCachedCatalog(completion: @escaping StoreCompletion)

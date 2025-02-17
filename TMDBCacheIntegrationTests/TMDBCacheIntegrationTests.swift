@@ -31,7 +31,7 @@ final class TMDBCacheIntegrationTests: XCTestCase {
         let sutToPerformLoad = buildSut()
         let expected = createCatalog()
         
-        assertThatSaveResult(expected, from: sutToPerformSave).isNil()
+        assertThatSaveResult(expected, from: sutToPerformSave).isEqual(to: .success(()))
         assertThatLoadResult(from: sutToPerformLoad).isEqual(to: .success(expected))
     }
     
@@ -42,8 +42,8 @@ final class TMDBCacheIntegrationTests: XCTestCase {
         let firstCatalog = createCatalog(1)
         let expectedCatalog = createCatalog(2)
         
-        assertThatSaveResult(firstCatalog, from: sutForFirstSave).isNil()
-        assertThatSaveResult(expectedCatalog, from: sutForSecondSave).isNil()
+        assertThatSaveResult(firstCatalog, from: sutForFirstSave).isEqual(to: .success(()))
+        assertThatSaveResult(expectedCatalog, from: sutForSecondSave).isEqual(to: .success(()))
         assertThatLoadResult(from: sutToPerformLoad).isEqual(to: .success(expectedCatalog))
     }
     

@@ -54,32 +54,32 @@ final class CacheCatalogUseCaseTest: XCTestCase, XCTStoreTestCase {
         let expected = anyNSError()
         let (sut, store) = buildSut()
         
-        assertThat(
+        assertThatSaveResult(
             given: sut,
             whenever: {store.completeDeletion(with: anyNSError())})
-        .isEqual(to: expected)
+        .isEqual(to: .failure(expected))
     }
     
     func test_GIVEN_sut_WHEN_insertFails_THEN_saveShouldFailAndReturnsError() {
         let expected = anyNSError()
         let (sut, store) = buildSut()
         
-        assertThat(
+        assertThatSaveResult(
             given: sut,
             whenever: {
                 store.completeDeletionSuccessfully()
                 store.completeInsert(with: anyNSError())
             })
-        .isEqual(to: expected)
+        .isEqual(to: .failure(expected))
     }
     
     func test_GIVEN_sut_WHEN_insertSucceeds_THEN_shouldReturnNilError() {
         let (sut, store) = buildSut()
         
-        assertThat(
+        assertThatSaveResult(
             given: sut,
             whenever: { store.completeInsertSuccessfully() })
-        .isNil()
+        .isEqual(to: .success(()))
     }
     
     func test_GIVEN_sut_WHEN_instanceIsDeallocated_THEN_doesNotDeliverDeleteError() {

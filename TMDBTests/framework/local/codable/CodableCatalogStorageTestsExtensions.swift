@@ -19,7 +19,7 @@ extension CatalogStoreSpecs where Self: XCTestCase {
     func storageURLTests() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("\(type(of: self)).store")
     }
-
+    
     func cachesDirectory() -> URL {
         return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
     }
@@ -40,37 +40,37 @@ extension CatalogStoreSpecs where Self: XCTestCase {
         return receivedResult
     }
     
-    func assertThatInsertError(
+    func assertThatInsertResult(
         with expected: (catalog:LocalCatalog, timestamp: Date),
         _ sut: CatalogStore
-    ) -> Error? {
+    ) -> CatalogStore.StoreResult? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
-        var receivedError: Error?
-        sut.insert(expected.catalog, expected.timestamp) { error in
-            receivedError = error
+        var receivedResult:  CatalogStore.StoreResult?
+        sut.insert(expected.catalog, expected.timestamp) { result in
+            receivedResult = result
             expectation.fulfill()
         }
         
         wait(for: [expectation], timeout: 1.0)
         
-        return receivedError
+        return receivedResult
     }
     
-    func assertThatDeleteError(
+    func assertThatDeleteResult(
         _ sut: CatalogStore
-    ) -> Error? {
+    ) -> CatalogStore.StoreResult? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
-        var receivedError: Error?
-        sut.deleteCachedCatalog { error in
-            receivedError = error
+        var receivedResult:  CatalogStore.StoreResult?
+        sut.deleteCachedCatalog { result in
+            receivedResult = result
             expectation.fulfill()
         }
         
         wait(for: [expectation], timeout: 1.0)
         
-        return receivedError
+        return receivedResult
     }
     
     func clearStorage() {

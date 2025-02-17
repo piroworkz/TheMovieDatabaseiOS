@@ -19,6 +19,4 @@ extension Error? {
     func isNotNil(file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertNotNil(self, file: file, line: line)
     }
-    
-    
 }

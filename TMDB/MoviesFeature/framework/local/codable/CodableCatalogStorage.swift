@@ -24,9 +24,9 @@ public final class CodableCatalogStorage: CatalogStore {
                 let cache = CatalogCache(catalog: CodableCatalog(catalog), timestamp: timestamp)
                 let encoded = try encoder.encode(cache)
                 try encoded.write(to: storageURL)
-                completion(nil)
+                completion(.success(()))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
         }
     }
@@ -51,14 +51,14 @@ public final class CodableCatalogStorage: CatalogStore {
         let storageURL = self.storageURL
         queue.async(flags: .barrier) {
             if !FileManager.default.fileExists(atPath: storageURL.path) {
-                completion(nil)
+                completion(.success(()))
                 return
             }
             do {
                 try FileManager.default.removeItem(at: storageURL)
-                completion(nil)
+                completion(.success(()))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
         }
     }

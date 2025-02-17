@@ -20,15 +20,15 @@ extension XCTStoreTestCase where Self: XCTestCase {
         return (sut, store)
     }
     
-    func assertThat(
+    func assertThatSaveResult(
         given sut: LocalCatalogLoader,
         whenever action: () -> Void
-    ) -> Error? {
+    ) -> LocalCatalogLoader.SaveResult? {
         let expectation = expectation(description: expectationDescription())
         
-        var receivedError: NSError?
-        sut.save(createCatalog()) { error in
-            receivedError = error as? NSError
+        var receivedResult: LocalCatalogLoader.SaveResult?
+        sut.save(createCatalog()) { result in
+            receivedResult = result
             expectation.fulfill()
         }
         
@@ -36,7 +36,7 @@ extension XCTStoreTestCase where Self: XCTestCase {
         
         wait(for: [expectation], timeout: 1.0)
         
-        return receivedError
+        return receivedResult
     }
   
     func assertThat(

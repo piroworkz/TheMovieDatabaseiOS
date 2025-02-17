@@ -31,7 +31,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let timestamp: Date = Date()
         let expected = CatalogStoreResult.success(Cache(localCatalog, timestamp))
         
-        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isEqual(to: .success(()))
         assertThatRetrieveResult(sut).isEqual(to: expected)
     }
     
@@ -41,7 +41,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let timestamp: Date = Date()
         let expected = CatalogStoreResult.success(Cache(localCatalog, timestamp))
         
-        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isEqual(to: .success(()))
         assertThatRetrieveResult(sut).isEqual(to: expected)
         assertThatRetrieveResult(sut).isEqual(to: expected)
     }
@@ -51,7 +51,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let localCatalog = createCatalog().toLocal()
         let timestamp: Date = Date()
         
-        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isEqual(to: .success(()))
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_insertIsCalled_THEN_shouldOverWriteExistingCache() {
@@ -62,8 +62,8 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let newLocalCatalog = createCatalog(2).toLocal()
         let expected = CatalogStoreResult.success(Cache(newLocalCatalog, newTimeStamp))
         
-        assertThatInsertError(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isNil()
-        assertThatInsertError(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isNil()
+        assertThatInsertResult(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isEqual(to: .success(()))
+        assertThatInsertResult(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isEqual(to: .success(()))
         
         assertThatRetrieveResult(sut).isEqual(to: expected)
     }
@@ -71,7 +71,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
     func test_GIVEN_cacheIsEmpty_WHEN_deleteIsCalled_THEN_shouldNotHaveSideEffects() {
         let sut = buildSut()
         
-        assertThatDeleteError(sut).isNil()
+        assertThatDeleteResult(sut).isEqual(to: .success(()))
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_deleteSucceeds_THEN_shouldDeleteExistingCache() {
@@ -79,15 +79,16 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let timestamp = Date()
         let localCatalog = createCatalog().toLocal()
         
-        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
-        assertThatDeleteError(sut).isNil()
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isEqual(to: .success(()))
+        assertThatDeleteResult(sut).isEqual(to: .success(()))
     }
     
     func test_GIVEN_invalidStoreURL_WHEN_deleteFails_THEN_shouldDeliverDeleteError() {
         let invalidStoreURL = cachesDirectory()
         let sut = buildSut(storeURL: invalidStoreURL)
+        let expected = Result<Void, Error>.failure(NSError(domain: NSCocoaErrorDomain, code: 513))
         
-        assertThatDeleteError(sut).isNotNil()
+        assertThatDeleteResult(sut).isEqual(to: expected)
     }
     
     func test_GIVEN_multipleOperations_WHEN_executedSerially_THEN_shouldCompleteOperationsInOrder() {
