@@ -19,7 +19,7 @@ public final class URLSessionHttpClient: HttpClient {
     struct IllegalStateError: Error {}
     struct InvalidRequest: Error {}
     
-    public func get(from endpoint: String, completion: @escaping (HttpClientResult) -> Void) {
+    public func get(from endpoint: String, completion: @escaping (HttpClient.Result) -> Void) {
         guard let request = try? requestBuilder.build(for: endpoint, .get) else {
             completion(.failure(InvalidRequest()))
             return

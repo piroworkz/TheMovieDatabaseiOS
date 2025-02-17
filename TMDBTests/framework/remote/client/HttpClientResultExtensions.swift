@@ -8,9 +8,9 @@
 import XCTest
 import TMDB
 
-extension HttpClientResult? {
+extension HttpClient.Result? {
     
-    func isEqual(to expected: HttpClientResult?, file: StaticString = #filePath, line: UInt = #line) {
+    func isEqual(to expected: HttpClient.Result?, file: StaticString = #filePath, line: UInt = #line) {
         switch (self, expected) {
         case let (.success((actualData, actualHTTPURLResponse)), .success((expectedData, expectedHTTPURLResponse))):
             XCTAssertEqual(actualData, expectedData, file: file, line: line)

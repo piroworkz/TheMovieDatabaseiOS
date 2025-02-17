@@ -6,9 +6,9 @@
 //
 
 
-public typealias HttpClientResult = Result<(Data, HTTPURLResponse), Error>
+//public typealias HttpClientResult = Result<(Data, HTTPURLResponse), Error>
 
-extension HttpClientResult {
+extension HttpClient.Result {
     func fold<T>(
         onSuccess: (Data, HTTPURLResponse) -> T,
         onFailure: (Error) -> T
