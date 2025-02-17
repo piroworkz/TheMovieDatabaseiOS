@@ -82,10 +82,10 @@ extension CatalogStoreResult? {
     
     func isEqual(to expected: CatalogStoreResult?, file: StaticString = #filePath, line: UInt = #line) {
         switch (self, expected) {
-        case (.empty, .empty):
+        case (.success(.empty), .success(.empty)):
             break
             
-        case let (.found(actualCatalog, actualTimestamp), .found(expectedCatalog, expectedTimestamp)):
+        case let (.success(.found(actualCatalog, actualTimestamp)), .success(.found(expectedCatalog, expectedTimestamp))):
             XCTAssertEqual(actualCatalog, expectedCatalog, file: file, line: line)
             XCTAssertEqual(actualTimestamp, expectedTimestamp, file: file, line: line)
             

@@ -22,14 +22,14 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
         let sut = buildSut()
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        assertThatRetrieveResult(sut).isEqual(to: .success(.empty))
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty() {
         let sut = buildSut()
         
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        assertThatRetrieveResult(sut).isEqual(to: .success(.empty))
+        assertThatRetrieveResult(sut).isEqual(to: .success(.empty))
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverFoundValues() {
@@ -39,7 +39,7 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         
         assertThatInsertError(with: (localCatalog, timestamp), sut).isNil()
         
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
+        assertThatRetrieveResult(sut).isEqual(to: .success(.found(catalog: localCatalog, timestamp: timestamp)))
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverSameFoundValues() {
@@ -48,8 +48,8 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         let timestamp = Date()
         
         assertThatInsertError(with: (localCatalog, timestamp), sut).isNil()
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
+        assertThatRetrieveResult(sut).isEqual(to: .success(.found(catalog: localCatalog, timestamp: timestamp)))
+        assertThatRetrieveResult(sut).isEqual(to: .success(.found(catalog: localCatalog, timestamp: timestamp)))
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_insertSucceeds_THEN_shouldNotDeliverError() {
@@ -89,7 +89,7 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         assertThatInsertError(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isNil()
         
         assertThatInsertError(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isNil()
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: newLocalCatalog, timestamp: newTimeStamp))
+        assertThatRetrieveResult(sut).isEqual(to: .success(.found(catalog: newLocalCatalog, timestamp: newTimeStamp)))
     }
     
     func test_GIVEN_invalidStoreURL_WHEN_insertFails_THEN_shouldDeliverInsertError() {
@@ -115,7 +115,7 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
         assertThatDeleteError(sut).isNil()
         
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        assertThatRetrieveResult(sut).isEqual(to: .success(.empty))
     }
     
     func test_GIVEN_invalidStoreURL_WHEN_deleteFails_THEN_shouldDeliverDeleteError() {

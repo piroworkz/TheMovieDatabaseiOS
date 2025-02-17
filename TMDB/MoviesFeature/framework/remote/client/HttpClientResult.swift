@@ -5,9 +5,6 @@
 //  Created by David Luna on 08/02/25.
 //
 
-
-//public typealias HttpClientResult = Result<(Data, HTTPURLResponse), Error>
-
 extension HttpClient.Result {
     func fold<T>(
         onSuccess: (Data, HTTPURLResponse) -> T,

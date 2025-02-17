@@ -43,9 +43,9 @@ public final class CoreDataCatalogStore: CatalogStore {
         perform { context in
             do {
                 if let cache = try ManagedCache.find(in: context) {
-                    completion(.found(catalog: cache.local, timestamp: cache.timestamp))
+                    completion(.success(.found(catalog: cache.local, timestamp: cache.timestamp)))
                 } else {
-                    completion(.empty)
+                    completion(.success(.empty))
                 }
             } catch {
                 completion(.failure(error))

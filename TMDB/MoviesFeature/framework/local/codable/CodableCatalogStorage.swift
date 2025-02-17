@@ -35,12 +35,12 @@ public final class CodableCatalogStorage: CatalogStore {
         let storageURL = self.storageURL
         queue.async {
             guard let data = try? Data(contentsOf: storageURL) else {
-                return completion(.empty)
+                return completion(.success(.empty))
             }
             do {
                 let decoder = JSONDecoder()
                 let cache = try decoder.decode(CatalogCache.self, from: data)
-                completion(.found(catalog: cache.localCatalog, timestamp: cache.timestamp))
+                completion(.success(.found(catalog: cache.localCatalog, timestamp: cache.timestamp)))
             } catch {
                 completion(.failure(error))
             }

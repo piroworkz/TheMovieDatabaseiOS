@@ -57,11 +57,11 @@ final class CatalogStoreSpy: CatalogStore {
     }
     
     func completeRetrieveSuccessfully(at index: Int = 0) {
-        onRetrieve[index](.empty)
+        onRetrieve[index](.success(.empty))
     }
     
     func completeRetrieveSuccessfully(with catalog: LocalCatalog,_ timestamp: Date, at index: Int = 0) {
-        onRetrieve[index](.found(catalog: catalog, timestamp: timestamp))
+        onRetrieve[index](.success(.found(catalog: catalog, timestamp: timestamp)))
     }
     
 }

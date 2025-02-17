@@ -7,9 +7,9 @@
 
 import Foundation
 
-public enum CatalogStoreResult {
+public typealias CatalogStoreResult = Result<CachedFeed, Error>
+public enum CachedFeed {
     case empty
-    case failure(Error)
     case found(catalog: LocalCatalog, timestamp: Date)
 }
 
@@ -23,11 +23,11 @@ public protocol CatalogStore {
 
 extension CatalogStoreResult {
     var foundValues: (catalog: LocalCatalog, timestamp: Date)? {
-         if case let .found(catalog, timestamp) = self {
-             return (catalog, timestamp)
-         }
-         return nil
-     }
+        if case let .success(.found(catalog, timestamp)) = self {
+            return (catalog, timestamp)
+        }
+        return nil
+    }
     
     var error: Error? {
         if case let .failure(error) = self {
@@ -37,7 +37,7 @@ extension CatalogStoreResult {
     }
     
     var isEmpty: Bool {
-        if case .empty = self {
+        if case .success(.empty) = self {
             return true
         }
         return false
