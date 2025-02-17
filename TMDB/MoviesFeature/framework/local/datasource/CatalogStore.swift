@@ -9,15 +9,7 @@ import Foundation
 
 public typealias CatalogStoreResult = Result<Cache?, Error>
 
-public struct Cache {
-    public let catalog: LocalCatalog
-    public let timestamp: Date
-    
-    public init(_ catalog: LocalCatalog, _ timestamp: Date) {
-        self.catalog = catalog
-        self.timestamp = timestamp
-    }
-}
+public typealias Cache = (catalog: LocalCatalog, timestamp: Date)
 
 public protocol CatalogStore {
     typealias StoreCompletion = (Error?) -> Void
