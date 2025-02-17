@@ -13,9 +13,9 @@ extension RemoteCatalogLoaderTests {
     class HttpClientSpy: HttpClient {
         
         var requestedUrls: [String] { return messages.map { $0.url } }
-        private var messages = [(url: String, completion: (HttpClientResult) -> Void)]()
+        private var messages = [(url: String, completion: (HttpClient.Result) -> Void)]()
         
-        func get(from endpoint: String, completion: @escaping (HttpClientResult) -> Void) {
+        func get(from endpoint: String, completion: @escaping (HttpClient.Result) -> Void) {
             messages.append((endpoint, completion))
         }
         
@@ -25,7 +25,7 @@ extension RemoteCatalogLoaderTests {
         
         func complete(withCode code: Int, data: Data, at index: Int = 0) {
             let response = HTTPURLResponse(url: anyURL(), statusCode: code, httpVersion: nil, headerFields: nil)!
-            messages[index].completion(.success(data, response))
+            messages[index].completion(.success((data, response)))
         }
     }
     

@@ -40,37 +40,37 @@ extension CatalogStoreSpecs where Self: XCTestCase {
         return receivedResult
     }
     
-    func assertThatInsertError(
+    func assertThatInsertResult(
         with expected: (catalog:LocalCatalog, timestamp: Date),
         _ sut: CatalogStore
-    ) -> Error? {
+    ) -> CatalogStore.StoreResult? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
-        var receivedError: Error?
-        sut.insert(expected.catalog, expected.timestamp) { error in
-            receivedError = error
+        var receivedResult:  CatalogStore.StoreResult?
+        sut.insert(expected.catalog, expected.timestamp) { result in
+            receivedResult = result
             expectation.fulfill()
         }
         
         wait(for: [expectation], timeout: 1.0)
         
-        return receivedError
+        return receivedResult
     }
     
-    func assertThatDeleteError(
+    func assertThatDeleteResult(
         _ sut: CatalogStore
-    ) -> Error? {
+    ) -> CatalogStore.StoreResult? {
         let expectation = XCTestExpectation(description: "Waiting for retrieve completion")
         
-        var receivedError: Error?
-        sut.deleteCachedCatalog { error in
-            receivedError = error
+        var receivedResult:  CatalogStore.StoreResult?
+        sut.deleteCachedCatalog { result in
+            receivedResult = result
             expectation.fulfill()
         }
         
         wait(for: [expectation], timeout: 1.0)
         
-        return receivedError
+        return receivedResult
     }
     
     func clearStorage() {
@@ -82,12 +82,12 @@ extension CatalogStoreResult? {
     
     func isEqual(to expected: CatalogStoreResult?, file: StaticString = #filePath, line: UInt = #line) {
         switch (self, expected) {
-        case (.empty, .empty):
+        case (.success(.none), .success(.none)):
             break
             
-        case let (.found(actualCatalog, actualTimestamp), .found(expectedCatalog, expectedTimestamp)):
-            XCTAssertEqual(actualCatalog, expectedCatalog, file: file, line: line)
-            XCTAssertEqual(actualTimestamp, expectedTimestamp, file: file, line: line)
+        case let (.success(.some(actual)), .success(.some(cache))):
+            XCTAssertEqual(actual.catalog, cache.catalog, file: file, line: line)
+            XCTAssertEqual(actual.timestamp, cache.timestamp, file: file, line: line)
             
         case let (.failure(actualError), .failure(expectedError)):
             if let actualNSError = actualError as NSError?, let expectedNSError = expectedError as NSError? {

@@ -7,14 +7,13 @@
 
 import Foundation
 
-public enum CatalogStoreResult {
-    case empty
-    case failure(Error)
-    case found(catalog: LocalCatalog, timestamp: Date)
-}
+public typealias CatalogStoreResult = Result<Cache?, Error>
+
+public typealias Cache = (catalog: LocalCatalog, timestamp: Date)
 
 public protocol CatalogStore {
-    typealias StoreCompletion = (Error?) -> Void
+    typealias StoreResult = Result<Void, Error>
+    typealias StoreCompletion = (StoreResult) -> Void
     typealias RetrieveCompletion = (CatalogStoreResult) -> Void
     func deleteCachedCatalog(completion: @escaping StoreCompletion)
     func insert(_ catalog: LocalCatalog, _ timestamp: Date, completion: @escaping StoreCompletion)
@@ -22,12 +21,12 @@ public protocol CatalogStore {
 }
 
 extension CatalogStoreResult {
-    var foundValues: (catalog: LocalCatalog, timestamp: Date)? {
-         if case let .found(catalog, timestamp) = self {
-             return (catalog, timestamp)
-         }
-         return nil
-     }
+    var foundValues: Cache? {
+        if case let .success(.some(cache)) = self {
+            return Cache(cache.catalog, cache.timestamp)
+        }
+        return .none
+    }
     
     var error: Error? {
         if case let .failure(error) = self {
@@ -37,7 +36,7 @@ extension CatalogStoreResult {
     }
     
     var isEmpty: Bool {
-        if case .empty = self {
+        if case .success(.none) = self {
             return true
         }
         return false

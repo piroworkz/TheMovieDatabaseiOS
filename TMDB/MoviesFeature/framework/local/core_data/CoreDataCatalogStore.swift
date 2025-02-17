@@ -20,9 +20,9 @@ public final class CoreDataCatalogStore: CatalogStore {
         perform { context in
             do {
                 try ManagedCache.find(in: context).map(context.delete).map(context.save)
-                completion(nil)
+                completion(.success(()))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
         }
     }
@@ -32,9 +32,9 @@ public final class CoreDataCatalogStore: CatalogStore {
             do {
                 ManagedCache.make(from: catalog, timestamp, in: context)
                 try context.save()
-                completion(nil)
+                completion(.success(()))
             } catch {
-                completion(error)
+                completion(.failure(error))
             }
         }
     }
@@ -43,9 +43,9 @@ public final class CoreDataCatalogStore: CatalogStore {
         perform { context in
             do {
                 if let cache = try ManagedCache.find(in: context) {
-                    completion(.found(catalog: cache.local, timestamp: cache.timestamp))
+                    completion(.success(Cache(cache.catalog.asLocal, cache.timestamp)))
                 } else {
-                    completion(.empty)
+                    completion(.success(.none))
                 }
             } catch {
                 completion(.failure(error))

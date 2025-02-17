@@ -22,34 +22,39 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverEmpty() {
         let sut = buildSut()
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        let expected = CatalogStoreResult.success(.none)
+        
+        assertThatRetrieveResult(sut).isEqual(to: expected)
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldAlwaysDeliverEmpty() {
         let sut = buildSut()
+        let expected = CatalogStoreResult.success(.none)
         
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        assertThatRetrieveResult(sut).isEqual(to: expected)
+        assertThatRetrieveResult(sut).isEqual(to: expected)
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalled_THEN_shouldDeliverFoundValues() {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
+        let expected = CatalogStoreResult.success(Cache(localCatalog, timestamp))
         
-        assertThatInsertError(with: (localCatalog, timestamp), sut).isNil()
+        assertThatInsertResult(with: (localCatalog, timestamp), sut).isEqual(to: .success(()))
         
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
+        assertThatRetrieveResult(sut).isEqual(to: expected)
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_retrieveIsCalledMultipleTimes_THEN_shouldDeliverSameFoundValues() {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp = Date()
+        let expected = CatalogStoreResult.success(Cache(localCatalog, timestamp))
         
-        assertThatInsertError(with: (localCatalog, timestamp), sut).isNil()
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: localCatalog, timestamp: timestamp))
+        assertThatInsertResult(with: (localCatalog, timestamp), sut).isEqual(to: .success(()))
+        assertThatRetrieveResult(sut).isEqual(to: expected)
+        assertThatRetrieveResult(sut).isEqual(to: expected)
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_insertSucceeds_THEN_shouldNotDeliverError() {
@@ -57,7 +62,7 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         let localCatalog = createCatalog().toLocal()
         let timestamp: Date = Date()
         
-        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isEqual(to: .success(()))
     }
     
     func test_GIVEN_cacheDataIsNotValid_WHEN_retrieveIsCalled_THEN_shouldDeliverFailureWithError() {
@@ -85,11 +90,12 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         let existingLocalCatalog = createCatalog(1).toLocal()
         let newTimeStamp: Date = existingTimestamp.addingTimeInterval(10)
         let newLocalCatalog = createCatalog(2).toLocal()
+        let expected = CatalogStoreResult.success(Cache(newLocalCatalog, newTimeStamp))
         
-        assertThatInsertError(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isNil()
+        assertThatInsertResult(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isEqual(to: .success(()))
         
-        assertThatInsertError(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isNil()
-        assertThatRetrieveResult(sut).isEqual(to: .found(catalog: newLocalCatalog, timestamp: newTimeStamp))
+        assertThatInsertResult(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isEqual(to: .success(()))
+        assertThatRetrieveResult(sut).isEqual(to: expected)
     }
     
     func test_GIVEN_invalidStoreURL_WHEN_insertFails_THEN_shouldDeliverInsertError() {
@@ -97,32 +103,34 @@ final class CodableCatalogStorageTests: XCTestCase, CatalogStoreSpecs {
         let sut = buildSut(storeURL: invalidStoreURL)
         let timestamp = Date()
         let localCatalog = createCatalog().toLocal()
+        let expected = NSError(domain: NSCocoaErrorDomain, code: 4)
         
-        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNotNil()
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isEqual(to: .failure(expected))
     }
     
     func test_GIVEN_cacheIsEmpty_WHEN_deleteIsCalled_THEN_shouldNotHaveSideEffects() {
         let sut = buildSut()
         
-        assertThatDeleteError(sut).isNil()
+        assertThatDeleteResult(sut).isEqual(to: .success(()))
     }
     
     func test_GIVEN_cacheIsNotEmpty_WHEN_deleteSucceeds_THEN_shouldDeleteExistingCache() {
         let sut = buildSut()
         let timestamp = Date()
         let localCatalog = createCatalog().toLocal()
+        let expected = CatalogStoreResult.success(.none)
         
-        assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
-        assertThatDeleteError(sut).isNil()
+        assertThatInsertResult(with: (catalog: localCatalog, timestamp: timestamp), sut).isEqual(to: .success(()))
+        assertThatDeleteResult(sut).isEqual(to: .success(()))
         
-        assertThatRetrieveResult(sut).isEqual(to: .empty)
+        assertThatRetrieveResult(sut).isEqual(to: expected)
     }
     
     func test_GIVEN_invalidStoreURL_WHEN_deleteFails_THEN_shouldDeliverDeleteError() {
         let invalidStoreURL = cachesDirectory()
         let sut = buildSut(storeURL: invalidStoreURL)
-        
-        assertThatDeleteError(sut).isNotNil()
+        let expected = NSError(domain: NSCocoaErrorDomain, code: 513)
+        assertThatDeleteResult(sut).isEqual(to: .failure(expected))
     }
     
     func test_GIVEN_multipleOperations_WHEN_executedSerially_THEN_shouldCompleteOperationsInOrder() {

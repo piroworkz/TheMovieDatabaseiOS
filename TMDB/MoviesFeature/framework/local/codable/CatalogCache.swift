@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal struct CatalogCache: Codable {
+struct CatalogCache: Codable {
     let catalog: CodableCatalog
     let timestamp: Date
     

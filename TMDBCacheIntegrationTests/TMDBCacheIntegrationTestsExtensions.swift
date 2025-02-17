@@ -51,15 +51,17 @@ extension TMDBCacheIntegrationTests {
     func assertThatSaveResult(
         _ catalog: Catalog,
         from sut: LocalCatalogLoader
-    ) -> Error? {
+    ) -> CatalogStore.StoreResult? {
         let expectation = expectation(description: "assertThatSaveResult description")
-        var receivedError: Error?
-        sut.save(catalog) { error in
-            receivedError = error
+        
+        var receivedResult: CatalogStore.StoreResult?
+        sut.save(catalog) { result in
+            receivedResult = result
             expectation.fulfill()
         }
+        
         wait(for: [expectation], timeout: 1.0)
-        return receivedError
+        return receivedResult
     }
     
     

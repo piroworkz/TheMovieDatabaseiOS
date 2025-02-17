@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal struct CodableCatalog: Codable {
+struct CodableCatalog: Codable {
     let page: Int
     let totalPages: Int
     let movies: [CodableMovie]
@@ -19,7 +19,7 @@ internal struct CodableCatalog: Codable {
     }
 }
 
-internal struct CodableMovie: Codable {
+struct CodableMovie: Codable {
     let id: Int
     let title: String
     let posterPath: String

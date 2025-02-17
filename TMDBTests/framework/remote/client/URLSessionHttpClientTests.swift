@@ -69,12 +69,12 @@ final class URLSessionHttpClientTests: XCTestCase {
     
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccess_THEN_shouldReturnData() {
         assertThatResultCaseFor(data: anyData(), response: anyHttpUrlResponse(), error: nil)
-            .isEqual(to: .success(anyData(), anyHttpUrlResponse()))
+            .isEqual(to: .success((anyData(), anyHttpUrlResponse())))
     }
     
     func test_GIVEN_sut_WHEN_getIsCalledAndDataTaskCompletesWithSuccessAndEmptyData_THEN_shouldReturnEmptyData() {
         let emptyData: Data = Data()
         assertThatResultCaseFor(data: emptyData, response: anyHttpUrlResponse(), error: nil)
-            .isEqual(to: .success(emptyData, anyHttpUrlResponse()))
+            .isEqual(to: .success((emptyData, anyHttpUrlResponse())))
     }
 }

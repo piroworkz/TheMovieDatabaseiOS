@@ -82,13 +82,13 @@ extension URLSessionHttpClientTests {
         return sut
     }
     
-    func assertThatResultCaseFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HttpClientResult? {
+    func assertThatResultCaseFor(data: Data?, response: URLResponse?, error: Error?, file: StaticString = #filePath, line: UInt = #line) -> HttpClient.Result? {
         let sut = buildSut(file: file, line: line)
         let expectation = expectation(description: expectationDescription())
         
         URLProtocolStub.stub(data: data, response: response, error: error)
         
-        var result: HttpClientResult?
+        var result: HttpClient.Result?
         sut.get(from: anyEndpoint()) { receivedResult in
             result = receivedResult
             expectation.fulfill()

@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal final class LocalCatalogCachePolicy {
+final class LocalCatalogCachePolicy {
     
     private init() {}
     

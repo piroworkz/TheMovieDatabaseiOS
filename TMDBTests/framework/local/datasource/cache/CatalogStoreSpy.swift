@@ -31,16 +31,18 @@ final class CatalogStoreSpy: CatalogStore {
     }
     
     func retrieve(completion: @escaping RetrieveCompletion) {
+        print("<-- retrieve")
         onRetrieve.append(completion)
+        print("<-- onRetrieve count \(onRetrieve.count)")
         messages.append(.retrieve)
     }
     
     func completeDeletion(with error: Error, at index: Int = 0) {
-        onDelete[index](error)
+        onDelete[index](.failure(error))
     }
     
     func completeInsert(with error: Error, at index: Int = 0) {
-        onInsert[index](error)
+        onInsert[index](.failure(error))
     }
         
     func completeRetrieve(with error: Error, at index: Int = 0) {
@@ -48,20 +50,21 @@ final class CatalogStoreSpy: CatalogStore {
     }
     
     func completeDeletionSuccessfully(at index: Int = 0) {
-        onDelete[index](nil)
+        onDelete[index](.success(()))
     }
     
     func completeInsertSuccessfully(at index: Int = 0) {
         completeDeletionSuccessfully()
-        onInsert[index](nil)
+        onInsert[index](.success(()))
     }
     
     func completeRetrieveSuccessfully(at index: Int = 0) {
-        onRetrieve[index](.empty)
+        onRetrieve[index](.success(.none))
     }
     
     func completeRetrieveSuccessfully(with catalog: LocalCatalog,_ timestamp: Date, at index: Int = 0) {
-        onRetrieve[index](.found(catalog: catalog, timestamp: timestamp))
+        let result = CatalogStoreResult.success(Cache(catalog, timestamp))
+        onRetrieve[index](result)
     }
     
 }
