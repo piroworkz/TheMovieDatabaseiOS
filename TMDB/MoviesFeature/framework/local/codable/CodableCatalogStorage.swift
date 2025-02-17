@@ -40,7 +40,7 @@ public final class CodableCatalogStorage: CatalogStore {
             do {
                 let decoder = JSONDecoder()
                 let cache = try decoder.decode(CatalogCache.self, from: data)
-                completion(.success(.some(Cache(cache.localCatalog, cache.timestamp))))
+                completion(.success(Cache(cache.localCatalog, cache.timestamp)))
             } catch {
                 completion(.failure(error))
             }

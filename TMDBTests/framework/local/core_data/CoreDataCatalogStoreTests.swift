@@ -29,7 +29,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp: Date = Date()
-        let expected = CatalogStoreResult.success(.some(Cache(localCatalog, timestamp)))
+        let expected = CatalogStoreResult.success(Cache(localCatalog, timestamp))
         
         assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
         assertThatRetrieveResult(sut).isEqual(to: expected)
@@ -39,7 +39,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let sut = buildSut()
         let localCatalog = createCatalog().toLocal()
         let timestamp: Date = Date()
-        let expected = CatalogStoreResult.success(.some(Cache(localCatalog, timestamp)))
+        let expected = CatalogStoreResult.success(Cache(localCatalog, timestamp))
         
         assertThatInsertError(with: (catalog: localCatalog, timestamp: timestamp), sut).isNil()
         assertThatRetrieveResult(sut).isEqual(to: expected)
@@ -60,7 +60,7 @@ final class CoreDataCatalogStoreTests: XCTestCase, CatalogStoreSpecs {
         let existingLocalCatalog = createCatalog(1).toLocal()
         let newTimeStamp: Date = existingTimestamp.addingTimeInterval(10)
         let newLocalCatalog = createCatalog(2).toLocal()
-        let expected = CatalogStoreResult.success(.some(Cache(newLocalCatalog, newTimeStamp)))
+        let expected = CatalogStoreResult.success(Cache(newLocalCatalog, newTimeStamp))
         
         assertThatInsertError(with: (catalog: existingLocalCatalog, timestamp: existingTimestamp), sut).isNil()
         assertThatInsertError(with: (catalog: newLocalCatalog, timestamp: newTimeStamp), sut).isNil()

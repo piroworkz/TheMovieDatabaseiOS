@@ -61,7 +61,7 @@ final class CatalogStoreSpy: CatalogStore {
     }
     
     func completeRetrieveSuccessfully(with catalog: LocalCatalog,_ timestamp: Date, at index: Int = 0) {
-        let result = CatalogStoreResult.success(.some(Cache(catalog, timestamp)))
+        let result = CatalogStoreResult.success(Cache(catalog, timestamp))
         onRetrieve[index](result)
     }
     

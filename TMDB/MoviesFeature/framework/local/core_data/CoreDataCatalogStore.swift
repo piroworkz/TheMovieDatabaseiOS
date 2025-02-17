@@ -43,7 +43,7 @@ public final class CoreDataCatalogStore: CatalogStore {
         perform { context in
             do {
                 if let cache = try ManagedCache.find(in: context) {
-                    completion(.success(.some(Cache(cache.catalog.asLocal, cache.timestamp))))
+                    completion(.success(Cache(cache.catalog.asLocal, cache.timestamp)))
                 } else {
                     completion(.success(.none))
                 }
