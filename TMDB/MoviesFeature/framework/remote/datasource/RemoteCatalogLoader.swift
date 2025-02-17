@@ -28,7 +28,7 @@ public class RemoteCatalogLoader: FetchCatalogUseCase {
             switch result {
             case .failure:
                 completion(.failure(Error.connectivity))
-            case let .success(data, response):
+            case let .success((data, response)):
                 do {
                     let catalog = try RemoteCatalogSerializer.decode(data, response.statusCode)
                     completion(.success(catalog.toDomain()))

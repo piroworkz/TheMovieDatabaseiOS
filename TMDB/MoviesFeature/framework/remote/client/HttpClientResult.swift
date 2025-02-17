@@ -6,10 +6,7 @@
 //
 
 
-public enum HttpClientResult {
-    case success(Data, HTTPURLResponse)
-    case failure(Error)
-}
+public typealias HttpClientResult = Result<(Data, HTTPURLResponse), Error>
 
 extension HttpClientResult {
     func fold<T>(
@@ -17,7 +14,7 @@ extension HttpClientResult {
         onFailure: (Error) -> T
     ) -> T {
         switch self {
-        case .success(let data, let response):
+        case .success((let data, let response)):
             return onSuccess(data, response)
         case .failure(let error):
             return onFailure(error)

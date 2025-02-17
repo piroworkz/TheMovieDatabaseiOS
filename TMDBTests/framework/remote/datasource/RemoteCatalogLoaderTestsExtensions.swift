@@ -25,7 +25,7 @@ extension RemoteCatalogLoaderTests {
         
         func complete(withCode code: Int, data: Data, at index: Int = 0) {
             let response = HTTPURLResponse(url: anyURL(), statusCode: code, httpVersion: nil, headerFields: nil)!
-            messages[index].completion(.success(data, response))
+            messages[index].completion(.success((data, response)))
         }
     }
     
