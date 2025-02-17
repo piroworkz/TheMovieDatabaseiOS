@@ -7,10 +7,16 @@
 
 import Foundation
 
-public typealias CatalogStoreResult = Result<CachedFeed, Error>
-public enum CachedFeed {
-    case empty
-    case found(catalog: LocalCatalog, timestamp: Date)
+public typealias CatalogStoreResult = Result<Cache?, Error>
+
+public struct Cache {
+    public let catalog: LocalCatalog
+    public let timestamp: Date
+    
+    public init(_ catalog: LocalCatalog, _ timestamp: Date) {
+        self.catalog = catalog
+        self.timestamp = timestamp
+    }
 }
 
 public protocol CatalogStore {
@@ -22,11 +28,11 @@ public protocol CatalogStore {
 }
 
 extension CatalogStoreResult {
-    var foundValues: (catalog: LocalCatalog, timestamp: Date)? {
-        if case let .success(.found(catalog, timestamp)) = self {
-            return (catalog, timestamp)
+    var foundValues: Cache? {
+        if case let .success(.some(cache)) = self {
+            return Cache(cache.catalog, cache.timestamp)
         }
-        return nil
+        return .none
     }
     
     var error: Error? {
@@ -37,7 +43,7 @@ extension CatalogStoreResult {
     }
     
     var isEmpty: Bool {
-        if case .success(.empty) = self {
+        if case .success(.none) = self {
             return true
         }
         return false

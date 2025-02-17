@@ -27,8 +27,8 @@ extension LocalCatalogLoader {
             switch result {
             case let .failure(error):
                 completion(.failure(error))
-            case let .success(.found(catalog, timestamp)) where LocalCatalogCachePolicy.validate(timestamp, currentDate: currentDate()):
-                completion(.success(catalog.toDomain()))
+            case let .success(.some(cache)) where LocalCatalogCachePolicy.validate(cache.timestamp, currentDate: currentDate()):
+                completion(.success(cache.catalog.toDomain()))
             case .success:
                 completion(.success(Catalog(page: 0, totalPages: 0, movies: [])))
             }
@@ -67,7 +67,7 @@ extension LocalCatalogLoader {
             switch result {
             case .failure:
                 self.store.deleteCachedCatalog {_ in}
-            case let .success(.found(_, timestamp)) where !LocalCatalogCachePolicy.validate(timestamp, currentDate: currentDate()):
+            case let .success(.some(cache)) where !LocalCatalogCachePolicy.validate(cache.timestamp, currentDate: currentDate()):
                 self.store.deleteCachedCatalog {_ in}
             case .success:
                 break
