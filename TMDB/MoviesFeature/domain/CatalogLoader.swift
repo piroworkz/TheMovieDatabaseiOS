@@ -7,10 +7,7 @@
 
 import Foundation
 
-public enum CatalogResult {
-    case success(Catalog)
-    case failure(Error)
-}
+public typealias CatalogResult = Result<Catalog, Error>
 
 public protocol FetchCatalogUseCase {
     func load(from endpoint: String, completion: @escaping (CatalogResult) -> Void)
