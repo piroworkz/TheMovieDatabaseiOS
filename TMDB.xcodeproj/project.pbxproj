@@ -594,7 +594,6 @@
 		};
 		183944F02D56D31600C4001D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1810BD362D5833BF0003542F /* TMDB.xcconfig */;
 			buildSettings = {
 				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
 				ALWAYS_SEARCH_USER_PATHS = NO;
