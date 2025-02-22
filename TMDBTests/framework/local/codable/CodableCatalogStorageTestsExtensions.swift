@@ -21,7 +21,9 @@ extension CatalogStoreSpecs where Self: XCTestCase {
     }
 
     func cachesDirectory() -> URL {
-        return FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first!
+        let directory = FileManager.default.urls(for: .cachesDirectory, in: .systemDomainMask).first!
+        print(directory)
+        return directory
     }
     
     func assertThatRetrieveResult(
