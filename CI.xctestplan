@@ -4,12 +4,31 @@
       "id" : "882A16DC-3E3C-4629-AEEE-621C74317D1D",
       "name" : "Test Scheme Action",
       "options" : {
-        "testExecutionOrdering" : "random"
+        "testExecutionOrdering" : "random",
+        "testTimeoutsEnabled" : true
       }
     }
   ],
   "defaultOptions" : {
-    "codeCoverage" : false,
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:TMDB.xcodeproj",
+          "identifier" : "183944E32D56D31600C4001D",
+          "name" : "TMDBTests"
+        },
+        {
+          "containerPath" : "container:TMDB.xcodeproj",
+          "identifier" : "18247AF12D6280BB00CA0069",
+          "name" : "TMDBCacheIntegrationTests"
+        },
+        {
+          "containerPath" : "container:TMDB.xcodeproj",
+          "identifier" : "188492B22D57F0EA00E4F1F0",
+          "name" : "TMDBEndtoEndTests"
+        }
+      ]
+    },
     "environmentVariableEntries" : [
       {
         "key" : "apiKey",
